@@ -38,7 +38,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import utils.VDrumsUtils;
-import exceptions.BadMessageLength;
+import exceptions.BadMessageLengthException;
 import exceptions.VdrumException;
 
 public final class TD12Kit implements TdKit {
@@ -59,7 +59,7 @@ public final class TD12Kit implements TdKit {
 
     public TD12Kit(byte[] rawData) throws InvalidMidiDataException, VdrumException {
         if (rawData.length != VDrumsUtils.TD12_KIT_SIZE) {
-            throw new BadMessageLength(rawData.length);
+            throw new BadMessageLengthException(rawData.length);
         }
         subParts = new TD12SubPart[TD_12_NUMBER_OF_SUB_PARTS];
         for (int i = 0; i < subParts.length; i++) {

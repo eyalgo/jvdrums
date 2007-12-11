@@ -32,10 +32,10 @@ package exceptions;
  * @author egolan
  *
  */
-public class BadMessageLength extends VdrumException {
+public class BadMessageLengthException extends VdrumException {
     private static final long serialVersionUID = 4744592781967971683L;
     private final int recievedMessageLength;
-    public BadMessageLength(final int recievedMessageLength) {
+    public BadMessageLengthException(final int recievedMessageLength) {
         super();
         this.recievedMessageLength = recievedMessageLength;
     }

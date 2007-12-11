@@ -28,33 +28,51 @@
 
 package managers;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import javax.sound.midi.InvalidMidiDataException;
 
 import kits.TdKit;
 import kits.td12.TD12Kit;
+
+import org.apache.commons.io.FileUtils;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import resources.Utils;
 import exceptions.BadMessageLengthException;
 import exceptions.UnsupportedModuleException;
 import exceptions.VdrumException;
 
 /**
  * @author egolan
- * 
+ *
  */
-final class FactoryKits {
-    private FactoryKits() {
-    // No instance for this class
+@Test(groups = {"manager"})
+public final class TestFactoryKits {
+    private byte[] getFileBytes(final String fileName) throws URISyntaxException, IOException {
+        final File file = Utils.getTestFile(fileName);
+        byte[] fileBytes = FileUtils.readFileToByteArray(file);
+        return fileBytes;
     }
-
-    static TdKit getKit(final byte[] kitBytes) throws InvalidMidiDataException, VdrumException {
-        try {
-            if (((kitBytes[3] & 0xFF) == 0) && ((kitBytes[4] & 0xFF) == 0)
-                    && ((kitBytes[5] & 0xFF) == 9)) {
-                return new TD12Kit(kitBytes);
-            }
-            throw new UnsupportedModuleException();
-        }
-        catch (ArrayIndexOutOfBoundsException e) {
-            throw new BadMessageLengthException(kitBytes.length);
-        }
+    
+    public void checkKitTd12() throws URISyntaxException, IOException, InvalidMidiDataException, VdrumException {
+        byte[] kitBytes = getFileBytes("airtime20.syx");
+        TdKit kit = FactoryKits.getKit(kitBytes);
+        Assert.assertTrue(kit instanceof TD12Kit);
+    }
+    
+    @Test(expectedExceptions = UnsupportedModuleException.class)
+    public void checkNotSupportedModule() throws URISyntaxException, IOException, InvalidMidiDataException, VdrumException {
+        byte[] kitBytes = getFileBytes("notTd12.syx");
+        FactoryKits.getKit(kitBytes);
+    }
+    
+    @Test(expectedExceptions = BadMessageLengthException.class)
+    public void checkArrayOutOfBound() throws URISyntaxException, IOException, InvalidMidiDataException, VdrumException {
+        byte[] kitBytes = getFileBytes("small.syx");
+        FactoryKits.getKit(kitBytes);
     }
 }

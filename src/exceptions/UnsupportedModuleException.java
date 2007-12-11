@@ -26,35 +26,14 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package managers;
-
-import javax.sound.midi.InvalidMidiDataException;
-
-import kits.TdKit;
-import kits.td12.TD12Kit;
-import exceptions.BadMessageLengthException;
-import exceptions.UnsupportedModuleException;
-import exceptions.VdrumException;
+package exceptions;
 
 /**
  * @author egolan
- * 
+ *
  */
-final class FactoryKits {
-    private FactoryKits() {
-    // No instance for this class
-    }
-
-    static TdKit getKit(final byte[] kitBytes) throws InvalidMidiDataException, VdrumException {
-        try {
-            if (((kitBytes[3] & 0xFF) == 0) && ((kitBytes[4] & 0xFF) == 0)
-                    && ((kitBytes[5] & 0xFF) == 9)) {
-                return new TD12Kit(kitBytes);
-            }
-            throw new UnsupportedModuleException();
-        }
-        catch (ArrayIndexOutOfBoundsException e) {
-            throw new BadMessageLengthException(kitBytes.length);
-        }
+public class UnsupportedModuleException extends VdrumException {
+    private static final long serialVersionUID = 6739097683059301674L;
+    public UnsupportedModuleException() {
     }
 }

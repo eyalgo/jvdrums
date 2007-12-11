@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 
 import resources.Utils;
 import exceptions.BadChecksumException;
-import exceptions.BadMessageLength;
+import exceptions.BadMessageLengthException;
 import exceptions.NotRolandException;
 import exceptions.VdrumException;
 
@@ -41,7 +41,7 @@ public class TestErrorsKit {
         new TD12Kit(kitBytes);
     }
 
-    @Test(expectedExceptions = BadMessageLength.class)
+    @Test(expectedExceptions = BadMessageLengthException.class)
     public void checkBadLength() throws URISyntaxException, IOException,
             InvalidMidiDataException, VdrumException {
         final File fileBadStat = Utils.getTestFile("myOrigKits.syx");
