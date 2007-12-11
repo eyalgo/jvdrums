@@ -55,7 +55,6 @@
 	<target name="clean" description="cleans generated and distribution folders">
 		<delete dir="${dir.build}" />
 		<delete dir="${dir.dist}" />
-		<delete dir="${dir.test.dist}" />
 	</target>
 
 	<target name="compile-test" depends="prepare-test">
