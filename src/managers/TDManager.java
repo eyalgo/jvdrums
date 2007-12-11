@@ -28,20 +28,91 @@
 
 package managers;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
 
 import kits.TdKit;
+import midi.VdrumsSysexMessage;
+
+import org.apache.commons.lang.ArrayUtils;
+
+import utils.VDrumsUtils;
 import exceptions.VdrumException;
 
 /**
  * @author egolan
  * 
  */
-public interface TDManager {
-    public abstract TdKit[] sysexMessageToKits(SysexMessage message)
-            throws InvalidMidiDataException, VdrumException;
+public final class TDManager {
+    final TdKit[] tdKits;
+    public TDManager() {
+        super();
+        this.tdKits = new TdKit[VDrumsUtils.MAX_NUMBER_OF_KITS];
+        for (int i = 0; i < tdKits.length; i++) {
+            tdKits[i] = null;
+        }
+    }
 
-    public abstract SysexMessage kitsToSysexMessage(TdKit[] kits)
-            throws InvalidMidiDataException;
+    /**
+     * 
+     * 
+     * 
+     * @param kits TdKit[]
+     * @throws InvalidMidiDataException
+     */
+    public SysexMessage kitsToSysexMessage(TdKit[] kits) throws InvalidMidiDataException {
+        byte[] data = null;
+        for (int i = 0; i < kits.length; i++) {
+            if (kits[i] != null) {
+                TdKit tempKit = kits[i].setNewId(i + 1);
+                data = ArrayUtils.addAll(data, tempKit.getMessage().getMessage());
+            }
+        }
+        final SysexMessage result = new VdrumsSysexMessage();
+
+        result.setMessage(data, data.length);
+        return result;
+    }
+
+    /**
+     * 
+     * Gets a message in a Sysex format. Parses the bytes in the message into an
+     * array of TdKit (TD-12) Each message of a kit must start with 0xF0 which
+     * is (after masking) 240. The kit's address is 0x72 which is 114 and is
+     * located in the eigth index (starting 0).
+     * 
+     * We ignore the status byte and adress byte of the "inner" parts of the
+     * kits. We ignore by advancing the index (i) almost all the kit's size.
+     * 
+     * @param message
+     *            SysexMessage
+     * @return TdKit[]
+     * @throws InvalidMidiDataException
+     *             if generic problem in building the kits (like status byte)
+     * @throws VdrumException
+     *             can be bad checksum, not roland kit etc.
+     */
+    public TdKit[] sysexMessageToKits(SysexMessage message) throws InvalidMidiDataException,
+            VdrumException {
+        final byte[] byteMessage = message.getMessage();
+        final Collection<Integer> indexes = new ArrayList<Integer>();
+        for (int i = 0; i < byteMessage.length; i++) {
+            if (((byteMessage[i] & 0xFF) == 240) && ((byteMessage[i + 7] & 0xFF) == 114)) {
+                indexes.add(Integer.valueOf(i));
+                i += VDrumsUtils.TD12_KIT_SIZE - 20;
+            }
+        }
+        for (Integer index : indexes) {
+            final int finishKitsMessage = index + VDrumsUtils.TD12_KIT_SIZE;
+            final byte[] kitBytes = ArrayUtils.subarray(byteMessage, index, finishKitsMessage);
+            final TdKit tempKit = FactoryKits.getKit(kitBytes);
+            final int kitId = tempKit.getId();
+            tdKits[kitId - 1] = tempKit;
+        }
+        return tdKits;
+    }
+
 }

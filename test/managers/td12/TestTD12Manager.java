@@ -37,6 +37,7 @@ import javax.sound.midi.SysexMessage;
 
 import kits.TdKit;
 import kits.td12.TD12Kit;
+import managers.TDManager;
 import midi.VdrumsSysexMessage;
 
 import org.apache.commons.io.FileUtils;
@@ -52,12 +53,12 @@ import exceptions.VdrumException;
 
 @Test(groups = {"manager"}, dependsOnGroups = {"kits", "exception"})
 public final class TestTD12Manager {
-    private TD12Manager td12Manager;
+    private TDManager td12Manager;
 
     @BeforeMethod
     public void setUp() throws IOException, InvalidMidiDataException, URISyntaxException,
             VdrumException {
-        td12Manager = new TD12Manager();
+        td12Manager = new TDManager();
     }
 
     private SysexMessage getMessageFromFile(final String fileName) throws URISyntaxException,
