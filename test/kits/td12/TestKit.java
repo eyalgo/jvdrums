@@ -17,6 +17,7 @@ import exceptions.VdrumException;
 
 @Test(groups = {"kits"})
 public final class TestKit {
+    //test commit
     private TD12Kit kit1;
     private TD12Kit kit25;
     private SysexMessage kit1SysexMessage;
