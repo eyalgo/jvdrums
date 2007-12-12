@@ -48,6 +48,7 @@ import exceptions.VdrumException;
  */
 public final class TDManager {
     final TdKit[] tdKits;
+
     public TDManager() {
         super();
         this.tdKits = new TdKit[VDrumsUtils.MAX_NUMBER_OF_KITS];
@@ -55,12 +56,32 @@ public final class TDManager {
             tdKits[i] = null;
         }
     }
-
+    
     /**
-     * 
-     * 
+     * For each kit in the input, makes a new one with correct id (the index is the id).
+     * It puts the new kit in the result array.
      * 
      * @param kits TdKit[]
+     * @return TdKit[]
+     * @throws InvalidMidiDataException
+     * @throws VdrumException 
+     */
+    public TdKit[] kitsToKits(TdKit[] kits) throws InvalidMidiDataException, VdrumException {
+        final SysexMessage message = kitsToSysexMessage(kits);
+        final TdKit[] returnedKits = sysexMessageToKits(message);
+        
+//        final TdKit[] returnedKits = new TdKit[kits.length];
+//        for (int i = 0; i < kits.length; i++) {
+//            if (kits[i] != null) {
+//                returnedKits[i] = kits[i].setNewId(i + 1);
+//            }
+//        }
+        return returnedKits;
+    }
+
+    /**
+     * @param kits
+     *            TdKit[]
      * @throws InvalidMidiDataException
      */
     public SysexMessage kitsToSysexMessage(TdKit[] kits) throws InvalidMidiDataException {

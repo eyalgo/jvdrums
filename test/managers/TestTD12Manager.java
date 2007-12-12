@@ -87,7 +87,31 @@ public final class TestTD12Manager {
         Assert.assertTrue(kitFromMessage.getId() == 25);
     }
     
-
+    @Test(dependsOnMethods = { "checkMessageFor50Kits", "checkMessageToKit25" })
+    public void checkKitsToKits() throws URISyntaxException, IOException,
+            InvalidMidiDataException, VdrumException {
+        final SysexMessage message = getMessageFromFile("myOrigKits.syx");
+        TdKit[] kitsFromManager = td12Manager.sysexMessageToKits(message);
+        
+        Object[] objects = ArrayUtils.addAll(null, kitsFromManager);
+        TdKit[] changedKits = new TdKit[objects.length];
+        for (int i=0;i<objects.length;i++) {
+            changedKits[i] = (TdKit)objects[i];
+        }
+        TdKit temp5 = changedKits[4];
+        changedKits[4] = changedKits[9];
+        changedKits[9] = temp5;
+        
+        TdKit[] newFromManager = td12Manager.kitsToKits(changedKits);
+        Assert.assertTrue(newFromManager.length == 50);
+        for (int i=0;i<newFromManager.length;i++) {
+            if (newFromManager[i] == null) {
+                Assert.fail(i + " is null");
+            }
+        }
+        Assert.assertEquals(kitsFromManager[4].getName(), changedKits[9].getName());
+    }
+    
     @Test(dependsOnMethods = { "checkMessageFor50Kits", "checkMessageToKit25" })
     public void checkOneKitToSysexMessage() throws URISyntaxException, IOException,
             InvalidMidiDataException, VdrumException {

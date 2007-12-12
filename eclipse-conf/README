@@ -1,0 +1,3 @@
+Files in eclipse-conf are configuration files for eclipse environment.
+These files are used in 'java code style' in preferences.
+This is in order to have the same formatting who ever writes code.
