@@ -29,23 +29,21 @@
  -->
 
 <project name="JVDrums" default="jar">
-
-	<property name="dir.test" value="test" />
-	<property name="dir.test.dist" value="dist-test" />
-	<property name="dir.test.result" value="test-res" />
-	<property name="test-resources" value="${dir.test}/resources" />
-	<property name="test-resources-dist" value="${dir.test.dist}/resources" />
-
-
-
-
-
 	<property name="dir.src" value="src" />
 	<property name="dir.build" value="build" />
 	<property name="dir.dist" value="dist" />
+	<property name="dir.test" value="test" />
+	<property name="dir.test.result" value="test-res" />
+	<property name="test-resources" value="${dir.test}/resources" />
+	<property name="test-resources-dist" value="${dir.build}/resources" />
+	<property name="dist-jar-file" value="${dir.dist}/jvdrums.jar" />
+	<property name="lib-path" value="lib" />
+	<property name="build-lib-path" value="${dir.build}/${lib-path}" />
+	<property name="manifest-file" value="${dir.src}/META-INF/MANIFEST.MF" />
+
 
 	<path id="libs.path">
-		<fileset dir="lib">
+		<fileset dir="${lib-path}">
 			<include name="*.jar" />
 		</fileset>
 	</path>
@@ -55,61 +53,57 @@
 	<target name="clean" description="cleans generated and distribution folders">
 		<delete dir="${dir.build}" />
 		<delete dir="${dir.dist}" />
-	</target>
-
-	<target name="compile-test" depends="prepare-test">
-		<javac destdir="${dir.test.dist}" source="1.6">
-			<classpath refid="libs.path" />
-			<src path="${dir.src}" />
-			<src path="${dir.test}" />
-		</javac>
-	</target>
-
-	<target name="test" depends="compile-test">
-		<testng groups="manager , kits , exception" sourceDir="${dir.test.dist}" outputDir="${dir.test.result}" classpath="${dir.test.dist}">
-			<classfileset dir="${dir.test.dist}">
-				<include name="**/*.class" />
-			</classfileset>
-			<classpath refid="libs.path" />
-		</testng>
-	</target>
-
-	<target name="prepare-test">
-		<echo>Creating ${dir.build} and ${dir.dist} directories</echo>
-		<tstamp>
-			<format property="TODAY" pattern="d-MM-yyyy" />
-		</tstamp>
-		<mkdir dir="${dir.test.dist}" />
-		<mkdir dir="${dir.test.result}" />
-		<mkdir dir="${test-resources-dist}" />
-		<copy todir="${test-resources-dist}">
-			<fileset dir="${test-resources}" includes="**/*.syx" />
-		</copy>
-	</target>
-
-	<target name="clean-test">
 		<delete dir="${dir.test.dist}" />
 		<delete dir="${dir.test.result}" />
 		<delete dir="${test-resources-dist}" />
 	</target>
 
 	<target name="prepare">
-		<echo>Creating ${dir.build} and ${dir.dist} directories</echo>
+		<echo>Creating ${dir.build}, ${dir.dist}, ${dir.test.result}, ${test-resources-dist} directories</echo>
 		<tstamp>
 			<format property="TODAY" pattern="d-MM-yyyy" />
 		</tstamp>
 		<mkdir dir="${dir.build}" />
 		<mkdir dir="${dir.dist}" />
+		<mkdir dir="${dir.test.result}" />
+		<mkdir dir="${test-resources-dist}" />
+		<copy todir="${test-resources-dist}">
+			<fileset dir="${test-resources}" includes="**/*.syx" />
+		</copy>
+		<copy todir="${build-lib-path}">
+			<fileset dir="${lib-path}" />
+		</copy>
 	</target>
 
 	<target name="compile" depends="prepare">
-		<echo>Start Compiling Code</echo>
-		<javac srcdir="${dir.src}" destdir="${dir.build}" source="1.6">
+		<javac destdir="${dir.build}" source="1.6">
 			<classpath refid="libs.path" />
+			<src path="${dir.src}" />
+			<src path="${dir.test}" />
 		</javac>
 	</target>
-	<target name="jar" depends="compile" description="jar application">
 
+	<target name="test" depends="compile">
+		<testng groups="manager , kits , exception" sourceDir="${dir.build}" outputDir="${dir.test.result}" classpath="${dir.build}" haltonfailure="true">
+			<classfileset dir="${dir.build}">
+				<include name="**/*.class" />
+			</classfileset>
+			<classpath refid="libs.path" />
+		</testng>
 	</target>
 
+	<target name="jar-test" depends="test" description="jar application with test">
+		<jar destfile="${dist-jar-file}">
+			<fileset dir="${dir.build}" excludes="**/Test*.class **/*.syx" />
+		</jar>
+	</target>
+
+	<target name="jar" depends="compile" description="jar application">
+		<jar destfile="${dist-jar-file}" manifest="${manifest-file}" update="true">
+			<fileset dir="${dir.build}" excludes="**/Test*.class **/*.syx" />
+		</jar>
+	</target>
+
+	<!--
+-->
 </project>

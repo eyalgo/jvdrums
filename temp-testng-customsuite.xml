@@ -11,7 +11,7 @@
     <classes>
       <class name="kits.td12.TestErrorsKit"/>
       <class name="managers.TestFactoryKits"/>
-      <class name="managers.td12.TestTD12Manager"/>
+      <class name="managers.TestTD12Manager"/>
       <class name="kits.td12.TestKit"/>
     </classes>
   </test>

@@ -26,7 +26,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package managers.td12;
+package managers;
 
 import java.io.File;
 import java.io.IOException;
