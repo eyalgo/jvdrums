@@ -28,7 +28,7 @@
  */
  -->
 
-<project name="JVDrums" default="jar">
+<project name="JVDrums" default="jar-test">
 	<property name="dir.src" value="src" />
 	<property name="dir.build" value="build" />
 	<property name="dir.dist" value="dist" />
@@ -92,8 +92,8 @@
 		</testng>
 	</target>
 
-	<target name="jar-test" depends="test" description="jar application with test">
-		<jar destfile="${dist-jar-file}">
+	<target name="jar-test" depends="test" description="jar application">
+		<jar destfile="${dist-jar-file}" manifest="${manifest-file}" update="true">
 			<fileset dir="${dir.build}" excludes="**/Test*.class **/*.syx" />
 		</jar>
 	</target>

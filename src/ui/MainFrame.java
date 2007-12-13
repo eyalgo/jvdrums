@@ -34,9 +34,15 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
+import javax.sound.midi.InvalidMidiDataException;
+import javax.swing.AbstractAction;
 import javax.swing.AbstractListModel;
+import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -50,6 +56,16 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
+import javax.swing.filechooser.FileFilter;
+
+import kits.TdKit;
+import managers.TDManager;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+
+import exceptions.VdrumException;
 
 /**
  * 
@@ -57,7 +73,33 @@ import javax.swing.WindowConstants;
  */
 public class MainFrame extends JFrame {
     private static final long serialVersionUID = -7164597771180443878L;
-
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private JButton connectButton;
+    private JMenuItem exitMenuItem;
+    private JMenu fileMenu;
+    private JMenu connectionMenu;
+    private JMenuItem connectionMenuItem;
+    private JPanel inputButtonsPanel;
+    private JButton inputDownlaodButton;
+    private JButton inputLoadButton;
+    private JPanel inputPanel;
+    private JMenuBar jMenuBar1;
+    private JSplitPane jSplitPane1;
+    private JToolBar mainToolBar;
+    private JButton outputButtonUpload;
+    private JPanel outputButtonsPanel;
+    private JButton outputDeleteButton;
+    private JButton outputDownButton;
+    private JPanel outputFunctionButtonsPanel;
+    private JPanel outputPanel;
+    private JButton outputSaveButton;
+    private JButton outputUpButton;
+    private JScrollPane outputScrollPane;
+    private JScrollPane inputScrollPane;
+    private JList outputList;
+    private JList inputList;
+    //  End of variables declaration//GEN-END:variables
+    
     /** Creates new form MainFrame */
     public MainFrame() {
         myInit();
@@ -105,7 +147,6 @@ public class MainFrame extends JFrame {
         exitMenuItem = new JMenuItem();
         connectionMenu = new JMenu();
         connectionMenuItem = new JMenuItem();
-
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("JVDrums");
         setMinimumSize(new Dimension(600, 400));
@@ -130,6 +171,7 @@ public class MainFrame extends JFrame {
         inputPanel.setLayout(new BorderLayout());
 
         inputLoadButton.setText("Load");
+        inputLoadButton.setAction(openFile());
         inputButtonsPanel.add(inputLoadButton);
 
         inputDownlaodButton.setText("Download");
@@ -223,6 +265,52 @@ public class MainFrame extends JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    @SuppressWarnings("serial")
+    public Action openFile() {
+        final JFrame frame = this;
+        Action action = new AbstractAction() {
+            JFileChooser fc = createFileChooser("openFileChooser");
+            public void actionPerformed(ActionEvent e) {
+                int option = fc.showOpenDialog(frame);
+                if (JFileChooser.APPROVE_OPTION == option) {
+                    final File file = fc.getSelectedFile();
+                    try {
+                        fileToList(file);
+                    }
+                    catch (IOException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                    catch (InvalidMidiDataException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                    catch (VdrumException e2) {
+                        // TODO Auto-generated catch block
+                        e2.printStackTrace();
+                    }
+                }
+            }
+        };
+        return action;
+    }
+
+    private void fileToList(final File file) throws IOException, InvalidMidiDataException, VdrumException {
+        byte[] bytes = FileUtils.readFileToByteArray(file);
+        TdKit[] kits = TDManager.bytesToKits(bytes);
+        for (TdKit kit : kits) {
+          System.out.println(kit);  
+        }
+    }
+
+    private JFileChooser createFileChooser(String name) {
+        JFileChooser fc = new JFileChooser();
+//        fc.setDialogTitle(getResourceMap().getString(name + ".dialogTitle"));
+//        String textFilesDesc = getResourceMap().getString("txtFileExtensionDescription");
+        fc.setFileFilter(new TextFileFilter("syx"));
+        return fc;
+    }
+
     private void exitMenuItemActionPerformed(ActionEvent evt) {// GEN-FIRST:event_exitMenuItemActionPerformed
         System.exit(0);
     }// GEN-LAST:event_exitMenuItemActionPerformed
@@ -239,30 +327,33 @@ public class MainFrame extends JFrame {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JButton connectButton;
-    private JMenuItem exitMenuItem;
-    private JMenu fileMenu;
-    private JMenu connectionMenu;
-    private JMenuItem connectionMenuItem;
-    private JPanel inputButtonsPanel;
-    private JButton inputDownlaodButton;
-    private JButton inputLoadButton;
-    private JPanel inputPanel;
-    private JMenuBar jMenuBar1;
-    private JSplitPane jSplitPane1;
-    private JToolBar mainToolBar;
-    private JButton outputButtonUpload;
-    private JPanel outputButtonsPanel;
-    private JButton outputDeleteButton;
-    private JButton outputDownButton;
-    private JPanel outputFunctionButtonsPanel;
-    private JPanel outputPanel;
-    private JButton outputSaveButton;
-    private JButton outputUpButton;
-    private JScrollPane outputScrollPane;
-    private JScrollPane inputScrollPane;
-    private JList outputList;
-    private JList inputList;
-    // End of variables declaration//GEN-END:variables
+    /** This is a substitute for FileNameExtensionFilter, which is
+     * only available on Java SE 6.
+     */
+    private static class TextFileFilter extends FileFilter {
+        private final String description;
+        TextFileFilter(String description) {
+            this.description = description;
+        }
+
+        @Override
+        public boolean accept(File f) {
+            if (f.isDirectory()) {
+                return true;
+            }
+            final String extension = FilenameUtils.getExtension(f.getName());
+            final String nameWithNoExtension = FilenameUtils.removeExtension(f.getName());
+            if (StringUtils.isNotEmpty(nameWithNoExtension)) {
+                if ("syx".equalsIgnoreCase(extension)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public String getDescription() {
+            return description;
+        }
+    }
 }

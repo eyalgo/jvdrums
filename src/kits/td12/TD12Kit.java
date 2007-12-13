@@ -177,8 +177,7 @@ public final class TD12Kit implements TdKit {
         StringBuilder result = new StringBuilder();
         String newLine = System.getProperty("line.separator");
         result.append(newLine);
-        result.append( this.getClass().getSimpleName() );
-        result.append( " Object {" );
+        result.append( this.getClass().getSimpleName() ).append( " {" );
         result.append(newLine);
         result.append(" Name: ").append(this.getName()).append(newLine);
         result.append(" id: ").append(this.getId()).append(newLine);

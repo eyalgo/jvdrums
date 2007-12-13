@@ -44,38 +44,30 @@ import exceptions.VdrumException;
 
 /**
  * @author egolan
- * 
  */
 public final class TDManager {
-    final TdKit[] tdKits;
-
-    public TDManager() {
+    private TDManager() {
         super();
-        this.tdKits = new TdKit[VDrumsUtils.MAX_NUMBER_OF_KITS];
-        for (int i = 0; i < tdKits.length; i++) {
-            tdKits[i] = null;
-        }
     }
-    
+
     /**
-     * For each kit in the input, makes a new one with correct id (the index is the id).
-     * It puts the new kit in the result array.
+     * For each kit in the input, makes a new one with correct id (the index is the id). It
+     * puts the new kit in the result array. Returns cloned (new object in) array.
      * 
-     * @param kits TdKit[]
+     * @param kits
+     *            TdKit[]
      * @return TdKit[]
      * @throws InvalidMidiDataException
-     * @throws VdrumException 
+     * @throws VdrumException
      */
-    public TdKit[] kitsToKits(TdKit[] kits) throws InvalidMidiDataException, VdrumException {
-        final SysexMessage message = kitsToSysexMessage(kits);
-        final TdKit[] returnedKits = sysexMessageToKits(message);
-        
-//        final TdKit[] returnedKits = new TdKit[kits.length];
-//        for (int i = 0; i < kits.length; i++) {
-//            if (kits[i] != null) {
-//                returnedKits[i] = kits[i].setNewId(i + 1);
-//            }
-//        }
+    public static TdKit[] kitsToKits(TdKit[] kits) throws InvalidMidiDataException,
+            VdrumException {
+        final TdKit[] returnedKits = new TdKit[kits.length];
+        for (int i = 0; i < kits.length; i++) {
+            if (kits[i] != null) {
+                returnedKits[i] = kits[i].setNewId(i + 1);
+            }
+        }
         return returnedKits;
     }
 
@@ -84,7 +76,8 @@ public final class TDManager {
      *            TdKit[]
      * @throws InvalidMidiDataException
      */
-    public SysexMessage kitsToSysexMessage(TdKit[] kits) throws InvalidMidiDataException {
+    public static SysexMessage kitsToSysexMessage(TdKit[] kits)
+            throws InvalidMidiDataException {
         byte[] data = null;
         for (int i = 0; i < kits.length; i++) {
             if (kits[i] != null) {
@@ -99,14 +92,24 @@ public final class TDManager {
     }
 
     /**
-     * 
-     * Gets a message in a Sysex format. Parses the bytes in the message into an
-     * array of TdKit (TD-12) Each message of a kit must start with 0xF0 which
-     * is (after masking) 240. The kit's address is 0x72 which is 114 and is
-     * located in the eigth index (starting 0).
-     * 
-     * We ignore the status byte and adress byte of the "inner" parts of the
-     * kits. We ignore by advancing the index (i) almost all the kit's size.
+     * @param kitBytes
+     * @return
+     * @throws InvalidMidiDataException
+     * @throws VdrumException
+     */
+    public static TdKit[] bytesToKits(byte[] kitBytes) throws InvalidMidiDataException,
+            VdrumException {
+        SysexMessage message = new VdrumsSysexMessage();
+        message.setMessage(kitBytes, kitBytes.length);
+        return sysexMessageToKits(message);
+    }
+
+    /**
+     * Gets a message in a Sysex format. Parses the bytes in the message into an array of TdKit
+     * (TD-12) Each message of a kit must start with 0xF0 which is (after masking) 240. The
+     * kit's address is 0x72 which is 114 and is located in the eigth index (starting 0). We
+     * ignore the status byte and adress byte of the "inner" parts of the kits. We ignore by
+     * advancing the index (i) almost all the kit's size.
      * 
      * @param message
      *            SysexMessage
@@ -116,8 +119,8 @@ public final class TDManager {
      * @throws VdrumException
      *             can be bad checksum, not roland kit etc.
      */
-    public TdKit[] sysexMessageToKits(SysexMessage message) throws InvalidMidiDataException,
-            VdrumException {
+    public static TdKit[] sysexMessageToKits(SysexMessage message)
+            throws InvalidMidiDataException, VdrumException {
         final byte[] byteMessage = message.getMessage();
         final Collection<Integer> indexes = new ArrayList<Integer>();
         for (int i = 0; i < byteMessage.length; i++) {
@@ -125,6 +128,11 @@ public final class TDManager {
                 indexes.add(Integer.valueOf(i));
                 i += VDrumsUtils.TD12_KIT_SIZE - 20;
             }
+        }
+        final TdKit[] tdKits;
+        tdKits = new TdKit[VDrumsUtils.MAX_NUMBER_OF_KITS];
+        for (int i = 0; i < tdKits.length; i++) {
+            tdKits[i] = null;
         }
         for (Integer index : indexes) {
             final int finishKitsMessage = index + VDrumsUtils.TD12_KIT_SIZE;

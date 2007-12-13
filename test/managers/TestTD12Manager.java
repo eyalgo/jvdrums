@@ -37,13 +37,11 @@ import javax.sound.midi.SysexMessage;
 
 import kits.TdKit;
 import kits.td12.TD12Kit;
-import managers.TDManager;
 import midi.VdrumsSysexMessage;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import resources.Utils;
@@ -51,81 +49,90 @@ import exceptions.BadChecksumException;
 import exceptions.NotRolandException;
 import exceptions.VdrumException;
 
-@Test(groups = {"manager"}, dependsOnGroups = {"kits", "exception"})
+@Test(groups = { "manager" }, dependsOnGroups = { "kits", "exception" })
 public final class TestTD12Manager {
-    private TDManager td12Manager;
 
-    @BeforeMethod
-    public void setUp() throws IOException, InvalidMidiDataException, URISyntaxException,
-            VdrumException {
-        td12Manager = new TDManager();
+    private byte[] getBytesFromFile(final String fileName) throws IOException,
+            URISyntaxException {
+        final File file = Utils.getTestFile(fileName);
+        byte[] fileBytes = FileUtils.readFileToByteArray(file);
+        return fileBytes;
     }
 
     private SysexMessage getMessageFromFile(final String fileName) throws URISyntaxException,
             IOException, InvalidMidiDataException {
-        final File file = Utils.getTestFile(fileName);
-        byte[] kitBytes = FileUtils.readFileToByteArray(file);
+        byte[] kitBytes = getBytesFromFile(fileName);
         SysexMessage message = new VdrumsSysexMessage();
         message.setMessage(kitBytes, kitBytes.length);
         return message;
     }
-    
-    @Test(dependsOnMethods = {"checkMessageFor50Kits", "checkMessageToKit25" })
-    public void checkChangeId25To32() throws URISyntaxException, IOException, InvalidMidiDataException, VdrumException {
+
+    @Test(dependsOnMethods = { "checkMessageFor50Kits", "checkMessageToKit25" })
+    public void checkChangeId25To32() throws URISyntaxException, IOException,
+            InvalidMidiDataException, VdrumException {
         final SysexMessage message = getMessageFromFile("Bubbles25.syx");
         TdKit kitFromMessage = new TD12Kit(message);
         TdKit[] kits = new TdKit[50];
-        for (int i = 0; i<50;i++) {
+        for (int i = 0; i < 50; i++) {
             kits[i] = null;
         }
         kits[31] = kitFromMessage;
-        
-        SysexMessage messageFromManager = td12Manager.kitsToSysexMessage(kits);
-    
+
+        SysexMessage messageFromManager = TDManager.kitsToSysexMessage(kits);
+
         TdKit newKitFromManager = new TD12Kit(messageFromManager);
         Assert.assertTrue(newKitFromManager.getId() == 32);
         Assert.assertTrue(kitFromMessage.getId() == 25);
     }
-    
+
     @Test(dependsOnMethods = { "checkMessageFor50Kits", "checkMessageToKit25" })
     public void checkKitsToKits() throws URISyntaxException, IOException,
             InvalidMidiDataException, VdrumException {
         final SysexMessage message = getMessageFromFile("myOrigKits.syx");
-        TdKit[] kitsFromManager = td12Manager.sysexMessageToKits(message);
-        
-        Object[] objects = ArrayUtils.addAll(null, kitsFromManager);
+        TdKit[] kitsFromFile = TDManager.sysexMessageToKits(message);
+
+        Object[] objects = ArrayUtils.addAll(null, kitsFromFile);
         TdKit[] changedKits = new TdKit[objects.length];
-        for (int i=0;i<objects.length;i++) {
-            changedKits[i] = (TdKit)objects[i];
+        for (int i = 0; i < objects.length; i++) {
+            changedKits[i] = (TdKit) objects[i];
         }
         TdKit temp5 = changedKits[4];
         changedKits[4] = changedKits[9];
         changedKits[9] = temp5;
-        
-        TdKit[] newFromManager = td12Manager.kitsToKits(changedKits);
+
+        TdKit[] newFromManager = TDManager.kitsToKits(changedKits);
         Assert.assertTrue(newFromManager.length == 50);
-        for (int i=0;i<newFromManager.length;i++) {
+        for (int i = 0; i < newFromManager.length; i++) {
             if (newFromManager[i] == null) {
                 Assert.fail(i + " is null");
             }
         }
-        Assert.assertEquals(kitsFromManager[4].getName(), changedKits[9].getName());
+        Assert.assertEquals(kitsFromFile[4].getName(), newFromManager[9].getName());
     }
-    
+
     @Test(dependsOnMethods = { "checkMessageFor50Kits", "checkMessageToKit25" })
     public void checkOneKitToSysexMessage() throws URISyntaxException, IOException,
             InvalidMidiDataException, VdrumException {
         final SysexMessage message = getMessageFromFile("maple3.syx");
-        TdKit[] kitsFromManager = td12Manager.sysexMessageToKits(message);// dependsOnMethods
+        TdKit[] kitsFromManager = TDManager.sysexMessageToKits(message);
         TdKit maple3Kit = kitsFromManager[2];
         Assert.assertEquals(maple3Kit.getMessage(), message);
+    }
+
+    @Test(dependsOnMethods = { "checkMessageFor50Kits", "checkMessageToKit25" })
+    public void checkOneKitBytesToSysexMessage() throws URISyntaxException, IOException,
+            InvalidMidiDataException, VdrumException {
+        final byte[] bytes = getBytesFromFile("maple3.syx");
+        TdKit[] kitsFromManager = TDManager.bytesToKits(bytes);
+        TdKit maple3Kit = kitsFromManager[2];
+        Assert.assertEquals(maple3Kit.getMessage().getMessage(), bytes);
     }
 
     @Test(dependsOnMethods = { "checkMessageFor50Kits" })
     public void check50KitsToSysexMessage() throws URISyntaxException, IOException,
             InvalidMidiDataException, VdrumException {
         final SysexMessage message = getMessageFromFile("myOrigKits.syx");
-        TdKit[] kitsFromManager = td12Manager.sysexMessageToKits(message);// dependsOnMethods
+        TdKit[] kitsFromManager = TDManager.sysexMessageToKits(message);// dependsOnMethods
         byte[] data = null;
         for (int i = 0; i < kitsFromManager.length; i++) {
             data = ArrayUtils.addAll(data, kitsFromManager[i].getMessage().getMessage());
@@ -133,7 +140,7 @@ public final class TestTD12Manager {
         final SysexMessage result = new VdrumsSysexMessage();
 
         result.setMessage(data, data.length);
-        SysexMessage messageFromManager = td12Manager.kitsToSysexMessage(kitsFromManager);
+        SysexMessage messageFromManager = TDManager.kitsToSysexMessage(kitsFromManager);
         Assert.assertEquals(result, messageFromManager);
     }
 
@@ -141,7 +148,25 @@ public final class TestTD12Manager {
             InvalidMidiDataException, VdrumException {
         final SysexMessage message = getMessageFromFile("Bubbles25.syx");
 
-        TdKit[] kitsFromManager = td12Manager.sysexMessageToKits(message);
+        TdKit[] kitsFromManager = TDManager.sysexMessageToKits(message);
+        for (int i = 0; i < kitsFromManager.length; i++) {
+            if (i != 24) {
+                if (kitsFromManager[i] != null) {
+                    Assert.fail(i + " is not null");
+                }
+            }
+        }
+        final File file25 = Utils.getTestFile("Bubbles25.syx");
+        byte[] kitBytes25 = FileUtils.readFileToByteArray(file25);
+        TdKit kit25 = new TD12Kit(kitBytes25);
+        Assert.assertEquals(kitsFromManager[24], kit25);
+    }
+
+    public void checkBytesToKit25() throws URISyntaxException, IOException,
+            InvalidMidiDataException, VdrumException {
+        final byte[] bytes = getBytesFromFile("Bubbles25.syx");
+
+        TdKit[] kitsFromManager = TDManager.bytesToKits(bytes);
         for (int i = 0; i < kitsFromManager.length; i++) {
             if (i != 24) {
                 if (kitsFromManager[i] != null) {
@@ -158,7 +183,22 @@ public final class TestTD12Manager {
     public void checkMessageFor50Kits() throws URISyntaxException, IOException,
             InvalidMidiDataException, VdrumException {
         final SysexMessage message = getMessageFromFile("myOrigKits.syx");
-        TdKit[] kitsFromManager = td12Manager.sysexMessageToKits(message);
+        TdKit[] kitsFromManager = TDManager.sysexMessageToKits(message);
+        if (kitsFromManager.length != 50) {
+            Assert.fail("Got " + kitsFromManager.length + " instead of 50");
+        }
+        for (int i = 0; i < kitsFromManager.length; i++) {
+            if (kitsFromManager[i].getId() != i + 1) {
+                Assert.fail("kitsFromManager[i].getId() " + kitsFromManager[i].getId() + " i="
+                        + i);
+            }
+        }
+    }
+
+    public void checkBytesFor50Kits() throws URISyntaxException, IOException,
+            InvalidMidiDataException, VdrumException {
+        final byte[] bytes = getBytesFromFile("myOrigKits.syx");
+        TdKit[] kitsFromManager = TDManager.bytesToKits(bytes);
         if (kitsFromManager.length != 50) {
             Assert.fail("Got " + kitsFromManager.length + " instead of 50");
         }
@@ -173,18 +213,36 @@ public final class TestTD12Manager {
     @Test(expectedExceptions = InvalidMidiDataException.class)
     public void checkMessageBadStat() throws URISyntaxException, IOException,
             InvalidMidiDataException, VdrumException {
-        td12Manager.sysexMessageToKits(getMessageFromFile("kitsBadStat.syx"));
+        TDManager.sysexMessageToKits(getMessageFromFile("kitsBadStat.syx"));
+    }
+
+    @Test(expectedExceptions = InvalidMidiDataException.class)
+    public void checkBytesBadStat() throws URISyntaxException, IOException,
+            InvalidMidiDataException, VdrumException {
+        TDManager.bytesToKits(getBytesFromFile("kitsBadStat.syx"));
     }
 
     @Test(expectedExceptions = NotRolandException.class)
     public void checkMessageNotRoland() throws URISyntaxException, IOException,
             InvalidMidiDataException, VdrumException {
-        td12Manager.sysexMessageToKits(getMessageFromFile("maple3NotRoland.syx"));
+        TDManager.sysexMessageToKits(getMessageFromFile("maple3NotRoland.syx"));
+    }
+
+    @Test(expectedExceptions = NotRolandException.class)
+    public void checkBytesNotRoland() throws URISyntaxException, IOException,
+            InvalidMidiDataException, VdrumException {
+        TDManager.bytesToKits(getBytesFromFile("maple3NotRoland.syx"));
     }
 
     @Test(expectedExceptions = BadChecksumException.class)
     public void checkMessageBadChecksum() throws URISyntaxException, IOException,
             InvalidMidiDataException, VdrumException {
-        td12Manager.sysexMessageToKits(getMessageFromFile("maple3BadChecksum.syx"));
+        TDManager.sysexMessageToKits(getMessageFromFile("maple3BadChecksum.syx"));
+    }
+
+    @Test(expectedExceptions = BadChecksumException.class)
+    public void checkBytesBadChecksum() throws URISyntaxException, IOException,
+            InvalidMidiDataException, VdrumException {
+        TDManager.bytesToKits(getBytesFromFile("maple3BadChecksum.syx"));
     }
 }
