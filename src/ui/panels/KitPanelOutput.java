@@ -90,13 +90,11 @@ public final class KitPanelOutput extends KitsPanel {
                         getParentFrame().problem(e1.getMessage());
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
-                        System.exit(-1);
                     }
                     catch (IOException e1) {
                         getParentFrame().problem(e1.getMessage());
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
-                        System.exit(-2);
                     }
                 }
             }

@@ -1,0 +1,1 @@
+java -classpath .;./lib/commons-io-1.3.2.jar;./lib/commons-lang-2.3.jar ui.MainFrame

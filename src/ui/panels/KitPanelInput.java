@@ -70,7 +70,6 @@ public final class KitPanelInput extends KitsPanel {
 
             public void actionPerformed(ActionEvent e) {
                 int option = fc.showOpenDialog(getParentFrame());
-
                 if (JFileChooser.APPROVE_OPTION == option) {
                     final File file = fc.getSelectedFile();
                     try {
@@ -84,13 +83,14 @@ public final class KitPanelInput extends KitsPanel {
                         getParentFrame().problem(e1.getMessage());
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
-                        System.exit(-3);
                     }
                     catch (VdrumException e2) {
                         getParentFrame().problem(e2.getMessage());
                         // TODO Auto-generated catch block
                         e2.printStackTrace();
-                        System.exit(-4);
+                    }
+                    catch (Exception e9) {
+                        getParentFrame().problem(e9.getMessage());
                     }
                 }
             }
@@ -109,6 +109,6 @@ public final class KitPanelInput extends KitsPanel {
 
     @Override
     void kitPressed(int index) {
-        getParentFrame().leftKitPressed((TdKit)getKitListModel().getElementAt(index));
+        getParentFrame().leftKitPressed((TdKit) getKitListModel().getElementAt(index));
     }
 }

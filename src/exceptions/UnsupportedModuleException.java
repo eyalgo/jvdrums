@@ -35,5 +35,6 @@ package exceptions;
 public class UnsupportedModuleException extends VdrumException {
     private static final long serialVersionUID = 6739097683059301674L;
     public UnsupportedModuleException() {
+        super("Unsupported Module");
     }
 }

@@ -37,7 +37,7 @@ public final class NotRolandException extends VdrumException {
     private final int actualManufaturerId;
 
     public NotRolandException(final int actualManufaturerId) {
-        super();
+        super("Actual Manufacturer ID: " + actualManufaturerId);
         this.actualManufaturerId = actualManufaturerId;
     }
 

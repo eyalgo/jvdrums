@@ -36,7 +36,7 @@ public class BadMessageLengthException extends VdrumException {
     private static final long serialVersionUID = 4744592781967971683L;
     private final int recievedMessageLength;
     public BadMessageLengthException(final int recievedMessageLength) {
-        super();
+        super("Bad Message Length: " + recievedMessageLength);
         this.recievedMessageLength = recievedMessageLength;
     }
     

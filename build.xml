@@ -73,6 +73,7 @@
 		<copy todir="${build-lib-path}">
 			<fileset dir="${lib-path}" />
 		</copy>
+		<copy file="${dir.src}/run.bat" todir="${dir.build}"/>
 	</target>
 
 	<target name="compile" depends="prepare">
@@ -94,13 +95,13 @@
 
 	<target name="jar-test" depends="test" description="jar application">
 		<jar destfile="${dist-jar-file}" manifest="${manifest-file}" update="true">
-			<fileset dir="${dir.build}" excludes="**/Test*.class **/*.syx" />
+			<fileset dir="${dir.build}" excludes="**/Test*.class **/*.syx **/*.bat" />
 		</jar>
 	</target>
 
 	<target name="jar" depends="compile" description="jar application">
 		<jar destfile="${dist-jar-file}" manifest="${manifest-file}" update="true">
-			<fileset dir="${dir.build}" excludes="**/Test*.class **/*.syx" />
+			<fileset dir="${dir.build}" excludes="**/Test*.class **/*.syx **/*.bat" />
 		</jar>
 	</target>
 
