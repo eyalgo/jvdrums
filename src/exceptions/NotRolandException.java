@@ -44,4 +44,9 @@ public final class NotRolandException extends VdrumException {
     public final int getActualManufaturerId() {
         return actualManufaturerId;
     }
+
+    @Override
+    public String getProblem() {
+        return "Not a Roland product";
+    }
 }

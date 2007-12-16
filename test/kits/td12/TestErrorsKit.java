@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import javax.sound.midi.InvalidMidiDataException;
 
 import org.apache.commons.io.FileUtils;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import resources.Utils;
@@ -33,6 +34,19 @@ public class TestErrorsKit {
         new TD12Kit(kitBytes);
     }
 
+    public void checkBadChecksumMessage() throws URISyntaxException, IOException,
+            InvalidMidiDataException, VdrumException {
+        final File fileBadStat = Utils.getTestFile("maple3BadChecksum.syx");
+        byte[] kitBytes = FileUtils.readFileToByteArray(fileBadStat);
+        try {
+            new TD12Kit(kitBytes);
+            Assert.fail();
+        }
+        catch (BadChecksumException e) {
+            Assert.assertEquals("Bad checksum in message", e.getProblem());
+        }
+    }
+
     @Test(expectedExceptions = NotRolandException.class)
     public void checkNotRoland() throws URISyntaxException, IOException,
             InvalidMidiDataException, VdrumException {
@@ -41,11 +55,37 @@ public class TestErrorsKit {
         new TD12Kit(kitBytes);
     }
 
+    public void checkNotRolandMessage() throws URISyntaxException, IOException,
+            InvalidMidiDataException, VdrumException {
+        final File fileBadStat = Utils.getTestFile("maple3NotRoland.syx");
+        byte[] kitBytes = FileUtils.readFileToByteArray(fileBadStat);
+        try {
+            new TD12Kit(kitBytes);
+            Assert.fail();
+        }
+        catch (NotRolandException e) {
+            Assert.assertEquals("Not a Roland product", e.getProblem());
+        }
+    }
+
     @Test(expectedExceptions = BadMessageLengthException.class)
     public void checkBadLength() throws URISyntaxException, IOException,
             InvalidMidiDataException, VdrumException {
         final File fileBadStat = Utils.getTestFile("myOrigKits.syx");
         byte[] kitBytes = FileUtils.readFileToByteArray(fileBadStat);
         new TD12Kit(kitBytes);
+    }
+
+    public void checkBadLengthMessage() throws URISyntaxException, IOException,
+            InvalidMidiDataException, VdrumException {
+        final File fileBadStat = Utils.getTestFile("myOrigKits.syx");
+        byte[] kitBytes = FileUtils.readFileToByteArray(fileBadStat);
+        try {
+            new TD12Kit(kitBytes);
+            Assert.fail();
+        }
+        catch (BadMessageLengthException e) {
+            Assert.assertEquals("Bad message length", e.getProblem());
+        }
     }
 }

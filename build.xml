@@ -28,7 +28,7 @@
  */
  -->
 
-<project name="JVDrums" default="jar-test">
+<project name="JVDrums" default="jar">
 	<property name="dir.src" value="src" />
 	<property name="dir.build" value="build" />
 	<property name="dir.dist" value="dist" />

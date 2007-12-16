@@ -46,6 +46,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import ui.MainFrame;
+import ui.components.OutputKitsList;
 
 /**
  * @author egolan
@@ -57,44 +58,57 @@ public final class KitPanelOutput extends KitsPanel {
     private JButton outputDeleteButton;
     private JButton outputUpButton;
     private JButton outputDownButton;
+    private JButton clearButton;
 
     public KitPanelOutput(MainFrame parentFrame) {
-        super(parentFrame);
+        super(parentFrame, new OutputKitsList());
         outputSaveButton = new JButton("Save");
         outputButtonUpload = new JButton("Upload");
         outputDeleteButton = new JButton("Delete");
         outputUpButton = new JButton("Up");
         outputDownButton = new JButton("Down");
+        clearButton = new JButton("Clear");
         addToButtonBar(outputSaveButton);
         addToButtonBar(outputButtonUpload);
         addToButtonBar(outputDeleteButton);
+        addToButtonBar(clearButton);
         addToButtonBar(outputUpButton);
         addToButtonBar(outputDownButton);
         outputSaveButton.addActionListener(saveToFile());
+        clearButton.addActionListener(clearList());
     }
 
     @SuppressWarnings("serial")
     public Action saveToFile() {
         Action action = new AbstractAction() {
-            JFileChooser fc = createFileChooser("saveFileChooser");
-
             public void actionPerformed(ActionEvent e) {
+                final TdKit[] kitsInList = getKitList().getKits();
+                if (((OutputKitsList)getKitList()).numberOfKits() < 1) {
+                    getParentFrame().showErrorDialog(
+                            "There aren't any kits in the list.", "No kits problem");
+                    return;
+                }
+                JFileChooser fc = createFileChooser("saveFileChooser");
                 int option = fc.showSaveDialog(getParentFrame());
 
                 if (JFileChooser.APPROVE_OPTION == option) {
                     final File file = fc.getSelectedFile();
                     try {
-                        saveKits(file);
+                        saveKits(file, kitsInList);
                     }
                     catch (InvalidMidiDataException e1) {
-                        getParentFrame().problem(e1.getMessage());
-                        // TODO Auto-generated catch block
+                        getParentFrame().showErrorDialog(e1.getMessage(), e1.getMessage());
                         e1.printStackTrace();
                     }
                     catch (IOException e1) {
-                        getParentFrame().problem(e1.getMessage());
-                        // TODO Auto-generated catch block
+                        getParentFrame().showErrorDialog(e1.getMessage(), e1.getMessage());
                         e1.printStackTrace();
+                    }
+                    catch (Exception e9) {
+                        getParentFrame().showErrorDialog(e9.getMessage(), e9.getMessage());
+                    }
+                    catch (Error er) {
+                        getParentFrame().showErrorDialog("Fatal Error", er.getMessage());
                     }
                 }
             }
@@ -102,27 +116,13 @@ public final class KitPanelOutput extends KitsPanel {
         return action;
     }
 
-    private void saveKits(File file) throws InvalidMidiDataException, IOException {
-        if (getKitListModel().getSize() < 1) {
-            getParentFrame().problem("no kits");
-            return;
-        }
-        Object[] objectKitsInList = getKitListModel().toArray();
-        TdKit[] kitsInList = new TdKit[objectKitsInList.length];
-        for (int i=0;i<objectKitsInList.length;i++) {
-            kitsInList[i] = (TdKit)objectKitsInList[i];
-        }
+    private void saveKits(File file, TdKit[] kitsInList) throws InvalidMidiDataException,
+            IOException {
         if (!FilenameUtils.isExtension(file.getName(), "syx")) {
             String name = file.getAbsolutePath() + ".syx";
             file = new File(name);
         }
-        SysexMessage messageFromManager = TDManager.kitsToSysexMessage(kitsInList);
+        final SysexMessage messageFromManager = TDManager.kitsToSysexMessage(kitsInList);
         FileUtils.writeByteArrayToFile(file, messageFromManager.getMessage());
-    }
-
-    @Override
-    void kitPressed(int index) {
-    // TODO Auto-generated method stub
-
     }
 }

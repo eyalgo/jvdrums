@@ -61,4 +61,6 @@ public abstract class VdrumException extends Exception {
     public VdrumException(String message, Throwable cause) {
         super(message, cause);
     }
+    
+    public abstract String getProblem();
 }

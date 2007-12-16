@@ -26,27 +26,39 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package exceptions;
+package ui.components;
+
+import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.JList;
+
+import kits.TdKit;
 
 /**
  * @author egolan
- *
  */
-public class BadMessageLengthException extends VdrumException {
-    private static final long serialVersionUID = 4744592781967971683L;
-    private final int recievedMessageLength;
-    public BadMessageLengthException(final int recievedMessageLength) {
-        super("Bad Message Length: " + recievedMessageLength);
-        this.recievedMessageLength = recievedMessageLength;
-    }
-    
-    public int getRecievedMessageLength() {
-        return recievedMessageLength;
+public abstract class KitsList extends JList {
+    public KitsList() {
+        addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                JList list = (JList) evt.getSource();
+                if (evt.getClickCount() == 2) { // Double-click
+                    // Get item index
+                    int index = list.locationToIndex(evt.getPoint());
+                    kitPressed(index);
+                }
+            }
+        });
+        setSelectionForeground(Color.BLACK);
+        // kitList.setSelectionBackground(Color.BLUE);
+        setSelectionMode(DefaultListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     }
 
-    @Override
-    public String getProblem() {
-        return "Bad message length";
-    }
-    
+    public abstract TdKit[] getKits();
+    public abstract void clear();
+    public abstract void addKit(TdKit kit);
+    abstract void kitPressed(int index);
 }

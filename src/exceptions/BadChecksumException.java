@@ -50,4 +50,9 @@ public final class BadChecksumException extends VdrumException {
     public int getExpectedChecksum() {
         return expectedChecksum;
     }
+
+    @Override
+    public String getProblem() {
+        return "Bad checksum in message";
+    }
 }

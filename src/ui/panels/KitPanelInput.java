@@ -44,6 +44,7 @@ import managers.TDManager;
 import org.apache.commons.io.FileUtils;
 
 import ui.MainFrame;
+import ui.components.InputKitsList;
 import exceptions.VdrumException;
 
 /**
@@ -53,20 +54,24 @@ public final class KitPanelInput extends KitsPanel {
     private static final long serialVersionUID = 3267475173137048327L;
     private JButton inputDownlaodButton;
     private JButton inputLoadButton;
+    private JButton clearButton;
 
-    public KitPanelInput(MainFrame parentFrame) {
-        super(parentFrame);
+    public KitPanelInput(MainFrame parentFrame, KitPanelOutput outputPanel) {
+        super(parentFrame, new InputKitsList(outputPanel.getKitList()));
         inputLoadButton = new JButton("Load");
         inputDownlaodButton = new JButton("Download");
+        clearButton = new JButton("Clear");
         addToButtonBar(inputLoadButton);
         addToButtonBar(inputDownlaodButton);
+        addToButtonBar(clearButton);
         inputLoadButton.addActionListener(openFile());
+        clearButton.addActionListener(clearList());
     }
 
     @SuppressWarnings("serial")
     public Action openFile() {
-        Action action = new AbstractAction() {
-            JFileChooser fc = createFileChooser("openFileChooser");
+        final Action action = new AbstractAction() {
+            final JFileChooser fc = createFileChooser("openFileChooser");
 
             public void actionPerformed(ActionEvent e) {
                 int option = fc.showOpenDialog(getParentFrame());
@@ -76,21 +81,22 @@ public final class KitPanelInput extends KitsPanel {
                         fileToList(file);
                     }
                     catch (IOException e1) {
-                        getParentFrame().problem(e1.getMessage());
+                        getParentFrame().showErrorDialog(e1.getMessage(), e1.getMessage());
                         e1.printStackTrace();
                     }
                     catch (InvalidMidiDataException e1) {
-                        getParentFrame().problem(e1.getMessage());
-                        // TODO Auto-generated catch block
+                        getParentFrame().showErrorDialog(e1.getMessage(), e1.getMessage());
                         e1.printStackTrace();
                     }
                     catch (VdrumException e2) {
-                        getParentFrame().problem(e2.getMessage());
-                        // TODO Auto-generated catch block
+                        getParentFrame().showErrorDialog(e2);
                         e2.printStackTrace();
                     }
                     catch (Exception e9) {
-                        getParentFrame().problem(e9.getMessage());
+                        getParentFrame().showErrorDialog(e9.getMessage(), e9.getMessage());
+                    }
+                    catch (Error er) {
+                        getParentFrame().showErrorDialog("Fatal Error", er.getMessage());
                     }
                 }
             }
@@ -103,12 +109,9 @@ public final class KitPanelInput extends KitsPanel {
         byte[] bytes = FileUtils.readFileToByteArray(file);
         TdKit[] kits = TDManager.bytesToKits(bytes);
         for (TdKit kit : kits) {
-            addKit(kit);
+            if (kit != null) {
+                getKitList().addKit(kit);    
+            }
         }
-    }
-
-    @Override
-    void kitPressed(int index) {
-        getParentFrame().leftKitPressed((TdKit) getKitListModel().getElementAt(index));
     }
 }

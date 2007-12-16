@@ -39,18 +39,18 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-import kits.TdKit;
 import ui.panels.KitPanelInput;
 import ui.panels.KitPanelOutput;
 import ui.panels.KitsPanel;
 import ui.utils.ExitListener;
 import ui.utils.WindowUtilities;
+import exceptions.VdrumException;
 
 /**
  * @author Eyal Golan
@@ -60,14 +60,15 @@ public final class MainFrame extends JFrame {
     private JButton connectButton;
     private JMenuItem exitMenuItem;
     private JMenu fileMenu;
+    private JMenu helpMenu;
     private JMenu connectionMenu;
     private JMenuItem connectionMenuItem;
+    private JMenuItem aboutMenuItem;
     private JMenuBar jMenuBar1;
     private JSplitPane jSplitPane1;
     private JToolBar mainToolBar;
     private KitsPanel inputPanel;
     private KitsPanel outputPanel;
-    private JTextArea text;
 
     /** Creates new form MainFrame */
     public MainFrame() {
@@ -80,13 +81,15 @@ public final class MainFrame extends JFrame {
         mainToolBar = new JToolBar();
         connectButton = new JButton("Connect");
         jSplitPane1 = new JSplitPane();
-        inputPanel = new KitPanelInput(this);
-        outputPanel = new KitPanelOutput(this);
+        inputPanel = new KitPanelInput(this,
+                (KitPanelOutput) (outputPanel = new KitPanelOutput(this)));
         jMenuBar1 = new JMenuBar();
         fileMenu = new JMenu("File");
+        helpMenu = new JMenu("Help");
         exitMenuItem = new JMenuItem("Exit");
         connectionMenu = new JMenu("Connection");
         connectionMenuItem = new JMenuItem("Connection");
+        aboutMenuItem = new JMenuItem("About...");
 
         mainToolBar.setFloatable(false);
         mainToolBar.setRollover(true);
@@ -116,26 +119,27 @@ public final class MainFrame extends JFrame {
         });
         fileMenu.add(exitMenuItem);
         connectionMenu.add(connectionMenuItem);
+        helpMenu.add(aboutMenuItem);
         jMenuBar1.add(fileMenu);
         jMenuBar1.add(connectionMenu);
+        jMenuBar1.add(helpMenu);
         setJMenuBar(jMenuBar1);
-        
-        text = new JTextArea();
-        text.setAutoscrolls(true);
-        text.setLineWrap(true);
-        text.setRows(10);
-        getContentPane().add(text, BorderLayout.SOUTH);
+
         pack();
     }
-    
-    public void problem (String o) {
-        text.append(o);
-        text.append(System.getProperty("line.separator"));
+
+    public void showErrorDialog(VdrumException vdrumException) {
+        JOptionPane.showMessageDialog(this, vdrumException.getMessage(), vdrumException
+                .getProblem(), JOptionPane.ERROR_MESSAGE);
     }
 
-    private void exitMenuItemActionPerformed(ActionEvent evt) {// GEN-FIRST:event_exitMenuItemActionPerformed
+    public void showErrorDialog(String message, String title) {
+        JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void exitMenuItemActionPerformed(ActionEvent evt) {
         System.exit(0);
-    }// GEN-LAST:event_exitMenuItemActionPerformed
+    }
 
     /**
      * @param args
@@ -152,9 +156,5 @@ public final class MainFrame extends JFrame {
     private static void createAndShowGui() {
         MainFrame mainFrame = new MainFrame();
         mainFrame.setVisible(true);
-    }
-    
-    public void leftKitPressed(TdKit kit) {
-        outputPanel.addKit(kit);
     }
 }

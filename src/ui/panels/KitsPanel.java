@@ -29,56 +29,51 @@ package ui.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
 import java.io.File;
 
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileFilter;
 
-import kits.TdKit;
 import ui.MainFrame;
+import ui.components.KitsList;
 
 public abstract class KitsPanel extends JPanel {
     private static final long serialVersionUID = -5323945831812498619L;
     private JScrollPane scrollPane;
-    private JList kitList;
-    private DefaultListModel kitListModel;
+    private KitsList kitList;
     private JPanel buttonsPanel;
     private final MainFrame parentFrame;
 
-    public KitsPanel(MainFrame parentFrame) {
+    public KitsPanel(MainFrame parentFrame, KitsList kistList) {
         this.parentFrame = parentFrame;
         setLayout(new BorderLayout());
-        kitListModel = new DefaultListModel();
-        kitList = new JList(kitListModel);
-        kitList.setCellRenderer(new TdKitListRenderer());
+        kitList = kistList;
         scrollPane = new JScrollPane();
         scrollPane.setViewportView(kitList);
         this.add(scrollPane, BorderLayout.CENTER);
         buttonsPanel = new JPanel();
         this.add(buttonsPanel, BorderLayout.SOUTH);
-        kitList.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                JList list = (JList) evt.getSource();
-                if (evt.getClickCount() == 2) { // Double-click
-                    // Get item index
-                    int index = list.locationToIndex(evt.getPoint());
-                    kitPressed(index);
-                }
-            }
-        });
+//        kitList.addMouseListener(new MouseAdapter() {
+//            public void mouseClicked(MouseEvent evt) {
+//                JList list = (JList) evt.getSource();
+//                if (evt.getClickCount() == 2) { // Double-click
+//                    // Get item index
+//                    int index = list.locationToIndex(evt.getPoint());
+//                    kitPressed(index);
+//                }
+//            }
+//        });
+//        kitList.setSelectionForeground(Color.BLACK);
+////        kitList.setSelectionBackground(Color.BLUE);
+//        kitList.setSelectionMode(DefaultListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     }
-    
-    abstract void kitPressed(int index);
 
-    protected JFileChooser createFileChooser(String name) {
+    final protected JFileChooser createFileChooser(String name) {
         JFileChooser fc = new JFileChooser();
         // fc.setDialogTitle(getResourceMap().getString(name + ".dialogTitle"));
         // String textFilesDesc = getResourceMap().getString("txtFileExtensionDescription");
@@ -88,43 +83,47 @@ public abstract class KitsPanel extends JPanel {
         // fc.putClientProperty("FileChooser.useShellFolder", Boolean.FALSE);
         return fc;
     }
+    
+    final KitsList getKitList() {
+        return kitList;
+    }
 
-    MainFrame getParentFrame() {
+    final MainFrame getParentFrame() {
         return this.parentFrame;
     }
 
-    void addToButtonBar(Component component) {
+    final void addToButtonBar(Component component) {
         buttonsPanel.add(component);
     }
 
-    public void addKit(Integer index, TdKit kit) {
-        kitListModel.add(index, kit);
-    }
-
-    public void addKit(TdKit kit) {
-        kitListModel.addElement(kit);
-    }
+    
+//    protected final TdKit getKitAt(int index) {
+//        return (TdKit)kitListModel.elementAt(index);
+//    }
+//    
+//    protected final int numberOfKits() {
+//        return kitListModel.getSize();
+//    }
+    
+//    protected final TdKit[] getKits() {
+//        Object[] objectKitsInList = kitListModel.toArray();
+//        TdKit[] kitsInList = new TdKit[objectKitsInList.length];
+//        for (int i = 0; i < objectKitsInList.length; i++) {
+//            kitsInList[i] = (TdKit) objectKitsInList[i];
+//        }
+//        return kitsInList;
+//    }
 
     @SuppressWarnings("serial")
-    private static class TdKitListRenderer extends DefaultListCellRenderer {
-        public Component getListCellRendererComponent(JList list, Object value, int index,
-                boolean isSelected, boolean hasFocus) {
-            JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index,
-                    isSelected, hasFocus);
-            if (value instanceof TdKit) {
-                TdKit kit = (TdKit) value;
-                label.setText(kit.getId() + " " + kit.getName());
-            } else {
-                // Clear old icon; needed in 1st release of JDK 1.2
-                label.setText("");
+    protected Action clearList() {
+        final Action action = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                getKitList().clear();
             }
-            return (label);
-        }
+        };
+       return action; 
     }
-    
-    protected DefaultListModel getKitListModel(){
-        return kitListModel;
-    }
+
 
     /**
      * This is a substitute for FileNameExtensionFilter, which is only available on Java SE 6.

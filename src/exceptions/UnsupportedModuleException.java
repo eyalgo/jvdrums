@@ -37,4 +37,8 @@ public class UnsupportedModuleException extends VdrumException {
     public UnsupportedModuleException() {
         super("Unsupported Module");
     }
+    @Override
+    public String getProblem() {
+        return "Unsupported Module";
+    }
 }
