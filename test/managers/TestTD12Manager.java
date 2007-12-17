@@ -54,7 +54,7 @@ public final class TestTD12Manager {
 
     private byte[] getBytesFromFile(final String fileName) throws IOException,
             URISyntaxException {
-        final File file = Utils.getTestFile(fileName);
+        final File file = Utils.getFile(fileName);
         byte[] fileBytes = FileUtils.readFileToByteArray(file);
         return fileBytes;
     }
@@ -156,7 +156,7 @@ public final class TestTD12Manager {
                 }
             }
         }
-        final File file25 = Utils.getTestFile("Bubbles25.syx");
+        final File file25 = Utils.getFile("Bubbles25.syx");
         byte[] kitBytes25 = FileUtils.readFileToByteArray(file25);
         TdKit kit25 = new TD12Kit(kitBytes25);
         Assert.assertEquals(kitsFromManager[24], kit25);
@@ -174,7 +174,7 @@ public final class TestTD12Manager {
                 }
             }
         }
-        final File file25 = Utils.getTestFile("Bubbles25.syx");
+        final File file25 = Utils.getFile("Bubbles25.syx");
         byte[] kitBytes25 = FileUtils.readFileToByteArray(file25);
         TdKit kit25 = new TD12Kit(kitBytes25);
         Assert.assertEquals(kitsFromManager[24], kit25);

@@ -28,16 +28,24 @@
 
 package ui.panels;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import kits.TdKit;
 import managers.TDManager;
@@ -46,46 +54,63 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import ui.MainFrame;
-import ui.components.OutputKitsList;
+import ui.lists.OutputKitsList;
+import ui.lists.OutputKitsList.Direction;
+import utils.VDrumsUtils;
 
 /**
  * @author egolan
  */
-public final class KitPanelOutput extends KitsPanel {
+public final class KitPanelOutput extends KitsPanel implements ListSelectionListener {
     private static final long serialVersionUID = -5217989811338648085L;
-    private JButton outputSaveButton;
+    private JButton saveButton;
     private JButton outputButtonUpload;
     private JButton outputDeleteButton;
-    private JButton outputUpButton;
-    private JButton outputDownButton;
+    private JButton moveUpButton;
+    private JButton moveDownButton;
     private JButton clearButton;
+    
 
     public KitPanelOutput(MainFrame parentFrame) {
         super(parentFrame, new OutputKitsList());
-        outputSaveButton = new JButton("Save");
+        getKitList().addListSelectionListener(this);
+        saveButton = new JButton("Save");
+        saveButton.setToolTipText("Save to file");
         outputButtonUpload = new JButton("Upload");
         outputDeleteButton = new JButton("Delete");
-        outputUpButton = new JButton("Up");
-        outputDownButton = new JButton("Down");
+        outputDeleteButton.setToolTipText("Remove from list");
+
+        // moveUpButton.setToolTipText("Move up");
+        moveDownButton = new JButton("Down");
+        // moveDownButton.setToolTipText("Move down");
         clearButton = new JButton("Clear");
-        addToButtonBar(outputSaveButton);
+        clearButton.setToolTipText("Clear list");
+        addToButtonBar(saveButton);
         addToButtonBar(outputButtonUpload);
         addToButtonBar(outputDeleteButton);
         addToButtonBar(clearButton);
-        addToButtonBar(outputUpButton);
-        addToButtonBar(outputDownButton);
-        outputSaveButton.addActionListener(saveToFile());
+
+        addToButtonBar(moveDownButton);
+
+        moveDownButton.setEnabled(false);
+        // moveUpButton.addActionListener(move(Direction.UP, "Move Up", "up.ico"));
+        // moveUpButton.setAction(move(Direction.UP, "Move Up", "up.ico"));
+        moveUpButton = new JButton(move(Direction.UP, "Move Up", "up.ico"));
+        addToButtonBar(moveUpButton);
+        moveUpButton.setEnabled(false);
+        moveDownButton.addActionListener(move(Direction.DOWN, "Move Down", "down.ico"));
+        saveButton.addActionListener(saveToFile());
         clearButton.addActionListener(clearList());
     }
 
     @SuppressWarnings("serial")
-    public Action saveToFile() {
+    private Action saveToFile() {
         Action action = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 final TdKit[] kitsInList = getKitList().getKits();
-                if (((OutputKitsList)getKitList()).numberOfKits() < 1) {
-                    getParentFrame().showErrorDialog(
-                            "There aren't any kits in the list.", "No kits problem");
+                if (((OutputKitsList) getKitList()).numberOfKits() < 1) {
+                    getParentFrame().showErrorDialog("There aren't any kits in the list.",
+                            "No kits problem");
                     return;
                 }
                 JFileChooser fc = createFileChooser("saveFileChooser");
@@ -112,17 +137,64 @@ public final class KitPanelOutput extends KitsPanel {
                     }
                 }
             }
+
+            private void saveKits(File file, TdKit[] kitsInList)
+                    throws InvalidMidiDataException, IOException {
+                if (!FilenameUtils.isExtension(file.getName(), "syx")) {
+                    String name = file.getAbsolutePath() + ".syx";
+                    file = new File(name);
+                }
+                final SysexMessage messageFromManager = TDManager
+                        .kitsToSysexMessage(kitsInList);
+                FileUtils.writeByteArrayToFile(file, messageFromManager.getMessage());
+            }
         };
         return action;
     }
 
-    private void saveKits(File file, TdKit[] kitsInList) throws InvalidMidiDataException,
-            IOException {
-        if (!FilenameUtils.isExtension(file.getName(), "syx")) {
-            String name = file.getAbsolutePath() + ".syx";
-            file = new File(name);
+    @SuppressWarnings("serial")
+    private Action move(final Direction direction, final String label,
+            final String iconFileName) {
+        Icon icon = createIcon(iconFileName);
+        Action action = new AbstractAction(label, icon) {
+            public void actionPerformed(ActionEvent e) {
+                ((OutputKitsList) getKitList()).moveSelection(direction);
+            }
+        };
+        return action;
+    }
+
+    public void valueChanged(ListSelectionEvent e) {
+        int selectedIndex = ((OutputKitsList) e.getSource()).getSelectedIndex();
+        TdKit selectedKit = (TdKit) ((OutputKitsList) e.getSource()).getSelectedValue();
+        moveDownButton.setEnabled(selectedKit != null && selectedIndex != 0);
+        moveUpButton.setEnabled(selectedKit != null
+                && selectedIndex != VDrumsUtils.MAX_NUMBER_OF_KITS - 1);
+    }
+
+    /**
+     * Create an image for the given URL.
+     * 
+     * @param url
+     *            url to create image from
+     * @return created image
+     */
+    private Icon createIcon(String fileName) {
+        URL url = Thread.currentThread().getContextClassLoader()
+        .getResource("ui" + File.separator + "icons" + File.separator+ fileName);
+        Image image = Toolkit.getDefaultToolkit().createImage(url);
+        
+        
+        
+//        Image img = Toolkit.getDefaultToolkit().getImage(getClass().getResource(url));
+//        Image img = Toolkit.getDefaultToolkit().getImage(getClass().getResource("ui/icons/"+url));
+        int width = image.getWidth(null);
+        if (width > 0) {
+            Icon icon = new ImageIcon(image);
+            return icon;
         }
-        final SysexMessage messageFromManager = TDManager.kitsToSysexMessage(kitsInList);
-        FileUtils.writeByteArrayToFile(file, messageFromManager.getMessage());
+//        Image res = Toolkit.getDefaultToolkit().createImage(
+//                getClass().getResource(url));
+        return null;
     }
 }

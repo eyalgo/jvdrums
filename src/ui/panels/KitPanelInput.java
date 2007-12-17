@@ -44,7 +44,7 @@ import managers.TDManager;
 import org.apache.commons.io.FileUtils;
 
 import ui.MainFrame;
-import ui.components.InputKitsList;
+import ui.lists.InputKitsList;
 import exceptions.VdrumException;
 
 /**

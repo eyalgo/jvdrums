@@ -40,7 +40,7 @@ import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileFilter;
 
 import ui.MainFrame;
-import ui.components.KitsList;
+import ui.lists.KitsList;
 
 public abstract class KitsPanel extends JPanel {
     private static final long serialVersionUID = -5323945831812498619L;

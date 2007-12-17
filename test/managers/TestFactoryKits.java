@@ -53,7 +53,7 @@ import exceptions.VdrumException;
 @Test(groups = {"manager"})
 public final class TestFactoryKits {
     private byte[] getFileBytes(final String fileName) throws URISyntaxException, IOException {
-        final File file = Utils.getTestFile(fileName);
+        final File file = Utils.getFile(fileName);
         byte[] fileBytes = FileUtils.readFileToByteArray(file);
         return fileBytes;
     }

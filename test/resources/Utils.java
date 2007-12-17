@@ -39,7 +39,7 @@ public final class Utils {
     private Utils() {
         // No instance for this class
     }
-    public static File getTestFile(final String name) throws URISyntaxException {
+    public static File getFile(final String name) throws URISyntaxException {
         final File testFile = new File(Thread.currentThread().getContextClassLoader()
                 .getResource("resources" + File.separator + name).toURI());
         return testFile;

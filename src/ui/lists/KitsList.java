@@ -26,13 +26,12 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package ui.components;
+package ui.lists;
 
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.DefaultListSelectionModel;
 import javax.swing.JList;
 
 import kits.TdKit;
@@ -54,7 +53,7 @@ public abstract class KitsList extends JList {
         });
         setSelectionForeground(Color.BLACK);
         // kitList.setSelectionBackground(Color.BLUE);
-        setSelectionMode(DefaultListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+//        setSelectionMode(DefaultListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     }
 
     public abstract TdKit[] getKits();

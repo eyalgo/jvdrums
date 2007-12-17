@@ -26,12 +26,13 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package ui.components;
+package ui.lists;
 
 import java.awt.Component;
 
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
@@ -42,6 +43,10 @@ import utils.VDrumsUtils;
  * @author egolan
  */
 public final class OutputKitsList extends KitsList {
+    public enum Direction {
+        UP, DOWN
+    }
+
     private static final long serialVersionUID = 7560978682051239230L;
     private final OutputListModel myModel;
 
@@ -49,6 +54,7 @@ public final class OutputKitsList extends KitsList {
         myModel = new OutputListModel();
         this.setModel(myModel);
         this.setCellRenderer(new TdKitListRenderer());
+        setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
     }
 
     @Override
@@ -108,6 +114,13 @@ public final class OutputKitsList extends KitsList {
         }
     }
 
+    public void moveSelection(final Direction direction) {
+        final int selectedRow = this.getSelectedIndex();
+        if (selectedRow != -1) {
+            myModel.moveSelection(selectedRow, direction);
+        }
+    }
+
     @SuppressWarnings("serial")
     private class OutputListModel extends AbstractListModel {
         private int numberOfKits;
@@ -118,15 +131,39 @@ public final class OutputKitsList extends KitsList {
             clear();
         }
 
+        private void moveSelection(final int currentSelection, final Direction direction) {
+            int newIndex = getNewIndex(currentSelection, direction);
+            if (newIndex == -1) {
+                return;
+            }
+            try {
+                TdKit otherKit = kits[newIndex];
+                TdKit selectedKit = kits[currentSelection];
+                kits[newIndex] = selectedKit;
+                kits[currentSelection] = otherKit;
+                fireContentsChanged(this, currentSelection, newIndex);
+            }
+            catch (ArrayIndexOutOfBoundsException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+
+        private int getNewIndex(final int currentSelection, final Direction direction) {
+            int newIndex = -1;
+            switch (direction) {
+                case UP:
+                    newIndex = currentSelection + 1;
+                    break;
+                case DOWN:
+                    newIndex = currentSelection - 1;
+                    break;
+            }
+            return newIndex;
+        }
+
         private int numberOfKits() {
             return numberOfKits;
-            // int result = 0;
-            // for (TdKit kit : kits) {
-            // if (kit != null) {
-            // result++;
-            // }
-            // }
-            // return result;
         }
 
         private TdKit[] getKits() {

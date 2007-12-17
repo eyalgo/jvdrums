@@ -26,7 +26,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package ui.components;
+package ui.lists;
 
 import java.awt.Color;
 import java.awt.Component;
