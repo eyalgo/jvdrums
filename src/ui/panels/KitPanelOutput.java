@@ -31,10 +31,8 @@ package ui.panels;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
@@ -61,7 +59,7 @@ import utils.VDrumsUtils;
 /**
  * @author egolan
  */
-public final class KitPanelOutput extends KitsPanel implements ListSelectionListener {
+public final class KitPanelOutput extends KitsPanel {
     private static final long serialVersionUID = -5217989811338648085L;
     private JButton saveButton;
     private JButton outputButtonUpload;
@@ -69,36 +67,33 @@ public final class KitPanelOutput extends KitsPanel implements ListSelectionList
     private JButton moveUpButton;
     private JButton moveDownButton;
     private JButton clearButton;
-    
 
     public KitPanelOutput(MainFrame parentFrame) {
         super(parentFrame, new OutputKitsList());
-        getKitList().addListSelectionListener(this);
         saveButton = new JButton("Save");
         saveButton.setToolTipText("Save to file");
         outputButtonUpload = new JButton("Upload");
         outputDeleteButton = new JButton("Delete");
         outputDeleteButton.setToolTipText("Remove from list");
-
-        // moveUpButton.setToolTipText("Move up");
-        moveDownButton = new JButton("Down");
-        // moveDownButton.setToolTipText("Move down");
+        moveDownButton = new OutputButton("Move down", "down-32x32.png", Direction.DECREASE_INDEX,
+                VDrumsUtils.MAX_NUMBER_OF_KITS - 1);
+        moveUpButton = new OutputButton("Move up", "up-32x32.png", Direction.INCREASE_INDEX, 0);
         clearButton = new JButton("Clear");
         clearButton.setToolTipText("Clear list");
         addToButtonBar(saveButton);
         addToButtonBar(outputButtonUpload);
         addToButtonBar(outputDeleteButton);
         addToButtonBar(clearButton);
-
-        addToButtonBar(moveDownButton);
-
-        moveDownButton.setEnabled(false);
-        // moveUpButton.addActionListener(move(Direction.UP, "Move Up", "up.ico"));
-        // moveUpButton.setAction(move(Direction.UP, "Move Up", "up.ico"));
-        moveUpButton = new JButton(move(Direction.UP, "Move Up", "up.ico"));
         addToButtonBar(moveUpButton);
+        addToButtonBar(moveDownButton);
+        moveDownButton.setEnabled(false);
         moveUpButton.setEnabled(false);
-        moveDownButton.addActionListener(move(Direction.DOWN, "Move Down", "down.ico"));
+        // moveUpButton.addActionListener(move(Direction.DECREASE_INDEX, "Move Up", "up.ico"));
+        // moveUpButton.setAction(move(Direction.DECREASE_INDEX, "Move Up", "up.ico"));
+        // moveUpButton = new JButton(move(Direction.DECREASE_INDEX, "Move Up", "up-32x32.png"));
+
+        // moveDownButton.addActionListener(move(Direction.INCREASE_INDEX, "Move Down",
+        // "down-32x32.gif"));
         saveButton.addActionListener(saveToFile());
         clearButton.addActionListener(clearList());
     }
@@ -152,26 +147,6 @@ public final class KitPanelOutput extends KitsPanel implements ListSelectionList
         return action;
     }
 
-    @SuppressWarnings("serial")
-    private Action move(final Direction direction, final String label,
-            final String iconFileName) {
-        Icon icon = createIcon(iconFileName);
-        Action action = new AbstractAction(label, icon) {
-            public void actionPerformed(ActionEvent e) {
-                ((OutputKitsList) getKitList()).moveSelection(direction);
-            }
-        };
-        return action;
-    }
-
-    public void valueChanged(ListSelectionEvent e) {
-        int selectedIndex = ((OutputKitsList) e.getSource()).getSelectedIndex();
-        TdKit selectedKit = (TdKit) ((OutputKitsList) e.getSource()).getSelectedValue();
-        moveDownButton.setEnabled(selectedKit != null && selectedIndex != 0);
-        moveUpButton.setEnabled(selectedKit != null
-                && selectedIndex != VDrumsUtils.MAX_NUMBER_OF_KITS - 1);
-    }
-
     /**
      * Create an image for the given URL.
      * 
@@ -180,21 +155,57 @@ public final class KitPanelOutput extends KitsPanel implements ListSelectionList
      * @return created image
      */
     private Icon createIcon(String fileName) {
-        URL url = Thread.currentThread().getContextClassLoader()
-        .getResource("ui" + File.separator + "icons" + File.separator+ fileName);
-        Image image = Toolkit.getDefaultToolkit().createImage(url);
-        
-        
-        
-//        Image img = Toolkit.getDefaultToolkit().getImage(getClass().getResource(url));
-//        Image img = Toolkit.getDefaultToolkit().getImage(getClass().getResource("ui/icons/"+url));
-        int width = image.getWidth(null);
-        if (width > 0) {
-            Icon icon = new ImageIcon(image);
-            return icon;
+        // URL url = Thread.currentThread().getContextClassLoader()
+        // .getResource("ui/icons/"+ fileName);
+        // Image image = Toolkit.getDefaultToolkit().createImage(url);
+        // // + File.separator + "icons" + File.separator
+
+        Image img = Toolkit.getDefaultToolkit().getImage(getClass().getResource(fileName));
+        // Image img = Toolkit.getDefaultToolkit().getImage(getClass().getResource(url));
+        // Image img =
+        // Toolkit.getDefaultToolkit().getImage(getClass().getResource("ui/icons/"+url));
+        // int width = image.getWidth(null);
+        // if (width > 0) {
+        // Icon icon = new ImageIcon(image);
+        // return icon;
+        // }
+        // Image res = Toolkit.getDefaultToolkit().createImage(
+        // getClass().getResource("C:\\projs\\JVDrums\\src\\ui\\icons\\"+fileName));
+        // image = new ImageIcon("image.gif").getImage();
+        Icon icon = new ImageIcon(img);
+        return icon;
+    }
+
+    @SuppressWarnings("serial")
+    private class OutputButton extends JButton implements ListSelectionListener {
+        private final int disabledIndex;
+        private OutputButton(final String tooltip, final String iconFileName,
+                final Direction direction, final int disabledIndex) {
+            super();
+            setAction(moveOperation(direction, "", iconFileName));
+            setToolTipText(tooltip);
+            getKitList().addListSelectionListener(this);
+            this.disabledIndex = disabledIndex;
         }
-//        Image res = Toolkit.getDefaultToolkit().createImage(
-//                getClass().getResource(url));
-        return null;
+
+        @SuppressWarnings("serial")
+        private Action moveOperation(final Direction direction, final String label,
+                final String iconFileName) {
+            Icon icon = createIcon(iconFileName);
+            Action action = new AbstractAction(label, icon) {
+                public void actionPerformed(ActionEvent e) {
+                    ((OutputKitsList) getKitList()).moveSelection(direction);
+                }
+            };
+            return action;
+        }
+
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            int selectedIndex = ((OutputKitsList) e.getSource()).getSelectedIndex();
+            TdKit selectedKit = (TdKit) ((OutputKitsList) e.getSource()).getSelectedValue();
+            setEnabled(selectedKit != null && selectedIndex != this.disabledIndex);
+        }
+
     }
 }

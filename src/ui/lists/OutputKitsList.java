@@ -44,7 +44,7 @@ import utils.VDrumsUtils;
  */
 public final class OutputKitsList extends KitsList {
     public enum Direction {
-        UP, DOWN
+        DECREASE_INDEX, INCREASE_INDEX
     }
 
     private static final long serialVersionUID = 7560978682051239230L;
@@ -117,7 +117,10 @@ public final class OutputKitsList extends KitsList {
     public void moveSelection(final Direction direction) {
         final int selectedRow = this.getSelectedIndex();
         if (selectedRow != -1) {
-            myModel.moveSelection(selectedRow, direction);
+            int newIndex = myModel.moveSelection(selectedRow, direction);
+            if (newIndex != -1) {
+                setSelectedIndex(newIndex);
+            }
         }
     }
 
@@ -131,10 +134,10 @@ public final class OutputKitsList extends KitsList {
             clear();
         }
 
-        private void moveSelection(final int currentSelection, final Direction direction) {
+        private int moveSelection(final int currentSelection, final Direction direction) {
             int newIndex = getNewIndex(currentSelection, direction);
             if (newIndex == -1) {
-                return;
+                return -1;
             }
             try {
                 TdKit otherKit = kits[newIndex];
@@ -145,17 +148,18 @@ public final class OutputKitsList extends KitsList {
             }
             catch (ArrayIndexOutOfBoundsException e) {
                 e.printStackTrace();
-                return;
+                return -1;
             }
+            return newIndex;
         }
 
         private int getNewIndex(final int currentSelection, final Direction direction) {
             int newIndex = -1;
             switch (direction) {
-                case UP:
+                case DECREASE_INDEX:
                     newIndex = currentSelection + 1;
                     break;
-                case DOWN:
+                case INCREASE_INDEX:
                     newIndex = currentSelection - 1;
                     break;
             }
