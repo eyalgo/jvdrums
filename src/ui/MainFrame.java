@@ -77,12 +77,12 @@ public final class MainFrame extends JFrame {
         addWindowListener(new ExitListener());
         setMinimumSize(new Dimension(900, 600));
         setName("mainframe");
-        WindowUtilities.setNativeLookAndFeel();
+        WindowUtilities.setJavaLookAndFeel();
         mainToolBar = new JToolBar();
         connectButton = new JButton("Connect");
         jSplitPane1 = new JSplitPane();
         inputPanel = new KitPanelInput(this,
-                (KitPanelOutput) (outputPanel = new KitPanelOutput(this)));
+                (KitsPanel) (outputPanel = new KitPanelOutput(this)));
         jMenuBar1 = new JMenuBar();
         fileMenu = new JMenu("File");
         helpMenu = new JMenu("Help");

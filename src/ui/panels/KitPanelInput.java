@@ -56,16 +56,16 @@ public final class KitPanelInput extends KitsPanel {
     private JButton inputLoadButton;
     private JButton clearButton;
 
-    public KitPanelInput(MainFrame parentFrame, KitPanelOutput outputPanel) {
+    public KitPanelInput(MainFrame parentFrame, KitsPanel outputPanel) {
         super(parentFrame, new InputKitsList(outputPanel.getKitList()));
         inputLoadButton = new JButton("Load");
         inputDownlaodButton = new JButton("Download");
-        clearButton = new JButton("Clear");
+        clearButton = new JButton(clearList());
+        clearButton.setToolTipText("Clear list");
         addToButtonBar(inputLoadButton);
         addToButtonBar(inputDownlaodButton);
         addToButtonBar(clearButton);
         inputLoadButton.addActionListener(openFile());
-        clearButton.addActionListener(clearList());
     }
 
     @SuppressWarnings("serial")

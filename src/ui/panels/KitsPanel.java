@@ -31,9 +31,12 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.ResourceBundle;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -116,12 +119,27 @@ public abstract class KitsPanel extends JPanel {
 
     @SuppressWarnings("serial")
     protected Action clearList() {
-        final Action action = new AbstractAction() {
+        Icon icon = createIcon("delete-file-32x32.png");
+        final Action action = new AbstractAction("", icon) {
             public void actionPerformed(ActionEvent e) {
                 getKitList().clear();
             }
         };
        return action; 
+    }
+
+
+    /**
+     * Create an image for the given URL.
+     * 
+     * @param url
+     *            url to create image from
+     * @return created image
+     */
+    protected final Icon createIcon(String fileName) {
+        final ResourceBundle imgBundle = ResourceBundle.getBundle("ui.utils.ImageBundle");
+        final ImageIcon icon = (ImageIcon) imgBundle.getObject(fileName);
+        return icon;
     }
 
 

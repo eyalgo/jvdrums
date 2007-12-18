@@ -28,8 +28,6 @@
 
 package ui.panels;
 
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +37,6 @@ import javax.sound.midi.SysexMessage;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.event.ListSelectionEvent;
@@ -70,15 +67,15 @@ public final class KitPanelOutput extends KitsPanel {
 
     public KitPanelOutput(MainFrame parentFrame) {
         super(parentFrame, new OutputKitsList());
-        saveButton = new JButton("Save");
+        saveButton = new JButton(saveToFile());
         saveButton.setToolTipText("Save to file");
         outputButtonUpload = new JButton("Upload");
         outputDeleteButton = new JButton("Delete");
         outputDeleteButton.setToolTipText("Remove from list");
-        moveDownButton = new OutputButton("Move down", "down-32x32.png", Direction.DECREASE_INDEX,
-                VDrumsUtils.MAX_NUMBER_OF_KITS - 1);
+        moveDownButton = new OutputButton("Move down", "down-32x32.png",
+                Direction.DECREASE_INDEX, VDrumsUtils.MAX_NUMBER_OF_KITS - 1);
         moveUpButton = new OutputButton("Move up", "up-32x32.png", Direction.INCREASE_INDEX, 0);
-        clearButton = new JButton("Clear");
+        clearButton = new JButton(clearList());
         clearButton.setToolTipText("Clear list");
         addToButtonBar(saveButton);
         addToButtonBar(outputButtonUpload);
@@ -88,19 +85,12 @@ public final class KitPanelOutput extends KitsPanel {
         addToButtonBar(moveDownButton);
         moveDownButton.setEnabled(false);
         moveUpButton.setEnabled(false);
-        // moveUpButton.addActionListener(move(Direction.DECREASE_INDEX, "Move Up", "up.ico"));
-        // moveUpButton.setAction(move(Direction.DECREASE_INDEX, "Move Up", "up.ico"));
-        // moveUpButton = new JButton(move(Direction.DECREASE_INDEX, "Move Up", "up-32x32.png"));
-
-        // moveDownButton.addActionListener(move(Direction.INCREASE_INDEX, "Move Down",
-        // "down-32x32.gif"));
-        saveButton.addActionListener(saveToFile());
-        clearButton.addActionListener(clearList());
     }
 
     @SuppressWarnings("serial")
     private Action saveToFile() {
-        Action action = new AbstractAction() {
+        Icon icon = createIcon("save-as-32x32.png");
+        Action action = new AbstractAction("", icon) {
             public void actionPerformed(ActionEvent e) {
                 final TdKit[] kitsInList = getKitList().getKits();
                 if (((OutputKitsList) getKitList()).numberOfKits() < 1) {
@@ -147,38 +137,10 @@ public final class KitPanelOutput extends KitsPanel {
         return action;
     }
 
-    /**
-     * Create an image for the given URL.
-     * 
-     * @param url
-     *            url to create image from
-     * @return created image
-     */
-    private Icon createIcon(String fileName) {
-        // URL url = Thread.currentThread().getContextClassLoader()
-        // .getResource("ui/icons/"+ fileName);
-        // Image image = Toolkit.getDefaultToolkit().createImage(url);
-        // // + File.separator + "icons" + File.separator
-
-        Image img = Toolkit.getDefaultToolkit().getImage(getClass().getResource(fileName));
-        // Image img = Toolkit.getDefaultToolkit().getImage(getClass().getResource(url));
-        // Image img =
-        // Toolkit.getDefaultToolkit().getImage(getClass().getResource("ui/icons/"+url));
-        // int width = image.getWidth(null);
-        // if (width > 0) {
-        // Icon icon = new ImageIcon(image);
-        // return icon;
-        // }
-        // Image res = Toolkit.getDefaultToolkit().createImage(
-        // getClass().getResource("C:\\projs\\JVDrums\\src\\ui\\icons\\"+fileName));
-        // image = new ImageIcon("image.gif").getImage();
-        Icon icon = new ImageIcon(img);
-        return icon;
-    }
-
     @SuppressWarnings("serial")
     private class OutputButton extends JButton implements ListSelectionListener {
         private final int disabledIndex;
+
         private OutputButton(final String tooltip, final String iconFileName,
                 final Direction direction, final int disabledIndex) {
             super();
