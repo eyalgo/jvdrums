@@ -95,13 +95,13 @@
 
 	<target name="jar-test" depends="test" description="jar application">
 		<jar destfile="${dist-jar-file}" manifest="${manifest-file}" update="true">
-			<fileset dir="${dir.build}" excludes="**/Test*.class **/*.syx **/*.bat" />
+			<fileset dir="${dir.build}" includes="**/*.png" excludes="**/Test*.class **/*.syx **/*.bat" />
 		</jar>
 	</target>
 
 	<target name="jar" depends="compile" description="jar application">
 		<jar destfile="${dist-jar-file}" manifest="${manifest-file}" update="true">
-			<fileset dir="${dir.build}" excludes="**/Test*.class **/*.syx **/*.bat" />
+			<fileset dir="${dir.build}" includes="**/*.png" excludes="**/Test*.class **/*.syx **/*.bat" />
 		</jar>
 	</target>
 
