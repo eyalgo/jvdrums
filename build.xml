@@ -73,13 +73,18 @@
 		<copy todir="${build-lib-path}">
 			<fileset dir="${lib-path}" />
 		</copy>
+		
+		<copy todir="${dir.build}/ui/utils/images">
+			<fileset dir="${dir.src}/ui/utils/images" />
+		</copy>
+
 		<copy file="${dir.src}/run.bat" todir="${dir.build}"/>
 	</target>
 
 	<target name="compile" depends="prepare">
-		<javac destdir="${dir.build}" source="1.6">
+		<javac destdir="${dir.build}" source="1.6" target="1.6">
 			<classpath refid="libs.path" />
-			<src path="${dir.src}" />
+			<src path="${dir.src}"/>
 			<src path="${dir.test}" />
 		</javac>
 	</target>
@@ -95,16 +100,19 @@
 
 	<target name="jar-test" depends="test" description="jar application">
 		<jar destfile="${dist-jar-file}" manifest="${manifest-file}" update="true">
-			<fileset dir="${dir.build}" includes="**/*.png" excludes="**/Test*.class **/*.syx **/*.bat" />
+			<fileset dir="${dir.build}" excludes="**/Test*.class **/*.syx **/*.bat" />
 		</jar>
 	</target>
 
 	<target name="jar" depends="compile" description="jar application">
 		<jar destfile="${dist-jar-file}" manifest="${manifest-file}" update="true">
-			<fileset dir="${dir.build}" includes="**/*.png" excludes="**/Test*.class **/*.syx **/*.bat" />
+			<fileset dir="${dir.build}" includes="**/*.class **/images/**" excludes="**/Test*.class **/*.syx **/*.bat" />
+			
 		</jar>
 	</target>
 
 	<!--
+	<fileset dir="${dir.src}" includes="**/*.png"/>
+			<fileset dir="${dir.build}" includes="**/*.class **/images/**" excludes="**/Test*.class **/*.syx **/*.bat" />
 -->
 </project>
