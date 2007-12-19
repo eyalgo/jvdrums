@@ -33,13 +33,10 @@
 
 package ui.utils;
 
-import java.io.File;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
@@ -47,11 +44,11 @@ import javax.swing.ImageIcon;
  * @author egolan
  */
 public final class ImageBundle extends ResourceBundle {
-    private static final Vector<String> KEYS;
+//    private static final Vector<String> KEYS;
     private static Hashtable<String, ImageIcon> TABLE;
 
     static {
-        KEYS = new Vector<String>();
+//        KEYS = new Vector<String>();
         // __KEYS.addElement("language");
         TABLE = new Hashtable<String, ImageIcon>();
     }
@@ -62,7 +59,8 @@ public final class ImageBundle extends ResourceBundle {
 
     @Override
     public Enumeration<String> getKeys() {
-        return KEYS.elements();
+        return TABLE.keys();
+//        return KEYS.elements();
     }
 
     @Override
@@ -76,7 +74,7 @@ public final class ImageBundle extends ResourceBundle {
         if (icon != null) {
             return icon;
         }
-        URL url = ImageBundle.class.getResource("images" + File.separator + imageName);
+        URL url = ImageBundle.class.getResource("images/"+ imageName);// + File.separator 
         if (url == null) {
             System.err.println("url for " + imageName + " is null");
             return null;
