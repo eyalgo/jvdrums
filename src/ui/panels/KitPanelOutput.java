@@ -59,8 +59,8 @@ import utils.VDrumsUtils;
 public final class KitPanelOutput extends KitsPanel {
     private static final long serialVersionUID = -5217989811338648085L;
     private JButton saveButton;
-    private JButton outputButtonUpload;
-    private JButton outputDeleteButton;
+    private JButton sendToModuleButton;
+    private JButton removeKitButton;
     private JButton moveUpButton;
     private JButton moveDownButton;
     private JButton clearButton;
@@ -69,22 +69,49 @@ public final class KitPanelOutput extends KitsPanel {
         super(parentFrame, new OutputKitsList());
         saveButton = new JButton(saveToFile());
         saveButton.setToolTipText("Save to file");
-        outputButtonUpload = new JButton("Upload");
-        outputDeleteButton = new JButton("Delete");
-        outputDeleteButton.setToolTipText("Remove from list");
+        
+        sendToModuleButton = new JButton(sendToModeule());
+        sendToModuleButton.setToolTipText("Send kits to module");
+        
+        removeKitButton = new JButton(removeFromList());
+        removeKitButton.setToolTipText("Remove from list");
+        
         moveDownButton = new OutputButton("Move down", "down-32x32.png",
                 Direction.DECREASE_INDEX, VDrumsUtils.MAX_NUMBER_OF_KITS - 1);
         moveUpButton = new OutputButton("Move up", "up-32x32.png", Direction.INCREASE_INDEX, 0);
+        
         clearButton = new JButton(clearList());
         clearButton.setToolTipText("Clear list");
+        
         addToButtonBar(saveButton);
-        addToButtonBar(outputButtonUpload);
-        addToButtonBar(outputDeleteButton);
+        addToButtonBar(sendToModuleButton);
+        addToButtonBar(removeKitButton);
         addToButtonBar(clearButton);
         addToButtonBar(moveUpButton);
         addToButtonBar(moveDownButton);
         moveDownButton.setEnabled(false);
         moveUpButton.setEnabled(false);
+    }
+
+    @SuppressWarnings("serial")
+    private Action sendToModeule() {
+        Icon icon = createIcon("upload-to-device.png");
+        Action action = new AbstractAction("", icon) {
+            public void actionPerformed(ActionEvent e) {
+            }
+        };
+        return action;
+    }
+
+    @SuppressWarnings("serial")
+    private Action removeFromList() {
+        Icon icon = createIcon("delete-32x32.png");
+        Action action = new AbstractAction("", icon) {
+            public void actionPerformed(ActionEvent e) {
+                ((OutputKitsList) getKitList()).deleteSelectedKit();
+            }
+        };
+        return action;
     }
 
     @SuppressWarnings("serial")

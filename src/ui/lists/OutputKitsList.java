@@ -124,6 +124,13 @@ public final class OutputKitsList extends KitsList {
         }
     }
 
+    public void deleteSelectedKit() {
+        final int selectedRow = this.getSelectedIndex();
+        if (selectedRow != -1) {
+            myModel.removeSelectedKit(selectedRow);
+        }
+    }
+
     @SuppressWarnings("serial")
     private class OutputListModel extends AbstractListModel {
         private int numberOfKits;
@@ -132,6 +139,16 @@ public final class OutputKitsList extends KitsList {
         private OutputListModel() {
             kits = new TdKit[VDrumsUtils.MAX_NUMBER_OF_KITS];
             clear();
+        }
+
+        private void removeSelectedKit(int selectedRow) {
+            try {
+                kits[selectedRow] = null;
+                fireContentsChanged(this, selectedRow, selectedRow);
+            }
+            catch (ArrayIndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
         }
 
         private int moveSelection(final int currentSelection, final Direction direction) {
@@ -214,4 +231,5 @@ public final class OutputKitsList extends KitsList {
             return kits.length;
         }
     }
+
 }

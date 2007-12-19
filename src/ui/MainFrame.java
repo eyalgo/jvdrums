@@ -164,10 +164,12 @@ public final class MainFrame extends JFrame {
             mainFrame.setVisible(true);
         }
         catch (Error e) {
+            e.printStackTrace();
             mainFrame.showErrorDialog(e.getLocalizedMessage(), "Fatal Error");
             System.exit(-1);
         }
         catch (Exception e) {
+            e.printStackTrace();
             mainFrame.showErrorDialog(e.getLocalizedMessage(), "Fatal Exception");
             System.exit(-2);
         }

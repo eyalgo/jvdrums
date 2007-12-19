@@ -35,6 +35,7 @@ import java.io.IOException;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
@@ -52,25 +53,40 @@ import exceptions.VdrumException;
  */
 public final class KitPanelInput extends KitsPanel {
     private static final long serialVersionUID = 3267475173137048327L;
-    private JButton inputDownlaodButton;
-    private JButton inputLoadButton;
+    private JButton laodKitsButton;
+    private JButton browseButton;
     private JButton clearButton;
 
     public KitPanelInput(MainFrame parentFrame, KitsPanel outputPanel) {
         super(parentFrame, new InputKitsList(outputPanel.getKitList()));
-        inputLoadButton = new JButton("Load");
-        inputDownlaodButton = new JButton("Download");
+        browseButton = new JButton(openFile());
+        browseButton.setToolTipText("Browse File");
+        
+        laodKitsButton = new JButton(getFromModule());
+        laodKitsButton.setToolTipText("Get kits from module");
+        
         clearButton = new JButton(clearList());
         clearButton.setToolTipText("Clear list");
-        addToButtonBar(inputLoadButton);
-        addToButtonBar(inputDownlaodButton);
+        
+        addToButtonBar(browseButton);
+        addToButtonBar(laodKitsButton);
         addToButtonBar(clearButton);
-        inputLoadButton.addActionListener(openFile());
+    }
+
+    @SuppressWarnings("serial")
+    private Action getFromModule() {
+        Icon icon = createIcon("get-from-device.png");
+        Action action = new AbstractAction("", icon) {
+            public void actionPerformed(ActionEvent e) {
+            }
+        };
+        return action;
     }
 
     @SuppressWarnings("serial")
     public Action openFile() {
-        final Action action = new AbstractAction() {
+        Icon icon = createIcon("folder-explorer-32x32.png");
+        final Action action = new AbstractAction("" , icon) {
             final JFileChooser fc = createFileChooser("openFileChooser");
 
             public void actionPerformed(ActionEvent e) {
