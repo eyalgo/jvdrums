@@ -80,6 +80,8 @@
 
 		<copy file="${dir.src}/run.bat" todir="${dir.build}"/>
 	</target>
+	<!--
+	-->
 
 	<target name="compile" depends="prepare">
 		<javac destdir="${dir.build}" source="1.6" target="1.6">

@@ -33,6 +33,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.MissingResourceException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -73,6 +74,10 @@ public final class MainFrame extends JFrame {
     /** Creates new form MainFrame */
     public MainFrame() {
         super("JVDrums");
+        
+    }
+
+    private void initFrame() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new ExitListener());
         setMinimumSize(new Dimension(900, 600));
@@ -154,7 +159,28 @@ public final class MainFrame extends JFrame {
     }
 
     private static void createAndShowGui() {
-        MainFrame mainFrame = new MainFrame();
-        mainFrame.setVisible(true);
+        final MainFrame mainFrame = new MainFrame();
+        try {
+            mainFrame.initFrame();
+            mainFrame.setVisible(true);
+        }
+        catch (Error e) {
+            System.err.println("BLA !!!!!");
+            e.printStackTrace();
+            mainFrame.showErrorDialog(e.toString(), e.getLocalizedMessage());
+            System.exit(-1);
+        }
+        catch (MissingResourceException me) {
+            String key = me.getKey();
+            String message = me.getMessage();
+            mainFrame.showErrorDialog("key="+key+ " message="+message, me.getLocalizedMessage());
+            System.exit(-1);
+        }
+        catch (Exception e) {
+            System.err.println("zzzzz !!!!!");
+            e.printStackTrace();
+            mainFrame.showErrorDialog(e.toString(), e.getLocalizedMessage());
+            System.exit(-1);
+        }
     }
 }

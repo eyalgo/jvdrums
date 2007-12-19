@@ -44,6 +44,7 @@ import javax.swing.filechooser.FileFilter;
 
 import ui.MainFrame;
 import ui.lists.KitsList;
+import ui.utils.ImageBundle;
 
 public abstract class KitsPanel extends JPanel {
     private static final long serialVersionUID = -5323945831812498619L;
@@ -137,6 +138,7 @@ public abstract class KitsPanel extends JPanel {
      * @return created image
      */
     protected final Icon createIcon(String fileName) {
+//        final ResourceBundle imgBundle = new ImageBundle();
         final ResourceBundle imgBundle = ResourceBundle.getBundle("ui.utils.ImageBundle");
         final ImageIcon icon = (ImageIcon) imgBundle.getObject(fileName);
         return icon;

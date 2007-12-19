@@ -37,6 +37,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
@@ -75,7 +76,7 @@ public final class ImageBundle extends ResourceBundle {
         if (icon != null) {
             return icon;
         }
-        final URL url = ImageBundle.class.getResource("images" + File.separator + imageName);
+        URL url = ImageBundle.class.getResource("images" + File.separator + imageName);
         if (url == null) {
             System.err.println("url for " + imageName + " is null");
             return null;
