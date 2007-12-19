@@ -67,18 +67,6 @@
 		<mkdir dir="${dir.dist}" />
 		<mkdir dir="${dir.test.result}" />
 		<mkdir dir="${test-resources-dist}" />
-		<copy todir="${test-resources-dist}">
-			<fileset dir="${test-resources}" includes="**/*.syx" />
-		</copy>
-		<copy todir="${build-lib-path}">
-			<fileset dir="${lib-path}" />
-		</copy>
-		
-		<copy todir="${dir.build}/ui/utils/images">
-			<fileset dir="${dir.src}/ui/utils/images" />
-		</copy>
-
-		<copy file="${dir.src}/run.bat" todir="${dir.build}"/>
 	</target>
 	<!--
 	-->
@@ -90,8 +78,23 @@
 			<src path="${dir.test}" />
 		</javac>
 	</target>
+	
+	<target name="copy" depends="compile">
+		<copy todir="${test-resources-dist}">
+			<fileset dir="${test-resources}" includes="**/*.syx" />
+		</copy>
+		<copy todir="${build-lib-path}">
+			<fileset dir="${lib-path}" />
+		</copy>
+		
+		<copy todir="${dir.build}/ui/utils/images">
+			<fileset dir="${dir.src}/ui/utils/images" includes="**/*.png" />
+		</copy>
 
-	<target name="test" depends="compile">
+		<copy file="${dir.src}/run.bat" todir="${dir.build}"/>
+	</target>
+
+	<target name="test" depends="copy">
 		<testng groups="manager , kits , exception" sourceDir="${dir.build}" outputDir="${dir.test.result}" classpath="${dir.build}" haltonfailure="true">
 			<classfileset dir="${dir.build}">
 				<include name="**/*.class" />
@@ -106,9 +109,9 @@
 		</jar>
 	</target>
 
-	<target name="jar" depends="compile" description="jar application">
+	<target name="jar" depends="copy" description="jar application">
 		<jar destfile="${dist-jar-file}" manifest="${manifest-file}" update="true">
-			<fileset dir="${dir.build}" includes="**/*.class **/images/**" excludes="**/Test*.class **/*.syx **/*.bat" />
+			<fileset dir="${dir.build}" includes="**/*.class **/*.png" excludes="**/Test*.class **/*.syx **/*.bat" />
 			
 		</jar>
 	</target>
