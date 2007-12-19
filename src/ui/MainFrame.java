@@ -165,22 +165,12 @@ public final class MainFrame extends JFrame {
             mainFrame.setVisible(true);
         }
         catch (Error e) {
-            System.err.println("BLA !!!!!");
-            e.printStackTrace();
-            mainFrame.showErrorDialog(e.toString(), e.getLocalizedMessage());
-            System.exit(-1);
-        }
-        catch (MissingResourceException me) {
-            String key = me.getKey();
-            String message = me.getMessage();
-            mainFrame.showErrorDialog("key="+key+ " message="+message, me.getLocalizedMessage());
+            mainFrame.showErrorDialog(e.getLocalizedMessage(), "Fatal Error");
             System.exit(-1);
         }
         catch (Exception e) {
-            System.err.println("zzzzz !!!!!");
-            e.printStackTrace();
-            mainFrame.showErrorDialog(e.toString(), e.getLocalizedMessage());
-            System.exit(-1);
+            mainFrame.showErrorDialog(e.getLocalizedMessage(), "Fatal Exception");
+            System.exit(-2);
         }
     }
 }
