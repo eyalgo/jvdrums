@@ -1,0 +1,42 @@
+Please read disclaimer !!
+
+************************************************************
+Developed by Eyal Golan
+E-mail: egolan AT gmail.com
+(change AT to @)
+Project web site: https://sourceforge.net/projects/jvdrums/
+************************************************************
+
+Installing and running the application:
+	- You should have a Java jar file called jvdrums.jar
+	In windows all you need to do is double click and the application should run.
+	The application uses Java 6 so it must be installed BEFORE running the program.
+
+	You can check what kind of version and if Java is installed with the command:
+	java -version in the command line window.
+	
+	If you don't have Java installed, you can sownload and install it from
+	Sun's web site:
+	http://www.java.com/en/download/index.jsp
+	
+Usage Instructions:
+	The application has two sections (lists):
+	Left - kits that are used as source (taken from a file or the device)
+	Right - Custom made kits bank
+	
+	To get kits to the left list, you need to press the Browse button (first on thr
+	left).
+	When double clicking a kit it will be put in the right list.
+	The location that it will be put is the selected row in the right side.
+	You can edit location and kit numbers by pressing up / down button.
+	You can also delete kit from the list.
+	Saving the new kit bank is done by pressing the save button.
+	
+	There is a clear button for each list.
+	
+Release 0.5 - Alpha Release:
+1. Supports only TD-12.
+2. Can load files and save new files with new ordered kits bank.
+3. Original kit location is shown in the left list. 
+4. Does not support MIDI dump.
+5. Checked only on Microsoft Windows XP.
