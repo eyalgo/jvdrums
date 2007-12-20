@@ -1,1 +1,1 @@
-java -classpath .;./lib/commons-io-1.3.2.jar;./lib/commons-lang-2.3.jar ui.MainFrame
+java -classpath .;./lib/bias-0.5.jar;./lib/commons-io-1.3.2.jar;./lib/commons-lang-2.3.jar jvdrums.JVDrumsApp

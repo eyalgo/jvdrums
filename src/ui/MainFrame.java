@@ -30,9 +30,7 @@ package ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -45,11 +43,15 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
+import ui.panels.AboutPanel;
 import ui.panels.KitPanelInput;
 import ui.panels.KitPanelOutput;
 import ui.panels.KitsPanel;
+import ui.swing.BaseAction;
+import ui.swing.Desktop;
 import ui.utils.ExitListener;
 import ui.utils.WindowUtilities;
+import bias.Configuration;
 import exceptions.VdrumException;
 
 /**
@@ -57,13 +59,12 @@ import exceptions.VdrumException;
  */
 public final class MainFrame extends JFrame {
     private static final long serialVersionUID = -7164597771180443878L;
+    private static Configuration config = Configuration.getRoot().get(MainFrame.class);
     private JButton connectButton;
-    private JMenuItem exitMenuItem;
     private JMenu fileMenu;
     private JMenu helpMenu;
     private JMenu connectionMenu;
     private JMenuItem connectionMenuItem;
-    private JMenuItem aboutMenuItem;
     private JMenuBar jMenuBar1;
     private JSplitPane jSplitPane1;
     private JToolBar mainToolBar;
@@ -73,10 +74,9 @@ public final class MainFrame extends JFrame {
     /** Creates new form MainFrame */
     public MainFrame() {
         super("JVDrums");
-        
     }
 
-    private void initFrame() {
+    public void initFrame() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new ExitListener());
         setMinimumSize(new Dimension(900, 600));
@@ -85,15 +85,13 @@ public final class MainFrame extends JFrame {
         mainToolBar = new JToolBar();
         connectButton = new JButton("Connect");
         jSplitPane1 = new JSplitPane();
-        inputPanel = new KitPanelInput(this,
-                (KitsPanel) (outputPanel = new KitPanelOutput(this)));
+        inputPanel = new KitPanelInput(this, (KitsPanel) (outputPanel = new KitPanelOutput(
+                this)));
         jMenuBar1 = new JMenuBar();
         fileMenu = new JMenu("File");
         helpMenu = new JMenu("Help");
-        exitMenuItem = new JMenuItem("Exit");
         connectionMenu = new JMenu("Connection");
         connectionMenuItem = new JMenuItem("Connection");
-        aboutMenuItem = new JMenuItem("About...");
 
         mainToolBar.setFloatable(false);
         mainToolBar.setRollover(true);
@@ -116,14 +114,11 @@ public final class MainFrame extends JFrame {
 
         getContentPane().add(jSplitPane1, BorderLayout.CENTER);
 
-        exitMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                exitMenuItemActionPerformed(evt);
-            }
-        });
-        fileMenu.add(exitMenuItem);
+        fileMenu.add(new ExitAction());
         connectionMenu.add(connectionMenuItem);
-        helpMenu.add(aboutMenuItem);
+
+        helpMenu.add(new WebsiteAction());
+        helpMenu.add(new AboutAction());
         jMenuBar1.add(fileMenu);
         jMenuBar1.add(connectionMenu);
         jMenuBar1.add(helpMenu);
@@ -141,37 +136,44 @@ public final class MainFrame extends JFrame {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
-    private void exitMenuItemActionPerformed(ActionEvent evt) {
-        System.exit(0);
+    @SuppressWarnings("serial")
+    private class ExitAction extends BaseAction {
+        private ExitAction() {
+            config.get("exit").read(this);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent ev) {
+            System.exit(0);
+        }
+    }
+
+
+    @SuppressWarnings("serial")
+    private class AboutAction extends BaseAction {
+        private AboutAction() {
+            config.get("about").read(this);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent ev) {
+            AboutPanel.showInDialog(MainFrame.this);
+        }
     }
 
     /**
-     * @param args
-     *            the command line arguments
+     * The action that shows the jvdrums website.
      */
-    public static void main(String args[]) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGui();
-            }
-        });
-    }
+    @SuppressWarnings("serial")
+    private class WebsiteAction extends BaseAction {
+        private WebsiteAction() {
+            config.get("website").read(this);
+            setEnabled(Desktop.isSupported());
+        }
 
-    private static void createAndShowGui() {
-        final MainFrame mainFrame = new MainFrame();
-        try {
-            mainFrame.initFrame();
-            mainFrame.setVisible(true);
-        }
-        catch (Error e) {
-            e.printStackTrace();
-            mainFrame.showErrorDialog(e.getLocalizedMessage(), "Fatal Error");
-            System.exit(-1);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            mainFrame.showErrorDialog(e.getLocalizedMessage(), "Fatal Exception");
-            System.exit(-2);
+        @Override
+        public void actionPerformed(ActionEvent ev) {
+            Desktop.browse("http://jvdrums.sourceforge.net");
         }
     }
 }
