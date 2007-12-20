@@ -12,7 +12,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import resources.Utils;
+import resources.UtilsForTests;
 import exceptions.VdrumException;
 
 @Test(groups = {"kits"})
@@ -25,10 +25,10 @@ public final class TestKit {
     @BeforeMethod
     public void setUp() throws IOException, InvalidMidiDataException, URISyntaxException,
             VdrumException {
-        final File file1 = Utils.getFile("maple1.syx");
+        final File file1 = UtilsForTests.getFile("maple1.syx");
         byte[] kitBytes1 = FileUtils.readFileToByteArray(file1);
         kit1 = new TD12Kit(kitBytes1);
-        final File file25 = Utils.getFile("Bubbles25.syx");
+        final File file25 = UtilsForTests.getFile("Bubbles25.syx");
         byte[] kitBytes25 = FileUtils.readFileToByteArray(file25);
         kit25 = new TD12Kit(kitBytes25);
         kit1SysexMessage = new SysexMessage();
@@ -36,7 +36,7 @@ public final class TestKit {
     }
     
     public void checkRawDataSyxMessage() throws URISyntaxException, IOException, InvalidMidiDataException, VdrumException {
-        final File file1 = Utils.getFile("maple1.syx");
+        final File file1 = UtilsForTests.getFile("maple1.syx");
         byte[] kitBytes1 = FileUtils.readFileToByteArray(file1);
         TD12Kit kitRaw = new TD12Kit(kitBytes1);
         
@@ -98,11 +98,11 @@ public final class TestKit {
 
     public void checkEqualsAftterNewId() throws IOException, InvalidMidiDataException,
             URISyntaxException, VdrumException {
-        File fileMaple3 = Utils.getFile("maple3.syx");
+        File fileMaple3 = UtilsForTests.getFile("maple3.syx");
         byte[] maple3Bytes = FileUtils.readFileToByteArray(fileMaple3);
         TD12Kit kitMaple3 = new TD12Kit(maple3Bytes);
         TD12Kit kitMaple4 = kitMaple3.setNewId(4);
-        File fileMaple4 = Utils.getFile("maple4.syx");
+        File fileMaple4 = UtilsForTests.getFile("maple4.syx");
         byte[] maple4Bytes = FileUtils.readFileToByteArray(fileMaple4);
         TD12Kit fileKitMaple4 = new TD12Kit(maple4Bytes);
         Assert.assertEquals(kitMaple4, fileKitMaple4);
@@ -110,11 +110,11 @@ public final class TestKit {
 
     public void checkHashAftterNewId() throws IOException, InvalidMidiDataException,
             URISyntaxException, VdrumException {
-        File fileMaple3 = Utils.getFile("maple3.syx");
+        File fileMaple3 = UtilsForTests.getFile("maple3.syx");
         byte[] maple3Bytes = FileUtils.readFileToByteArray(fileMaple3);
         TD12Kit kitMaple3 = new TD12Kit(maple3Bytes);
         TD12Kit kitMaple4 = kitMaple3.setNewId(4);
-        File fileMaple4 = Utils.getFile("maple4.syx");
+        File fileMaple4 = UtilsForTests.getFile("maple4.syx");
         byte[] maple4Bytes = FileUtils.readFileToByteArray(fileMaple4);
         TD12Kit fileKitMaple4 = new TD12Kit(maple4Bytes);
         Assert.assertTrue(kitMaple4.hashCode() == fileKitMaple4.hashCode(),

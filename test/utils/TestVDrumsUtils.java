@@ -9,12 +9,12 @@ import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import resources.Utils;
+import resources.UtilsForTests;
 
 public class TestVDrumsUtils {
     @Test(groups = { "functest", "checkintest" })
     public void checkCalculateChecksum() throws URISyntaxException {
-        final File file = Utils.getFile("maple4.syx");
+        final File file = UtilsForTests.getFile("maple4.syx");
         try {
             final byte[] fileBytes = FileUtils.readFileToByteArray(file);
             final int calculatedChecksum = VDrumsUtils.calculateChecksum(Arrays
@@ -32,7 +32,7 @@ public class TestVDrumsUtils {
     }
     @Test(groups = { "functest", "checkintest" })
     public void checkCalculateChecksum1() throws URISyntaxException {
-        final File file = Utils.getFile("maple4.syx");
+        final File file = UtilsForTests.getFile("maple4.syx");
         try {
             final byte[] fileBytes = FileUtils.readFileToByteArray(file);
             final int calculatedChecksum = VDrumsUtils.calculateChecksum(Arrays

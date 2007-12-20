@@ -41,7 +41,7 @@ import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import resources.Utils;
+import resources.UtilsForTests;
 import exceptions.BadMessageLengthException;
 import exceptions.UnsupportedModuleException;
 import exceptions.VdrumException;
@@ -53,7 +53,7 @@ import exceptions.VdrumException;
 @Test(groups = {"manager"})
 public final class TestFactoryKits {
     private byte[] getFileBytes(final String fileName) throws URISyntaxException, IOException {
-        final File file = Utils.getFile(fileName);
+        final File file = UtilsForTests.getFile(fileName);
         byte[] fileBytes = FileUtils.readFileToByteArray(file);
         return fileBytes;
     }

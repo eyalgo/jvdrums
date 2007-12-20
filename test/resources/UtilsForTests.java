@@ -35,8 +35,8 @@ import java.net.URISyntaxException;
  * @author egolan
  *
  */
-public final class Utils {
-    private Utils() {
+public final class UtilsForTests {
+    private UtilsForTests() {
         // No instance for this class
     }
     public static File getFile(final String name) throws URISyntaxException {
