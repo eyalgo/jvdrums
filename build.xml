@@ -91,6 +91,10 @@
 			<fileset dir="${dir.src}/ui/utils/images" includes="**/*.png" />
 		</copy>
 
+		<copy todir="${dir.build}/ui">
+			<fileset dir="${dir.src}/ui" includes="*.properties" />
+		</copy>
+
 		<copy file="${dir.src}/run.bat" todir="${dir.build}"/>
 	</target>
 
@@ -105,13 +109,13 @@
 
 	<target name="jar-test" depends="test" description="jar application">
 		<jar destfile="${dist-jar-file}" manifest="${manifest-file}" update="true">
-			<fileset dir="${dir.build}" excludes="**/Test*.class **/*.syx **/*.bat" />
+			<fileset dir="${dir.build}" includes="**/*.class **/*.png **/*.properties" excludes="**/*Test*.class **/*.syx **/*.bat" />
 		</jar>
 	</target>
 
 	<target name="jar" depends="copy" description="jar application">
 		<jar destfile="${dist-jar-file}" manifest="${manifest-file}" update="true">
-			<fileset dir="${dir.build}" includes="**/*.class **/*.png" excludes="**/Test*.class **/*.syx **/*.bat" />
+			<fileset dir="${dir.build}" includes="**/*.class **/*.png **/*.properties" excludes="**/*Test*.class **/*.syx **/*.bat" />
 			
 		</jar>
 	</target>
