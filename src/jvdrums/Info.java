@@ -20,51 +20,47 @@ package jvdrums;
 
 import java.util.logging.Logger;
 
-//import bias.Configuration;
+import bias.Configuration;
 
 public class Info {
+    private static Configuration config = Configuration.getRoot().get(Info.class);
+    private static Logger logger = Logger.getLogger(Info.class.getName());
+    private String version = "";
 
-//	private static Configuration config = Configuration.getRoot().get(
-//			Info.class);
+    public Info() {
+        config.read(this);
+    }
 
-	private static Logger logger = Logger.getLogger(Info.class.getName());
-	
-	private String version = "0.5-alpha1";
+    public String getVersion() {
+        return version;
+    }
 
-	public Info() {
-//		config.read(this);
-	}
-	
-	public String getVersion() {
-		return version;
-	}
+    public void log() {
+        StringBuffer buffer = new StringBuffer();
 
-	public void log() {
-		StringBuffer buffer = new StringBuffer();
+        buffer.append("JVDrums -" + version + "-");
+        appendProperty(buffer, "os.arch");
+        appendProperty(buffer, "os.name");
+        appendProperty(buffer, "os.version");
 
-		buffer.append("JVDrums " + version);
-		appendProperty(buffer, "os.arch");
-		appendProperty(buffer, "os.name");
-		appendProperty(buffer, "os.version");
+        appendProperty(buffer, "java.home");
+        appendProperty(buffer, "java.version");
+        appendProperty(buffer, "java.runtime.name");
+        appendProperty(buffer, "java.runtime.version");
 
-		appendProperty(buffer, "java.home");
-		appendProperty(buffer, "java.version");
-		appendProperty(buffer, "java.runtime.name");
-		appendProperty(buffer, "java.runtime.version");
+        appendProperty(buffer, "user.dir");
+        appendProperty(buffer, "user.home");
+        appendProperty(buffer, "user.country");
+        appendProperty(buffer, "user.language");
+        appendProperty(buffer, "user.name");
 
-		appendProperty(buffer, "user.dir");
-		appendProperty(buffer, "user.home");
-		appendProperty(buffer, "user.country");
-		appendProperty(buffer, "user.language");
-		appendProperty(buffer, "user.name");
+        logger.info(buffer.toString());
+    }
 
-		logger.info(buffer.toString());
-	}
-
-	private void appendProperty(StringBuffer buffer, String key) {
-		buffer.append("\n");
-		buffer.append(key);
-		buffer.append(" = ");
-		buffer.append(System.getProperty(key));
-	}
+    private void appendProperty(StringBuffer buffer, String key) {
+        buffer.append("\n");
+        buffer.append(key);
+        buffer.append(" = ");
+        buffer.append(System.getProperty(key));
+    }
 }

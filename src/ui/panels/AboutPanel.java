@@ -28,6 +28,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import ui.swing.StandardDialog;
+
 import jvdrums.Info;
 
 /**
@@ -46,7 +48,7 @@ public class AboutPanel extends JPanel {
 
 	private ImageIcon createIcon() {
         final ResourceBundle imgBundle = ResourceBundle.getBundle("ui.utils.ImageBundle");
-        final ImageIcon icon = (ImageIcon) imgBundle.getObject("roland_td12s.png");
+        final ImageIcon icon = (ImageIcon) imgBundle.getObject("about.png");
 		int width = icon.getIconWidth();
 		int height = icon.getIconHeight();
 		BufferedImage image = new BufferedImage(width, height,
@@ -62,7 +64,7 @@ public class AboutPanel extends JPanel {
 	private void addVersion(Graphics2D g, int width, int height) {
 		String version = new Info().getVersion();
 		g.setFont(new Font("Sans Serif", Font.PLAIN, 14));
-		g.setColor(Color.black);
+		g.setColor(Color.WHITE);
 		g.drawString(version, 182, 182);
 	}
 

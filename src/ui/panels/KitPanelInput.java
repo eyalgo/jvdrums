@@ -64,6 +64,7 @@ public final class KitPanelInput extends KitsPanel {
         
         laodKitsButton = new JButton(getFromModule());
         laodKitsButton.setToolTipText("Get kits from module");
+        laodKitsButton.setEnabled(false);
         
         clearButton = new JButton(clearList());
         clearButton.setToolTipText("Clear list");

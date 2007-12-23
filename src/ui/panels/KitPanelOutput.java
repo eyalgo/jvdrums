@@ -72,6 +72,7 @@ public final class KitPanelOutput extends KitsPanel {
         
         sendToModuleButton = new JButton(sendToModeule());
         sendToModuleButton.setToolTipText("Send kits to module");
+        sendToModuleButton.setEnabled(false);
         
         removeKitButton = new JButton(removeFromList());
         removeKitButton.setToolTipText("Remove from list");

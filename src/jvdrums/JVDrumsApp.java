@@ -34,17 +34,20 @@ import java.util.Collection;
 import ui.MainFrame;
 import bias.Configuration;
 import bias.store.CLIStore;
+import bias.store.DefaultingStore;
+import bias.store.PreferencesStore;
+import bias.store.PropertiesStore;
 import bias.store.ResourceBundlesStore;
 import bias.util.cli.Option;
 
 /**
  * @author egolan
- *
  */
 public final class JVDrumsApp {
     private static Configuration config = Configuration.getRoot().get(JVDrumsApp.class);
+
     public static void main(String args[]) {
-        
+        /* Collection<Option> options = */initConfiguration();
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Info().log();
@@ -54,8 +57,6 @@ public final class JVDrumsApp {
     }
 
     private static void createAndShowGui() {
-        /*Collection<Option> options = */initConfiguration();
-        
         final MainFrame mainFrame = new MainFrame();
         config.read(mainFrame);
         try {
@@ -81,18 +82,16 @@ public final class JVDrumsApp {
      */
     private static Collection<Option> initConfiguration() {
         Configuration configuration = Configuration.getRoot();
-
-//        configuration
-//                .addStore(new PropertiesStore(App.class, "app.properties"));
-//        configuration.addStore(new DefaultingStore(PreferencesStore.user(),
-//                new PropertiesStore(App.class, "preferences.properties")));
+        configuration.addStore(new PropertiesStore(JVDrumsApp.class, "app.properties"));
+        configuration.addStore(new DefaultingStore(PreferencesStore.user(),
+                new PropertiesStore(JVDrumsApp.class, "preferences.properties")));
         configuration.addStore(new ResourceBundlesStore("jvdrums"));
 
         CLIStore cliStore = new CLIStore();
-//        Option headless = cliStore.addSwitch("jorgan/App/headless", 'l');
-//        headless.setLongName("headless");
-//        headless.setDescription("start without a graphical UI");
-//        configuration.addStore(cliStore);
+        // Option headless = cliStore.addSwitch("jorgan/App/headless", 'l');
+        // headless.setLongName("headless");
+        // headless.setDescription("start without a graphical UI");
+        // configuration.addStore(cliStore);
 
         return cliStore.getOptions();
     }

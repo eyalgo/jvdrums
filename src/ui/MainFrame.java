@@ -84,6 +84,7 @@ public final class MainFrame extends JFrame {
         WindowUtilities.setJavaLookAndFeel();
         mainToolBar = new JToolBar();
         connectButton = new JButton("Connect");
+        connectButton.setEnabled(false);
         jSplitPane1 = new JSplitPane();
         inputPanel = new KitPanelInput(this, (KitsPanel) (outputPanel = new KitPanelOutput(
                 this)));
@@ -91,6 +92,7 @@ public final class MainFrame extends JFrame {
         fileMenu = new JMenu("File");
         helpMenu = new JMenu("Help");
         connectionMenu = new JMenu("Connection");
+        connectionMenu.setEnabled(false);
         connectionMenuItem = new JMenuItem("Connection");
 
         mainToolBar.setFloatable(false);

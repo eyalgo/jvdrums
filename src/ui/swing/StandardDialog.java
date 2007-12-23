@@ -11,7 +11,7 @@
  * GNU General Public License for more details.
  *
  */
-package ui.panels;
+package ui.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -36,9 +36,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.CompoundBorder;
 
-import ui.swing.BaseAction;
-import ui.swing.MultiLineLabel;
-import ui.swing.RuleBorder;
 
 /**
  * A standard dialog.

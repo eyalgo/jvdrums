@@ -29,6 +29,8 @@
  -->
 
 <project name="JVDrums" default="jar">
+	<property file="build.properties" />
+
 	<property name="dir.src" value="src" />
 	<property name="dir.build" value="build" />
 	<property name="dir.dist" value="dist" />
@@ -74,28 +76,32 @@
 	<target name="compile" depends="prepare">
 		<javac destdir="${dir.build}" source="1.6" target="1.6">
 			<classpath refid="libs.path" />
-			<src path="${dir.src}"/>
+			<src path="${dir.src}" />
 			<src path="${dir.test}" />
 		</javac>
 	</target>
-	
+
 	<target name="copy" depends="compile">
+
 		<copy todir="${test-resources-dist}">
 			<fileset dir="${test-resources}" includes="**/*.syx" />
 		</copy>
 		<copy todir="${build-lib-path}">
 			<fileset dir="${lib-path}" />
 		</copy>
-		
+
 		<copy todir="${dir.build}/ui/utils/images">
 			<fileset dir="${dir.src}/ui/utils/images" includes="**/*.png" />
 		</copy>
 
-		<copy todir="${dir.build}/ui">
-			<fileset dir="${dir.src}/ui" includes="*.properties" />
+		<filter token="jvdrums.version" value="${jvdrums.version}" />
+		<copy todir="./${dir.build}" filtering="true">
+			<fileset dir="./${dir.src}">
+				<include name="**/*.properties" />
+			</fileset>
 		</copy>
 
-		<copy file="${dir.src}/run.bat" todir="${dir.build}"/>
+		<copy file="${dir.src}/run.bat" todir="${dir.build}" />
 	</target>
 
 	<target name="test" depends="copy">
@@ -116,7 +122,7 @@
 	<target name="jar" depends="copy" description="jar application">
 		<jar destfile="${dist-jar-file}" manifest="${manifest-file}" update="true">
 			<fileset dir="${dir.build}" includes="**/*.class **/*.png **/*.properties" excludes="**/*Test*.class **/*.syx **/*.bat" />
-			
+
 		</jar>
 	</target>
 
