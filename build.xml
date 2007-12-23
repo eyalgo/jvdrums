@@ -34,6 +34,7 @@
 	<property name="dir.src" value="src" />
 	<property name="dir.build" value="build" />
 	<property name="dir.dist" value="dist" />
+	<property name="dir.docs" value="docs" />
 	<property name="dir.test" value="test" />
 	<property name="dir.test.result" value="test-res" />
 	<property name="test-resources" value="${dir.test}/resources" />
@@ -82,12 +83,11 @@
 	</target>
 
 	<target name="copy" depends="compile">
-
 		<copy todir="${test-resources-dist}">
 			<fileset dir="${test-resources}" includes="**/*.syx" />
 		</copy>
 		<copy todir="${build-lib-path}">
-			<fileset dir="${lib-path}" />
+			<fileset dir="${lib-path}" includes="*.jar"/>
 		</copy>
 
 		<copy todir="${dir.build}/ui/utils/images">
@@ -116,17 +116,29 @@
 	<target name="jar-test" depends="test" description="jar application">
 		<jar destfile="${dist-jar-file}" manifest="${manifest-file}" update="true">
 			<fileset dir="${dir.build}" includes="**/*.class **/*.png **/*.properties" excludes="**/*Test*.class **/*.syx **/*.bat" />
+			<fileset dir = "${build-lib-path}"/>
 		</jar>
 	</target>
 
 	<target name="jar" depends="copy" description="jar application">
 		<jar destfile="${dist-jar-file}" manifest="${manifest-file}" update="true">
 			<fileset dir="${dir.build}" includes="**/*.class **/*.png **/*.properties" excludes="**/*Test*.class **/*.syx **/*.bat" />
-
+			<fileset dir = "${build-lib-path}"/>
 		</jar>
+	</target>
+	
+	<target name="dist" description="Set up the distribution" depends="clean, jar-test">
+		<copy todir="${dir.dist}/${dir.docs}">
+			<fileset dir="${dir.docs}" />
+		</copy>
+		<copy todir="${dir.dist}/lib">
+			<fileset dir="${build-lib-path}" includes="*.jar"/>
+		</copy>
+		<zip basedir="${dir.dist}" destfile="${dir.dist}/jvdrums-${jvdrums.version}.zip" />
 	</target>
 
 	<!--
+	
 	<fileset dir="${dir.src}" includes="**/*.png"/>
 			<fileset dir="${dir.build}" includes="**/*.class **/images/**" excludes="**/Test*.class **/*.syx **/*.bat" />
 -->
