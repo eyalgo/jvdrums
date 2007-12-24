@@ -8,3 +8,5 @@ Release 0.5 - Alpha Release:
 Release 0.7 - Alpha Release:
 * The user can select MIDI source and destination ports.
 * The user can upload kits to the module.
+* There is no indication that the kits are downloaded.
+* There is no indication that the download has finished.
