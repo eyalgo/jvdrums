@@ -102,6 +102,9 @@
 		</copy>
 
 		<copy file="${dir.src}/run.bat" todir="${dir.build}" />
+		<copy todir="${dir.dist}/lib">
+			<fileset dir="${build-lib-path}" includes="*.jar"/>
+		</copy>
 	</target>
 
 	<target name="test" depends="copy">
@@ -131,12 +134,14 @@
 		<copy todir="${dir.dist}/${dir.docs}">
 			<fileset dir="${dir.docs}" />
 		</copy>
-		<copy todir="${dir.dist}/lib">
-			<fileset dir="${build-lib-path}" includes="*.jar"/>
-		</copy>
 		<zip basedir="${dir.dist}" destfile="${dir.dist}/jvdrums-${jvdrums.version}.zip" />
 	</target>
 
+	<target name="deploy" description="deploy the application on SourceForge" depends="dist">
+		<ftp server="zzupload.sourceforge.net" userid="anonymous" password="" remotedir="/incoming">
+			<fileset file="./dist/jvdrums-${jvdrums.version}.zip" />
+		</ftp>
+	</target>	
 	<!--
 	
 	<fileset dir="${dir.src}" includes="**/*.png"/>

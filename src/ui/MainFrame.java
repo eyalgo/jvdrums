@@ -32,21 +32,25 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
+import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiUnavailableException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
+import midi.BulkSender;
+
 import ui.panels.AboutPanel;
 import ui.panels.KitPanelInput;
 import ui.panels.KitPanelOutput;
 import ui.panels.KitsPanel;
+import ui.panels.MidiSourcePanel;
 import ui.swing.BaseAction;
 import ui.swing.Desktop;
 import ui.utils.ExitListener;
@@ -60,11 +64,11 @@ import exceptions.VdrumException;
 public final class MainFrame extends JFrame {
     private static final long serialVersionUID = -7164597771180443878L;
     private static Configuration config = Configuration.getRoot().get(MainFrame.class);
+    private final BulkSender bulkSender;
     private JButton connectButton;
     private JMenu fileMenu;
     private JMenu helpMenu;
     private JMenu connectionMenu;
-    private JMenuItem connectionMenuItem;
     private JMenuBar jMenuBar1;
     private JSplitPane jSplitPane1;
     private JToolBar mainToolBar;
@@ -74,6 +78,7 @@ public final class MainFrame extends JFrame {
     /** Creates new form MainFrame */
     public MainFrame() {
         super("JVDrums");
+        bulkSender = new BulkSender();
     }
 
     public void initFrame() {
@@ -92,8 +97,6 @@ public final class MainFrame extends JFrame {
         fileMenu = new JMenu("File");
         helpMenu = new JMenu("Help");
         connectionMenu = new JMenu("Connection");
-        connectionMenu.setEnabled(false);
-        connectionMenuItem = new JMenuItem("Connection");
 
         mainToolBar.setFloatable(false);
         mainToolBar.setRollover(true);
@@ -117,7 +120,7 @@ public final class MainFrame extends JFrame {
         getContentPane().add(jSplitPane1, BorderLayout.CENTER);
 
         fileMenu.add(new ExitAction());
-        connectionMenu.add(connectionMenuItem);
+        connectionMenu.add(new MidiSourceAction());
 
         helpMenu.add(new WebsiteAction());
         helpMenu.add(new AboutAction());
@@ -125,7 +128,7 @@ public final class MainFrame extends JFrame {
         jMenuBar1.add(connectionMenu);
         jMenuBar1.add(helpMenu);
         setJMenuBar(jMenuBar1);
-
+        
         pack();
     }
 
@@ -178,4 +181,25 @@ public final class MainFrame extends JFrame {
             Desktop.browse("http://jvdrums.sourceforge.net");
         }
     }
+    
+    @SuppressWarnings("serial")
+    private class MidiSourceAction extends BaseAction {
+        private MidiSourceAction() {
+            config.get("midisource").read(this);
+        }
+        @Override
+        public void actionPerformed(ActionEvent ev) {
+            MidiSourcePanel.showDialog(MainFrame.this);
+        }
+    }
+
+    public void setDestinationDevice(final MidiDevice destinationDevice) {
+        try {
+            bulkSender.setDestinationDevice(destinationDevice);
+        }
+        catch (MidiUnavailableException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+     }
 }

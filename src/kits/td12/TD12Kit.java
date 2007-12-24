@@ -185,4 +185,7 @@ public final class TD12Kit implements TdKit {
         return result.toString();
     }
 
+    public VdrumsSysexMessage[] getKitSubParts() {
+        return subParts;
+    }
 }

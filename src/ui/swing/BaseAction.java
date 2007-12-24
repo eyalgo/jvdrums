@@ -5,7 +5,6 @@ import javax.swing.Action;
 import javax.swing.Icon;
 
 public abstract class BaseAction extends AbstractAction {
-
 	public void setName(String name) {
 		putValue(Action.NAME, name);
 	}
