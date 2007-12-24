@@ -76,7 +76,7 @@ public final class KitPanelInput extends KitsPanel {
 
     @SuppressWarnings("serial")
     private Action getFromModule() {
-        Icon icon = createIcon("get-from-device.png");
+        Icon icon = createIcon("dnldFrDev.png");
         Action action = new AbstractAction("", icon) {
             public void actionPerformed(ActionEvent e) {
             }

@@ -40,6 +40,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JToolBar;
 import javax.swing.filechooser.FileFilter;
 
 import ui.MainFrame;
@@ -49,7 +50,7 @@ public abstract class KitsPanel extends JPanel {
     private static final long serialVersionUID = -5323945831812498619L;
     private JScrollPane scrollPane;
     private KitsList kitList;
-    private JPanel buttonsPanel;
+    private JToolBar buttonsPanel;
     private final MainFrame parentFrame;
 
     public KitsPanel(MainFrame parentFrame, KitsList kistList) {
@@ -59,7 +60,7 @@ public abstract class KitsPanel extends JPanel {
         scrollPane = new JScrollPane();
         scrollPane.setViewportView(kitList);
         this.add(scrollPane, BorderLayout.CENTER);
-        buttonsPanel = new JPanel();
+        buttonsPanel = new JToolBar();
         this.add(buttonsPanel, BorderLayout.SOUTH);
 //        kitList.addMouseListener(new MouseAdapter() {
 //            public void mouseClicked(MouseEvent evt) {
@@ -97,6 +98,10 @@ public abstract class KitsPanel extends JPanel {
 
     final void addToButtonBar(Component component) {
         buttonsPanel.add(component);
+    }
+    
+    final void addToButtonBar(Action action) {
+        buttonsPanel.add(action);
     }
 
     

@@ -30,10 +30,7 @@ package ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.util.Vector;
 
-import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.JButton;
@@ -46,21 +43,16 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-import kits.TdKit;
-
-import managers.TDManager;
 import midi.BulkSender;
-
-import ui.panels.AboutPanel;
 import ui.panels.KitPanelInput;
 import ui.panels.KitPanelOutput;
 import ui.panels.KitsPanel;
-import ui.panels.MidiSourcePanel;
-import ui.swing.Desktop;
-import ui.swing.actions.BaseAction;
+import ui.swing.actions.AboutAction;
+import ui.swing.actions.ExitAction;
+import ui.swing.actions.MidiSourceAction;
+import ui.swing.actions.WebsiteAction;
 import ui.utils.ExitListener;
 import ui.utils.WindowUtilities;
-import bias.Configuration;
 import exceptions.VdrumException;
 
 /**
@@ -68,7 +60,7 @@ import exceptions.VdrumException;
  */
 public final class MainFrame extends JFrame {
     private static final long serialVersionUID = -7164597771180443878L;
-    private static Configuration config = Configuration.getRoot().get(MainFrame.class);
+//    private static Configuration config = Configuration.getRoot().get(MainFrame.class);
     private final BulkSender bulkSender;
     private JButton connectButton;
     private JMenu fileMenu;
@@ -125,16 +117,20 @@ public final class MainFrame extends JFrame {
         getContentPane().add(jSplitPane1, BorderLayout.CENTER);
 
         fileMenu.add(new ExitAction());
-        connectionMenu.add(new MidiSourceAction());
+        connectionMenu.add(new MidiSourceAction(this));
 
         helpMenu.add(new WebsiteAction());
-        helpMenu.add(new AboutAction());
+        helpMenu.add(new AboutAction(this));
         jMenuBar1.add(fileMenu);
         jMenuBar1.add(connectionMenu);
         jMenuBar1.add(helpMenu);
         setJMenuBar(jMenuBar1);
 
         pack();
+    }
+
+    public final BulkSender getBulkSender() {
+        return this.bulkSender;
     }
 
     public void showErrorDialog(VdrumException vdrumException) {
@@ -146,79 +142,6 @@ public final class MainFrame extends JFrame {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
-    @SuppressWarnings("serial")
-    private class ExitAction extends BaseAction {
-        private ExitAction() {
-            config.get("exit").read(this);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent ev) {
-            System.exit(0);
-        }
-    }
-
-    @SuppressWarnings("serial")
-    private class AboutAction extends BaseAction {
-        private AboutAction() {
-            config.get("about").read(this);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent ev) {
-            AboutPanel.showInDialog(MainFrame.this);
-        }
-    }
-
-    /**
-     * The action that shows the jvdrums website.
-     */
-    @SuppressWarnings("serial")
-    private class WebsiteAction extends BaseAction {
-        private WebsiteAction() {
-            config.get("website").read(this);
-            setEnabled(Desktop.isSupported());
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent ev) {
-            Desktop.browse("http://jvdrums.sourceforge.net");
-        }
-    }
-
-    @SuppressWarnings("serial")
-    private class MidiSourceAction extends BaseAction {
-        private MidiSourceAction() {
-            config.get("midisource").read(this);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent ev) {
-            MidiSourcePanel.showDialog(MainFrame.this, bulkSender.getMidiDeviceInfo());
-        }
-    }
-
-    public void sendToModule(TdKit[] kits) {
-        if (bulkSender.getMidiDeviceInfo() == null) {
-            showErrorDialog("Module Output MIDI is not set", "MIDI Detination is not set");
-            return;
-        }
-        try {
-            Vector<TdKit> actualKits = TDManager.kitsToKits(kits);
-            for (TdKit kit : actualKits) {
-                System.out.println("Sending " + kit);
-                bulkSender.sendKits(kit);
-            }
-        }
-        catch (InvalidMidiDataException e) {
-            showErrorDialog(e.getMessage(), e.getMessage());
-            e.printStackTrace();
-        }
-        catch (VdrumException e) {
-            showErrorDialog(e);
-        }
-    }
-
     public void setDestinationDevice(final MidiDevice.Info destinationDevice) {
         try {
             bulkSender.setDestinationDevice(destinationDevice);
@@ -227,4 +150,5 @@ public final class MainFrame extends JFrame {
             showErrorDialog("MDestination MIDI Problem", "Problem opening port");
         }
     }
+
 }

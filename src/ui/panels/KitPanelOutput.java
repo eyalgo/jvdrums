@@ -51,6 +51,7 @@ import org.apache.commons.io.FilenameUtils;
 import ui.MainFrame;
 import ui.lists.OutputKitsList;
 import ui.lists.OutputKitsList.Direction;
+import ui.swing.actions.SendToModuleAction;
 import utils.VDrumsUtils;
 
 /**
@@ -59,7 +60,6 @@ import utils.VDrumsUtils;
 public final class KitPanelOutput extends KitsPanel {
     private static final long serialVersionUID = -5217989811338648085L;
     private JButton saveButton;
-    private JButton sendToModuleButton;
     private JButton removeKitButton;
     private JButton moveUpButton;
     private JButton moveDownButton;
@@ -69,9 +69,6 @@ public final class KitPanelOutput extends KitsPanel {
         super(parentFrame, new OutputKitsList());
         saveButton = new JButton(saveToFile());
         saveButton.setToolTipText("Save to file");
-        
-        sendToModuleButton = new JButton(sendToModule());
-        sendToModuleButton.setToolTipText("Send kits to module");
         
         removeKitButton = new JButton(removeFromList());
         removeKitButton.setToolTipText("Remove from list");
@@ -84,30 +81,14 @@ public final class KitPanelOutput extends KitsPanel {
         clearButton.setToolTipText("Clear list");
         
         addToButtonBar(saveButton);
-        addToButtonBar(sendToModuleButton);
+        
+        addToButtonBar(new SendToModuleAction(getParentFrame(),(OutputKitsList) getKitList()));
         addToButtonBar(removeKitButton);
         addToButtonBar(clearButton);
         addToButtonBar(moveUpButton);
         addToButtonBar(moveDownButton);
         moveDownButton.setEnabled(false);
         moveUpButton.setEnabled(false);
-    }
-
-    @SuppressWarnings("serial")
-    private Action sendToModule() {
-        Icon icon = createIcon("upload-to-device.png");
-        Action action = new AbstractAction("", icon) {
-            public void actionPerformed(ActionEvent e) {
-                final TdKit[] kitsInList = getKitList().getKits();
-                if (((OutputKitsList) getKitList()).numberOfKits() < 1) {
-                    getParentFrame().showErrorDialog("There aren't any kits in the list.",
-                            "No kits problem");
-                    return;
-                }
-                getParentFrame().sendToModule(kitsInList);
-            }
-        };
-        return action;
     }
 
     @SuppressWarnings("serial")
