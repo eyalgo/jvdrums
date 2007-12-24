@@ -56,8 +56,8 @@ import ui.panels.KitPanelInput;
 import ui.panels.KitPanelOutput;
 import ui.panels.KitsPanel;
 import ui.panels.MidiSourcePanel;
-import ui.swing.BaseAction;
 import ui.swing.Desktop;
+import ui.swing.actions.BaseAction;
 import ui.utils.ExitListener;
 import ui.utils.WindowUtilities;
 import bias.Configuration;
@@ -194,11 +194,15 @@ public final class MainFrame extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent ev) {
-            MidiSourcePanel.showDialog(MainFrame.this);
+            MidiSourcePanel.showDialog(MainFrame.this, bulkSender.getMidiDeviceInfo());
         }
     }
 
     public void sendToModule(TdKit[] kits) {
+        if (bulkSender.getMidiDeviceInfo() == null) {
+            showErrorDialog("Module Output MIDI is not set", "MIDI Detination is not set");
+            return;
+        }
         try {
             Vector<TdKit> actualKits = TDManager.kitsToKits(kits);
             for (TdKit kit : actualKits) {
@@ -207,12 +211,11 @@ public final class MainFrame extends JFrame {
             }
         }
         catch (InvalidMidiDataException e) {
-            // TODO Auto-generated catch block
+            showErrorDialog(e.getMessage(), e.getMessage());
             e.printStackTrace();
         }
         catch (VdrumException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            showErrorDialog(e);
         }
     }
 
@@ -221,8 +224,7 @@ public final class MainFrame extends JFrame {
             bulkSender.setDestinationDevice(destinationDevice);
         }
         catch (MidiUnavailableException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            showErrorDialog("MDestination MIDI Problem", "Problem opening port");
         }
     }
 }

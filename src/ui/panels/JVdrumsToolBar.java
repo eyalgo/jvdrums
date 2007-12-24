@@ -26,51 +26,23 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package midi;
+package ui.panels;
 
-import javax.sound.midi.MidiDevice;
-import javax.sound.midi.MidiSystem;
-import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.Receiver;
-
-import kits.TdKit;
+import javax.swing.JButton;
+import javax.swing.JToolBar;
 
 /**
  * @author egolan
+ *
  */
-public final class BulkSender {
-    MidiDevice.Info midiDeviceInfo = null;
-    MidiDevice midiDevice = null;
-    Receiver actReceiver = null;
+public final class JVdrumsToolBar extends JToolBar {
+    private JButton laodKitsButton;
+    private JButton browseButton;
 
-    public BulkSender() {}
-    
-    public MidiDevice.Info getMidiDeviceInfo() {
-        return midiDeviceInfo;
-    }
-
-    public void setDestinationDevice(MidiDevice.Info newMidiInfo)
-            throws MidiUnavailableException {
-        if (this.midiDevice != null) {
-            this.midiDevice.close();
-        }
-        if (newMidiInfo != null) {
-            System.out.println(newMidiInfo);
-            MidiDevice newDestinationDevice = MidiSystem.getMidiDevice(newMidiInfo);
-            if (newDestinationDevice != null) {
-                this.midiDevice = newDestinationDevice;
-                this.midiDevice.open();
-                actReceiver = midiDevice.getReceiver();
-            }
-        }
-        this.midiDeviceInfo = newMidiInfo;
-    }
-
-    public void sendKits(final TdKit kit) {
-        VdrumsSysexMessage[] parts = kit.getKitSubParts();
-        for (VdrumsSysexMessage part : parts) {
-            long timestamp = midiDevice.getMicrosecondPosition();
-            actReceiver.send(part, timestamp);
-        }
+    /**
+     * 
+     */
+    public JVdrumsToolBar() {
+    // TODO Auto-generated constructor stub
     }
 }

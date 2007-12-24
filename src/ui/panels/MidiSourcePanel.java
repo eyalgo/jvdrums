@@ -34,12 +34,14 @@ import java.awt.Insets;
 import java.awt.event.ItemEvent;
 
 import javax.sound.midi.MidiDevice;
-import javax.sound.midi.MidiSystem;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import ui.MainFrame;
+import ui.combobox.DestinationMidiComboBox;
+import ui.combobox.MidiComboBox;
+import ui.combobox.SourceMidiComboBox;
 import ui.swing.StandardDialog;
 
 /**
@@ -52,14 +54,19 @@ public final class MidiSourcePanel extends StandardDialog {
     private final MainFrame mainFrame;
     private JPanel bodyPanel;
     private JLabel sourceLabel = new JLabel("Source");
-    private JComboBox sourceCombo = new JComboBox();
+    private MidiComboBox sourceCombo = new SourceMidiComboBox();
     private JLabel destinationLabel = new JLabel("Destination");
-    private JComboBox destinationCombo = new JComboBox();
+    private MidiComboBox destinationCombo = new DestinationMidiComboBox();
 
-    private MidiSourcePanel(MainFrame mainFrame) {
+    private MidiSourcePanel(MainFrame mainFrame, MidiDevice.Info destinationMidiDevice) {
         super(mainFrame);
         this.mainFrame = mainFrame;
         initDialog();
+        if (destinationMidiDevice == null) {
+            destinationCombo.setNoneSelected();
+        } else {
+            destinationCombo.setSelectedItem(destinationMidiDevice);            
+        }
     }
 
     private void initDialog() {
@@ -101,8 +108,8 @@ public final class MidiSourcePanel extends StandardDialog {
         gridBagConstraints.anchor = GridBagConstraints.EAST;
         bodyPanel.add(destinationCombo, gridBagConstraints);
 
-        sourceCombo.addItem("None");
-        destinationCombo.addItem("None");
+//        sourceCombo.addItem("None");
+//        destinationCombo.addItem("None");
 
         destinationCombo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -110,7 +117,7 @@ public final class MidiSourcePanel extends StandardDialog {
             }
         });
 
-        initCombos();
+//        initCombos();
 
         setResizable(false);
         setBounds(null);
@@ -120,26 +127,6 @@ public final class MidiSourcePanel extends StandardDialog {
         setBody(bodyPanel);
     }
 
-    private void initCombos() {
-        MidiDevice.Info midiInfos[] = MidiSystem.getMidiDeviceInfo();
-        MidiDevice md;
-        for (MidiDevice.Info mdi : midiInfos) {
-            try {
-                md = MidiSystem.getMidiDevice(mdi);
-
-                if (md.getMaxReceivers() != 0) {
-                    destinationCombo.addItem(mdi);
-                }
-
-                if (md.getMaxTransmitters() != 0) {
-                    sourceCombo.addItem(mdi.getName());
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     private void destinationItemStateChanged(ItemEvent evt) {
         switch (evt.getStateChange()) {
@@ -153,10 +140,6 @@ public final class MidiSourcePanel extends StandardDialog {
                 }
                  break;
             case ItemEvent.DESELECTED:
-                // System.out.println ("Destination deselektiert: "+oldDestination);
-                // if (actReceiver != null) {
-                // actReceiver.close();
-                // }
                 break;
         }
 
@@ -168,10 +151,9 @@ public final class MidiSourcePanel extends StandardDialog {
         super.onOK();
     }
 
-    public static void showDialog(MainFrame mainFrame) {
-        final MidiSourcePanel midiSourcePanel = new MidiSourcePanel(mainFrame);
+    public static void showDialog(MainFrame mainFrame, MidiDevice.Info destinationMidiInfo) {
+        final MidiSourcePanel midiSourcePanel = new MidiSourcePanel(mainFrame, destinationMidiInfo);
         midiSourcePanel.setVisible(true);
         midiSourcePanel.dispose();
     }
-
 }

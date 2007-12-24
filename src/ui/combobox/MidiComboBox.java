@@ -26,51 +26,40 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package midi;
+package ui.combobox;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
-import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.Receiver;
-
-import kits.TdKit;
+import javax.swing.JComboBox;
 
 /**
  * @author egolan
+ *
  */
-public final class BulkSender {
-    MidiDevice.Info midiDeviceInfo = null;
-    MidiDevice midiDevice = null;
-    Receiver actReceiver = null;
-
-    public BulkSender() {}
-    
-    public MidiDevice.Info getMidiDeviceInfo() {
-        return midiDeviceInfo;
+public abstract class MidiComboBox extends JComboBox {
+    public MidiComboBox() {
+        addItem("None");
+        init();
     }
-
-    public void setDestinationDevice(MidiDevice.Info newMidiInfo)
-            throws MidiUnavailableException {
-        if (this.midiDevice != null) {
-            this.midiDevice.close();
-        }
-        if (newMidiInfo != null) {
-            System.out.println(newMidiInfo);
-            MidiDevice newDestinationDevice = MidiSystem.getMidiDevice(newMidiInfo);
-            if (newDestinationDevice != null) {
-                this.midiDevice = newDestinationDevice;
-                this.midiDevice.open();
-                actReceiver = midiDevice.getReceiver();
+    
+    public final void setNoneSelected() {
+        setSelectedIndex(0);
+    }
+    
+    private void init() {
+        MidiDevice.Info midiInfos[] = MidiSystem.getMidiDeviceInfo();
+        for (MidiDevice.Info mdi : midiInfos) {
+            try {
+                MidiDevice md = MidiSystem.getMidiDevice(mdi);
+                if (shouldAddItem(md)) {
+                    addItem(mdi);
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
             }
         }
-        this.midiDeviceInfo = newMidiInfo;
     }
 
-    public void sendKits(final TdKit kit) {
-        VdrumsSysexMessage[] parts = kit.getKitSubParts();
-        for (VdrumsSysexMessage part : parts) {
-            long timestamp = midiDevice.getMicrosecondPosition();
-            actReceiver.send(part, timestamp);
-        }
-    }
+    protected abstract boolean shouldAddItem(MidiDevice md);
 }

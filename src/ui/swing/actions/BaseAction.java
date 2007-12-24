@@ -1,4 +1,4 @@
-package ui.swing;
+package ui.swing.actions;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;

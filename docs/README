@@ -39,9 +39,4 @@ Usage Instructions:
 	
 	There is a clear button for each list.
 	
-Release 0.5 - Alpha Release:
-1. Supports only TD-12.
-2. Can load files and save new files with new ordered kits bank.
-3. Original kit location is shown in the left list. 
-4. Does not support MIDI dump.
-5. Checked only on Microsoft Windows XP.
+

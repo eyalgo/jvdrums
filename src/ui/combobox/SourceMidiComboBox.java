@@ -26,51 +26,22 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package midi;
+package ui.combobox;
 
 import javax.sound.midi.MidiDevice;
-import javax.sound.midi.MidiSystem;
-import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.Receiver;
-
-import kits.TdKit;
 
 /**
  * @author egolan
+ *
  */
-public final class BulkSender {
-    MidiDevice.Info midiDeviceInfo = null;
-    MidiDevice midiDevice = null;
-    Receiver actReceiver = null;
-
-    public BulkSender() {}
-    
-    public MidiDevice.Info getMidiDeviceInfo() {
-        return midiDeviceInfo;
-    }
-
-    public void setDestinationDevice(MidiDevice.Info newMidiInfo)
-            throws MidiUnavailableException {
-        if (this.midiDevice != null) {
-            this.midiDevice.close();
-        }
-        if (newMidiInfo != null) {
-            System.out.println(newMidiInfo);
-            MidiDevice newDestinationDevice = MidiSystem.getMidiDevice(newMidiInfo);
-            if (newDestinationDevice != null) {
-                this.midiDevice = newDestinationDevice;
-                this.midiDevice.open();
-                actReceiver = midiDevice.getReceiver();
-            }
-        }
-        this.midiDeviceInfo = newMidiInfo;
-    }
-
-    public void sendKits(final TdKit kit) {
-        VdrumsSysexMessage[] parts = kit.getKitSubParts();
-        for (VdrumsSysexMessage part : parts) {
-            long timestamp = midiDevice.getMicrosecondPosition();
-            actReceiver.send(part, timestamp);
+@SuppressWarnings("serial")
+public class SourceMidiComboBox extends MidiComboBox {
+    @Override
+    protected boolean shouldAddItem(MidiDevice md) {
+        if (md.getMaxTransmitters() != 0) {
+            return true;
+        } else {
+            return false;
         }
     }
 }
