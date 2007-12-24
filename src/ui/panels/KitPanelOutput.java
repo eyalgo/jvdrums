@@ -70,9 +70,8 @@ public final class KitPanelOutput extends KitsPanel {
         saveButton = new JButton(saveToFile());
         saveButton.setToolTipText("Save to file");
         
-        sendToModuleButton = new JButton(sendToModeule());
+        sendToModuleButton = new JButton(sendToModule());
         sendToModuleButton.setToolTipText("Send kits to module");
-        sendToModuleButton.setEnabled(false);
         
         removeKitButton = new JButton(removeFromList());
         removeKitButton.setToolTipText("Remove from list");
@@ -95,10 +94,17 @@ public final class KitPanelOutput extends KitsPanel {
     }
 
     @SuppressWarnings("serial")
-    private Action sendToModeule() {
+    private Action sendToModule() {
         Icon icon = createIcon("upload-to-device.png");
         Action action = new AbstractAction("", icon) {
             public void actionPerformed(ActionEvent e) {
+                final TdKit[] kitsInList = getKitList().getKits();
+                if (((OutputKitsList) getKitList()).numberOfKits() < 1) {
+                    getParentFrame().showErrorDialog("There aren't any kits in the list.",
+                            "No kits problem");
+                    return;
+                }
+                getParentFrame().sendToModule(kitsInList);
             }
         };
         return action;

@@ -29,6 +29,7 @@
 package midi;
 
 import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 
@@ -43,25 +44,27 @@ public final class BulkSender {
 
     public BulkSender() {}
 
-    public void setDestinationDevice(MidiDevice newDestinationDevice)
+    public void setDestinationDevice(MidiDevice.Info newMidiInfo)
             throws MidiUnavailableException {
         if (this.destinationDevice != null) {
             this.destinationDevice.close();
         }
-        if (newDestinationDevice!= null) {
-            this.destinationDevice = newDestinationDevice;
-            this.destinationDevice.open();
-            actReceiver = destinationDevice.getReceiver();
+        if (newMidiInfo != null) {
+            System.out.println(newMidiInfo);
+            MidiDevice newDestinationDevice = MidiSystem.getMidiDevice(newMidiInfo);
+            if (newDestinationDevice != null) {
+                this.destinationDevice = newDestinationDevice;
+                this.destinationDevice.open();
+                actReceiver = destinationDevice.getReceiver();
+            }
         }
     }
 
-    public void sendKits(final TdKit[] kits) {
-        for (TdKit kit : kits) {
-            VdrumsSysexMessage[] parts = kit.getKitSubParts();
-            for (VdrumsSysexMessage part : parts) {
-                long timestamp = destinationDevice.getMicrosecondPosition();
-                actReceiver.send(part, timestamp);
-            }
+    public void sendKits(final TdKit kit) {
+        VdrumsSysexMessage[] parts = kit.getKitSubParts();
+        for (VdrumsSysexMessage part : parts) {
+            long timestamp = destinationDevice.getMicrosecondPosition();
+            actReceiver.send(part, timestamp);
         }
     }
 }

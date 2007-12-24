@@ -31,6 +31,7 @@ package managers;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Vector;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
@@ -100,14 +101,16 @@ public final class TestTD12Manager {
         changedKits[4] = changedKits[9];
         changedKits[9] = temp5;
 
-        TdKit[] newFromManager = TDManager.kitsToKits(changedKits);
-        Assert.assertTrue(newFromManager.length == 50);
-        for (int i = 0; i < newFromManager.length; i++) {
-            if (newFromManager[i] == null) {
+        Vector<TdKit> newFromManager = TDManager.kitsToKits(changedKits);
+        Assert.assertTrue(newFromManager.size() == 50);
+        int i = 0;
+        for (TdKit kitFromManager : newFromManager) {
+            if (kitFromManager == null) {
                 Assert.fail(i + " is null");
             }
+            i++;
         }
-        Assert.assertEquals(kitsFromFile[4].getName(), newFromManager[9].getName());
+        Assert.assertEquals(kitsFromFile[4].getName(), newFromManager.elementAt(9).getName());
     }
 
     @Test(dependsOnMethods = { "checkMessageFor50Kits", "checkMessageToKit25" })

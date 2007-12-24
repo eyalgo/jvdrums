@@ -31,7 +31,9 @@ package ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.util.Vector;
 
+import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.JButton;
@@ -44,6 +46,9 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
+import kits.TdKit;
+
+import managers.TDManager;
 import midi.BulkSender;
 
 import ui.panels.AboutPanel;
@@ -128,7 +133,7 @@ public final class MainFrame extends JFrame {
         jMenuBar1.add(connectionMenu);
         jMenuBar1.add(helpMenu);
         setJMenuBar(jMenuBar1);
-        
+
         pack();
     }
 
@@ -152,7 +157,6 @@ public final class MainFrame extends JFrame {
             System.exit(0);
         }
     }
-
 
     @SuppressWarnings("serial")
     private class AboutAction extends BaseAction {
@@ -181,19 +185,38 @@ public final class MainFrame extends JFrame {
             Desktop.browse("http://jvdrums.sourceforge.net");
         }
     }
-    
+
     @SuppressWarnings("serial")
     private class MidiSourceAction extends BaseAction {
         private MidiSourceAction() {
             config.get("midisource").read(this);
         }
+
         @Override
         public void actionPerformed(ActionEvent ev) {
             MidiSourcePanel.showDialog(MainFrame.this);
         }
     }
 
-    public void setDestinationDevice(final MidiDevice destinationDevice) {
+    public void sendToModule(TdKit[] kits) {
+        try {
+            Vector<TdKit> actualKits = TDManager.kitsToKits(kits);
+            for (TdKit kit : actualKits) {
+                System.out.println("Sending " + kit);
+                bulkSender.sendKits(kit);
+            }
+        }
+        catch (InvalidMidiDataException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        catch (VdrumException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public void setDestinationDevice(final MidiDevice.Info destinationDevice) {
         try {
             bulkSender.setDestinationDevice(destinationDevice);
         }
@@ -201,5 +224,5 @@ public final class MainFrame extends JFrame {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-     }
+    }
 }

@@ -30,6 +30,7 @@ package managers;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Vector;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
@@ -60,12 +61,12 @@ public final class TDManager {
      * @throws InvalidMidiDataException
      * @throws VdrumException
      */
-    public static TdKit[] kitsToKits(TdKit[] kits) throws InvalidMidiDataException,
+    public static Vector<TdKit> kitsToKits(TdKit[] originalKits) throws InvalidMidiDataException,
             VdrumException {
-        final TdKit[] returnedKits = new TdKit[kits.length];
-        for (int i = 0; i < kits.length; i++) {
-            if (kits[i] != null) {
-                returnedKits[i] = kits[i].setNewId(i + 1);
+        final Vector<TdKit> returnedKits = new Vector<TdKit>();
+        for (int i = 0; i < originalKits.length; i++) {
+            if (originalKits[i] != null) {
+                returnedKits.add(originalKits[i].setNewId(i + 1));
             }
         }
         return returnedKits;

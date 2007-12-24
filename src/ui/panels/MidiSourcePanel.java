@@ -32,12 +32,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ItemEvent;
-import java.util.Vector;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
-import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.Transmitter;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -50,11 +47,7 @@ import ui.swing.StandardDialog;
  */
 @SuppressWarnings("serial")
 public final class MidiSourcePanel extends StandardDialog {
-    MidiDevice destinationDevice;
-    Transmitter actTransmitter = null;
-
-    MidiDevice.Info mdi[];
-    Vector<MidiDevice.Info> destinationInfoVector;
+    MidiDevice.Info selectedDestinationMidiInfo;
 
     private final MainFrame mainFrame;
     private JPanel bodyPanel;
@@ -71,9 +64,7 @@ public final class MidiSourcePanel extends StandardDialog {
 
     private void initDialog() {
         setTitle("MIDI Source");
-        // setDescription("Choose MIDI Source");
         bodyPanel = new JPanel();
-        // bodyPanel.setMinimumSize(new Dimension(300, 150));
         bodyPanel.setLayout(new GridBagLayout());
         /*
          * public GridBagConstraints () { gridx = RELATIVE; gridy = RELATIVE; gridwidth = 1;
@@ -113,7 +104,6 @@ public final class MidiSourcePanel extends StandardDialog {
         sourceCombo.addItem("None");
         destinationCombo.addItem("None");
 
-        destinationInfoVector = new Vector<MidiDevice.Info>();
         destinationCombo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 destinationItemStateChanged(evt);
@@ -131,19 +121,18 @@ public final class MidiSourcePanel extends StandardDialog {
     }
 
     private void initCombos() {
-        mdi = MidiSystem.getMidiDeviceInfo();
+        MidiDevice.Info midiInfos[] = MidiSystem.getMidiDeviceInfo();
         MidiDevice md;
-        for (int i = 0; i < mdi.length; i++) {
+        for (MidiDevice.Info mdi : midiInfos) {
             try {
-                md = MidiSystem.getMidiDevice(mdi[i]);
+                md = MidiSystem.getMidiDevice(mdi);
 
                 if (md.getMaxReceivers() != 0) {
-                    destinationInfoVector.add(mdi[i]);
-                    destinationCombo.addItem(mdi[i].getName());
+                    destinationCombo.addItem(mdi);
                 }
 
                 if (md.getMaxTransmitters() != 0) {
-                    sourceCombo.addItem(mdi[i].getName());
+                    sourceCombo.addItem(mdi.getName());
                 }
             }
             catch (Exception e) {
@@ -155,28 +144,19 @@ public final class MidiSourcePanel extends StandardDialog {
     private void destinationItemStateChanged(ItemEvent evt) {
         switch (evt.getStateChange()) {
             case ItemEvent.SELECTED:
-                int oldDestination = ((JComboBox) evt.getSource()).getSelectedIndex();
-                if (oldDestination != 0) {
-                    try {
-                        destinationDevice = MidiSystem
-                                .getMidiDevice((MidiDevice.Info) destinationInfoVector
-                                        .get(oldDestination - 1));
-                    }
-                    catch (MidiUnavailableException e) {
-                        System.out.println("Port already in use");
-                        // e.printStackTrace ();
-                    }
+                int selectedIndex = ((JComboBox) evt.getSource()).getSelectedIndex();
+                if (selectedIndex != 0) {
+                    selectedDestinationMidiInfo = (MidiDevice.Info) ((JComboBox) evt.getSource())
+                            .getItemAt(selectedIndex);
                 } else {
-                    destinationDevice = null;
+                     selectedDestinationMidiInfo = null;
                 }
-                if (actTransmitter != null) {
-                }
-                break;
+                 break;
             case ItemEvent.DESELECTED:
                 // System.out.println ("Destination deselektiert: "+oldDestination);
-//                if (actReceiver != null) {
-//                    actReceiver.close();
-//                }
+                // if (actReceiver != null) {
+                // actReceiver.close();
+                // }
                 break;
         }
 
@@ -184,7 +164,7 @@ public final class MidiSourcePanel extends StandardDialog {
 
     @Override
     public void onOK() {
-        mainFrame.setDestinationDevice(destinationDevice);
+        mainFrame.setDestinationDevice(selectedDestinationMidiInfo);
         super.onOK();
     }
 
@@ -193,4 +173,5 @@ public final class MidiSourcePanel extends StandardDialog {
         midiSourcePanel.setVisible(true);
         midiSourcePanel.dispose();
     }
+
 }
