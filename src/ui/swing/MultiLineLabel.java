@@ -53,14 +53,18 @@ public class MultiLineLabel extends JTextArea {
 	 *            number of rows
 	 */
 	public MultiLineLabel(int rows) {
-		super(rows, 0);
-		setFont(new JTextField().getFont());
-		setLineWrap(true);
-		setWrapStyleWord(true);
-		setEnabled(false);
-		setDisabledTextColor(Color.black);
-		setBackground(new JLabel().getBackground());
+        this(rows, 0);
 	}
+    
+    public MultiLineLabel(int rows, int columns) {
+        super(rows, columns);
+        setFont(new JTextField().getFont());
+        setLineWrap(true);
+        setWrapStyleWord(true);
+        setEnabled(false);
+        setDisabledTextColor(Color.black);
+        setBackground(new JLabel().getBackground());
+    }
 
 	@Override
 	public Dimension getPreferredSize() {

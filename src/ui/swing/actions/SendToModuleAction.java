@@ -32,16 +32,16 @@ import java.awt.event.ActionEvent;
 import java.util.Vector;
 
 import javax.sound.midi.InvalidMidiDataException;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import kits.TdKit;
 import managers.TDManager;
 import midi.BulkSender;
-import exceptions.VdrumException;
-
-import kits.TdKit;
 import ui.MainFrame;
 import ui.lists.OutputKitsList;
+import exceptions.VdrumException;
 
 /**
  * @author egolan
@@ -57,6 +57,7 @@ public final class SendToModuleAction extends BaseAction implements ListDataList
         this.bulkSender = this.mainFrame.getBulkSender();
         this.outputKitsList = outputKitsList;
         config.get("sendToModule").read(this);
+        this.outputKitsList.getModel().addListDataListener(this);
         setEnabledByKits();
     }
 
@@ -76,11 +77,7 @@ public final class SendToModuleAction extends BaseAction implements ListDataList
             return;
         }
         try {
-            Vector<TdKit> actualKits = TDManager.kitsToKits(kits);
-            for (TdKit kit : actualKits) {
-                System.out.println("Sending " + kit);
-                bulkSender.sendKits(kit);
-            }
+            send(kits);
         }
         catch (InvalidMidiDataException e) {
             mainFrame.showErrorDialog(e.getMessage(), e.getMessage());
@@ -89,6 +86,30 @@ public final class SendToModuleAction extends BaseAction implements ListDataList
         catch (VdrumException e) {
             mainFrame.showErrorDialog(e);
         }
+    }
+
+    private void send(final TdKit[] kits) throws InvalidMidiDataException, VdrumException {
+        ensureEventThread();
+        final Vector<TdKit> actualKits = TDManager.kitsToKits(kits);
+        Thread worker = new Thread() {
+            public void run() {
+                for (final TdKit kit : actualKits) {
+                    System.out.println("Sending " + kit);
+//                    uploadingPanel.addText("Sending: " + kit.getName() + " to slot number "
+//                            + kit.getId());
+                    bulkSender.sendKits(kit);
+                }
+            }
+        };
+        worker.start();
+    }
+
+    private void ensureEventThread() {
+        if (SwingUtilities.isEventDispatchThread()) {
+            return;
+        }
+
+        throw new RuntimeException("only the event " + "thread should invoke this method");
     }
 
     @Override
@@ -109,4 +130,5 @@ public final class SendToModuleAction extends BaseAction implements ListDataList
     public void intervalRemoved(ListDataEvent e) {
     // Unimplemented
     }
+
 }
