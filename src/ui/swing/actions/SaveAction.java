@@ -28,7 +28,17 @@
 
 package ui.swing.actions;
 
-import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.SysexMessage;
+
+import kits.TdKit;
+import managers.TDManager;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import ui.MainFrame;
 import ui.lists.OutputKitsList;
@@ -37,22 +47,23 @@ import ui.lists.OutputKitsList;
  * @author egolan
  */
 @SuppressWarnings("serial")
-public final class SaveAction extends BaseAction {
-    private final MainFrame mainFrame;
+public final class SaveAction extends FileAction {
     private final OutputKitsList outputKitsList;
 
     public SaveAction(MainFrame mainFrame, OutputKitsList outputKitsList) {
-        this.mainFrame = mainFrame;
+        super(mainFrame, "save");
         this.outputKitsList = outputKitsList;
-        config.get("save").read(this);
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if (outputKitsList.numberOfKits() < 1) {
-            mainFrame.showErrorDialog("There aren't any kits in the list.", "No kits problem");
-            return;
+    @Override
+    protected void handleAction(File file) throws InvalidMidiDataException,
+            IOException {
+        final TdKit[] kitsInList = outputKitsList.getKits();
+        if (!FilenameUtils.isExtension(file.getName(), "syx")) {
+            String name = file.getAbsolutePath() + ".syx";
+            file = new File(name);
         }
-
+        final SysexMessage messageFromManager = TDManager.kitsToSysexMessage(kitsInList);
+        FileUtils.writeByteArrayToFile(file, messageFromManager.getMessage());
     }
-
 }

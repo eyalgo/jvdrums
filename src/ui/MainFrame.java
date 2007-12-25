@@ -43,6 +43,8 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
+import bias.Configuration;
+
 import midi.BulkSender;
 import ui.panels.KitPanelInput;
 import ui.panels.KitPanelOutput;
@@ -60,10 +62,9 @@ import exceptions.VdrumException;
  */
 public final class MainFrame extends JFrame {
     private static final long serialVersionUID = -7164597771180443878L;
-//    private static Configuration config = Configuration.getRoot().get(MainFrame.class);
+    private static Configuration config = Configuration.getRoot().get(MainFrame.class);
     private final BulkSender bulkSender;
     private JButton connectButton;
-    private JMenu fileMenu;
     private JMenu helpMenu;
     private JMenu connectionMenu;
     private JMenuBar jMenuBar1;
@@ -91,8 +92,10 @@ public final class MainFrame extends JFrame {
         inputPanel = new KitPanelInput(this, (KitsPanel) (outputPanel = new KitPanelOutput(
                 this)));
         jMenuBar1 = new JMenuBar();
-        fileMenu = new JMenu("File");
-        helpMenu = new JMenu("Help");
+        JMenu fileMenu = new JMenu();
+        config.get("fileMenu").read(fileMenu);
+        helpMenu = new JMenu();
+        config.get("helpMenu").read(helpMenu);
         connectionMenu = new JMenu("Connection");
 
         mainToolBar.setFloatable(false);
@@ -129,7 +132,7 @@ public final class MainFrame extends JFrame {
         pack();
     }
 
-    public final BulkSender getBulkSender() {
+    public BulkSender getBulkSender() {
         return this.bulkSender;
     }
 

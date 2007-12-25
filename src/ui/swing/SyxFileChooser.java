@@ -26,48 +26,41 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package ui.panels;
+package ui.swing;
 
-import java.awt.event.ActionEvent;
+import java.io.File;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JButton;
-
-import ui.MainFrame;
-import ui.lists.InputKitsList;
-import ui.swing.actions.BrowseAction;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 
 /**
  * @author egolan
+ *
  */
-public final class KitPanelInput extends KitsPanel {
-    private static final long serialVersionUID = 3267475173137048327L;
-    private JButton loadKitsButton;
-    private JButton clearButton;
+@SuppressWarnings("serial")
+public final class SyxFileChooser extends JFileChooser {
+    public SyxFileChooser() {
+        super();
+        addChoosableFileFilter(new SyxFileFilter());
+        setAcceptAllFileFilterUsed(false);
+    }
+    /**
+     * This is a substitute for FileNameExtensionFilter, which is only available on Java SE 6.
+     */
+    private static class SyxFileFilter extends FileFilter {
+        @Override
+        public boolean accept(File f) {
+            if (f.isDirectory()) {
+                return true;
+            }
+            String filename = f.getName();
+            return filename.endsWith(".syx");
+        }
 
-    public KitPanelInput(MainFrame parentFrame, KitsPanel outputPanel) {
-        super(parentFrame, new InputKitsList(outputPanel.getKitList()));
-
-        loadKitsButton = new JButton(getFromModule());
-        loadKitsButton.setToolTipText("Get kits from module");
-        loadKitsButton.setEnabled(false);
-
-        clearButton = new JButton(clearList());
-        clearButton.setToolTipText("Clear list");
-
-        addToButtonBar(new BrowseAction(getParentFrame(), (InputKitsList) getKitList()));
-        addToButtonBar(loadKitsButton);
-        addToButtonBar(clearButton);
+        @Override
+        public String getDescription() {
+            return "*.syx";
+        }
     }
 
-    @SuppressWarnings("serial")
-    private Action getFromModule() {
-        Icon icon = createIcon("dnldFrDev.png");
-        Action action = new AbstractAction("", icon) {
-            public void actionPerformed(ActionEvent e) {}
-        };
-        return action;
-    }
 }

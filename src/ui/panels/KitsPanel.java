@@ -30,18 +30,15 @@ package ui.panels;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.util.ResourceBundle;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
-import javax.swing.filechooser.FileFilter;
 
 import ui.MainFrame;
 import ui.lists.KitsList;
@@ -76,17 +73,6 @@ public abstract class KitsPanel extends JPanel {
 ////        kitList.setSelectionBackground(Color.BLUE);
 //        kitList.setSelectionMode(DefaultListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     }
-
-    final protected JFileChooser createFileChooser(String name) {
-        JFileChooser fc = new JFileChooser();
-        // fc.setDialogTitle(getResourceMap().getString(name + ".dialogTitle"));
-        // String textFilesDesc = getResourceMap().getString("txtFileExtensionDescription");
-//        fc.setDialogTitle("Download Syx files");
-        fc.addChoosableFileFilter(new SyxFileFilter());
-        fc.setAcceptAllFileFilterUsed(false);
-        // fc.putClientProperty("FileChooser.useShellFolder", Boolean.FALSE);
-        return fc;
-    }
     
     final KitsList getKitList() {
         return kitList;
@@ -103,24 +89,6 @@ public abstract class KitsPanel extends JPanel {
     final void addToButtonBar(Action action) {
         buttonsPanel.add(action);
     }
-
-    
-//    protected final TdKit getKitAt(int index) {
-//        return (TdKit)kitListModel.elementAt(index);
-//    }
-//    
-//    protected final int numberOfKits() {
-//        return kitListModel.getSize();
-//    }
-    
-//    protected final TdKit[] getKits() {
-//        Object[] objectKitsInList = kitListModel.toArray();
-//        TdKit[] kitsInList = new TdKit[objectKitsInList.length];
-//        for (int i = 0; i < objectKitsInList.length; i++) {
-//            kitsInList[i] = (TdKit) objectKitsInList[i];
-//        }
-//        return kitsInList;
-//    }
 
     @SuppressWarnings("serial")
     protected Action clearList() {
@@ -149,22 +117,22 @@ public abstract class KitsPanel extends JPanel {
     }
 
 
-    /**
-     * This is a substitute for FileNameExtensionFilter, which is only available on Java SE 6.
-     */
-    private static class SyxFileFilter extends FileFilter {
-        @Override
-        public boolean accept(File f) {
-            if (f.isDirectory()) {
-                return true;
-            }
-            String filename = f.getName();
-            return filename.endsWith(".syx");
-        }
-
-        @Override
-        public String getDescription() {
-            return "*.syx";
-        }
-    }
+//    /**
+//     * This is a substitute for FileNameExtensionFilter, which is only available on Java SE 6.
+//     */
+//    private static class SyxFileFilter extends FileFilter {
+//        @Override
+//        public boolean accept(File f) {
+//            if (f.isDirectory()) {
+//                return true;
+//            }
+//            String filename = f.getName();
+//            return filename.endsWith(".syx");
+//        }
+//
+//        @Override
+//        public String getDescription() {
+//            return "*.syx";
+//        }
+//    }
 }

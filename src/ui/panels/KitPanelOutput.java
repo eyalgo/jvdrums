@@ -29,28 +29,19 @@
 package ui.panels;
 
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.IOException;
 
-import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.SysexMessage;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import kits.TdKit;
-import managers.TDManager;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-
 import ui.MainFrame;
 import ui.lists.OutputKitsList;
 import ui.lists.OutputKitsList.Direction;
+import ui.swing.actions.SaveAction;
 import ui.swing.actions.SendToModuleAction;
 import utils.VDrumsUtils;
 
@@ -59,7 +50,6 @@ import utils.VDrumsUtils;
  */
 public final class KitPanelOutput extends KitsPanel {
     private static final long serialVersionUID = -5217989811338648085L;
-    private JButton saveButton;
     private JButton removeKitButton;
     private JButton moveUpButton;
     private JButton moveDownButton;
@@ -67,8 +57,6 @@ public final class KitPanelOutput extends KitsPanel {
 
     public KitPanelOutput(MainFrame parentFrame) {
         super(parentFrame, new OutputKitsList());
-        saveButton = new JButton(saveToFile());
-        saveButton.setToolTipText("Save to file");
         
         removeKitButton = new JButton(removeFromList());
         removeKitButton.setToolTipText("Remove from list");
@@ -80,7 +68,7 @@ public final class KitPanelOutput extends KitsPanel {
         clearButton = new JButton(clearList());
         clearButton.setToolTipText("Clear list");
         
-        addToButtonBar(saveButton);
+        addToButtonBar(new SaveAction(getParentFrame(), (OutputKitsList) getKitList()));
         
         addToButtonBar(new SendToModuleAction(getParentFrame(),(OutputKitsList) getKitList()));
         addToButtonBar(removeKitButton);
@@ -97,56 +85,6 @@ public final class KitPanelOutput extends KitsPanel {
         Action action = new AbstractAction("", icon) {
             public void actionPerformed(ActionEvent e) {
                 ((OutputKitsList) getKitList()).deleteSelectedKit();
-            }
-        };
-        return action;
-    }
-
-    @SuppressWarnings("serial")
-    private Action saveToFile() {
-        Icon icon = createIcon("save-as-32x32.png");
-        Action action = new AbstractAction("", icon) {
-            public void actionPerformed(ActionEvent e) {
-                final TdKit[] kitsInList = getKitList().getKits();
-                if (((OutputKitsList) getKitList()).numberOfKits() < 1) {
-                    getParentFrame().showErrorDialog("There aren't any kits in the list.",
-                            "No kits problem");
-                    return;
-                }
-                JFileChooser fc = createFileChooser("saveFileChooser");
-                int option = fc.showSaveDialog(getParentFrame());
-
-                if (JFileChooser.APPROVE_OPTION == option) {
-                    final File file = fc.getSelectedFile();
-                    try {
-                        saveKits(file, kitsInList);
-                    }
-                    catch (InvalidMidiDataException e1) {
-                        getParentFrame().showErrorDialog(e1.getMessage(), e1.getMessage());
-                        e1.printStackTrace();
-                    }
-                    catch (IOException e1) {
-                        getParentFrame().showErrorDialog(e1.getMessage(), e1.getMessage());
-                        e1.printStackTrace();
-                    }
-                    catch (Exception e9) {
-                        getParentFrame().showErrorDialog(e9.getMessage(), e9.getMessage());
-                    }
-                    catch (Error er) {
-                        getParentFrame().showErrorDialog("Fatal Error", er.getMessage());
-                    }
-                }
-            }
-
-            private void saveKits(File file, TdKit[] kitsInList)
-                    throws InvalidMidiDataException, IOException {
-                if (!FilenameUtils.isExtension(file.getName(), "syx")) {
-                    String name = file.getAbsolutePath() + ".syx";
-                    file = new File(name);
-                }
-                final SysexMessage messageFromManager = TDManager
-                        .kitsToSysexMessage(kitsInList);
-                FileUtils.writeByteArrayToFile(file, messageFromManager.getMessage());
             }
         };
         return action;

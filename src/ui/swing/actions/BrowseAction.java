@@ -26,48 +26,44 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package ui.panels;
+package ui.swing.actions;
 
-import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JButton;
+import javax.sound.midi.InvalidMidiDataException;
+
+import kits.TdKit;
+import managers.TDManager;
+
+import org.apache.commons.io.FileUtils;
 
 import ui.MainFrame;
 import ui.lists.InputKitsList;
-import ui.swing.actions.BrowseAction;
+import exceptions.VdrumException;
 
 /**
  * @author egolan
  */
-public final class KitPanelInput extends KitsPanel {
-    private static final long serialVersionUID = 3267475173137048327L;
-    private JButton loadKitsButton;
-    private JButton clearButton;
+@SuppressWarnings("serial")
+public final class BrowseAction extends FileAction {
+    private final InputKitsList inputKitsList;
 
-    public KitPanelInput(MainFrame parentFrame, KitsPanel outputPanel) {
-        super(parentFrame, new InputKitsList(outputPanel.getKitList()));
-
-        loadKitsButton = new JButton(getFromModule());
-        loadKitsButton.setToolTipText("Get kits from module");
-        loadKitsButton.setEnabled(false);
-
-        clearButton = new JButton(clearList());
-        clearButton.setToolTipText("Clear list");
-
-        addToButtonBar(new BrowseAction(getParentFrame(), (InputKitsList) getKitList()));
-        addToButtonBar(loadKitsButton);
-        addToButtonBar(clearButton);
+    public BrowseAction(MainFrame mainFrame, InputKitsList inputKitsList) {
+        super(mainFrame, "browse");
+        this.inputKitsList = inputKitsList;
+        config.get("browse").read(this);
     }
 
-    @SuppressWarnings("serial")
-    private Action getFromModule() {
-        Icon icon = createIcon("dnldFrDev.png");
-        Action action = new AbstractAction("", icon) {
-            public void actionPerformed(ActionEvent e) {}
-        };
-        return action;
+    @Override
+    protected void handleAction(final File file) throws IOException, InvalidMidiDataException,
+            VdrumException {
+        byte[] bytes = FileUtils.readFileToByteArray(file);
+        TdKit[] kits = TDManager.bytesToKits(bytes);
+        for (TdKit kit : kits) {
+            if (kit != null) {
+                inputKitsList.addKit(kit);
+            }
+        }
     }
 }
