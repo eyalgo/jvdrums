@@ -50,7 +50,11 @@ public final class BrowseAction extends FileAction {
     private final InputKitsList inputKitsList;
 
     public BrowseAction(MainFrame mainFrame, InputKitsList inputKitsList) {
-        super(mainFrame, "browse");
+        this(mainFrame, inputKitsList, true);
+    }
+
+    public BrowseAction(MainFrame mainFrame, InputKitsList inputKitsList, boolean withIcon) {
+        super(mainFrame, "browse", withIcon);
         this.inputKitsList = inputKitsList;
         config.get("browse").read(this);
     }

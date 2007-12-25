@@ -25,50 +25,27 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package ui.panels;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
+package ui.swing.actions;
 
-import javax.swing.Action;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JToolBar;
+import java.awt.event.ActionEvent;
 
-import ui.MainFrame;
-import ui.lists.KitsList;
+import ui.lists.OutputKitsList;
 
-public abstract class KitsPanel extends JPanel {
-    private static final long serialVersionUID = -5323945831812498619L;
-    private JScrollPane scrollPane;
-    private KitsList kitList;
-    private JToolBar buttonsPanel;
-    private final MainFrame parentFrame;
-
-    public KitsPanel(MainFrame parentFrame, KitsList kistList) {
-        this.parentFrame = parentFrame;
-        setLayout(new BorderLayout());
-        kitList = kistList;
-        scrollPane = new JScrollPane();
-        scrollPane.setViewportView(kitList);
-        this.add(scrollPane, BorderLayout.CENTER);
-        buttonsPanel = new JToolBar();
-        this.add(buttonsPanel, BorderLayout.SOUTH);
-    }
-    
-    public final KitsList getKitList() {
-        return kitList;
+/**
+ * @author egolan
+ *
+ */
+@SuppressWarnings("serial")
+public final class RemoveKitsAction extends BaseAction {
+    private final OutputKitsList outputKitsList;
+    public RemoveKitsAction(OutputKitsList outputKitsList) {
+        this.outputKitsList = outputKitsList;
+        config.get("removeKits").read(this);
     }
 
-    final MainFrame getParentFrame() {
-        return this.parentFrame;
-    }
-
-    final void addToButtonBar(Component component) {
-        buttonsPanel.add(component);
-    }
-    
-    final void addToButtonBar(Action action) {
-        buttonsPanel.add(action);
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        outputKitsList.deleteSelectedKit();
     }
 }

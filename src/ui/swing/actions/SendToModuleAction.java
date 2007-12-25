@@ -32,6 +32,8 @@ import java.awt.event.ActionEvent;
 import java.util.Vector;
 
 import javax.sound.midi.InvalidMidiDataException;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import managers.TDManager;
 import midi.BulkSender;
@@ -45,7 +47,7 @@ import ui.lists.OutputKitsList;
  * @author egolan
  */
 @SuppressWarnings("serial")
-public final class SendToModuleAction extends BaseAction {
+public final class SendToModuleAction extends BaseAction implements ListDataListener {
     private final MainFrame mainFrame;
     private final OutputKitsList outputKitsList;
     private final BulkSender bulkSender;
@@ -55,6 +57,7 @@ public final class SendToModuleAction extends BaseAction {
         this.bulkSender = this.mainFrame.getBulkSender();
         this.outputKitsList = outputKitsList;
         config.get("sendToModule").read(this);
+        setEnabledByKits();
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -86,5 +89,24 @@ public final class SendToModuleAction extends BaseAction {
         catch (VdrumException e) {
             mainFrame.showErrorDialog(e);
         }
+    }
+
+    @Override
+    public void contentsChanged(ListDataEvent e) {
+        setEnabledByKits();
+    }
+
+    private void setEnabledByKits() {
+        setEnabled(outputKitsList.numberOfKits() > 0);
+    }
+
+    @Override
+    public void intervalAdded(ListDataEvent e) {
+    // Unimplemented
+    }
+
+    @Override
+    public void intervalRemoved(ListDataEvent e) {
+    // Unimplemented
     }
 }

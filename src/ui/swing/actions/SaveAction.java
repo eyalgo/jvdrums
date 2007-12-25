@@ -33,6 +33,8 @@ import java.io.IOException;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import kits.TdKit;
 import managers.TDManager;
@@ -47,17 +49,22 @@ import ui.lists.OutputKitsList;
  * @author egolan
  */
 @SuppressWarnings("serial")
-public final class SaveAction extends FileAction {
+public final class SaveAction extends FileAction implements ListDataListener {
     private final OutputKitsList outputKitsList;
-
+    
     public SaveAction(MainFrame mainFrame, OutputKitsList outputKitsList) {
-        super(mainFrame, "save");
+        this(mainFrame, outputKitsList, true);
+    }
+
+    public SaveAction(MainFrame mainFrame, OutputKitsList outputKitsList, boolean withIcon) {
+        super(mainFrame, "save", withIcon);
         this.outputKitsList = outputKitsList;
+        this.outputKitsList.getModel().addListDataListener(this);
+        setEnabledByKits();
     }
 
     @Override
-    protected void handleAction(File file) throws InvalidMidiDataException,
-            IOException {
+    protected void handleAction(File file) throws InvalidMidiDataException, IOException {
         final TdKit[] kitsInList = outputKitsList.getKits();
         if (!FilenameUtils.isExtension(file.getName(), "syx")) {
             String name = file.getAbsolutePath() + ".syx";
@@ -65,5 +72,24 @@ public final class SaveAction extends FileAction {
         }
         final SysexMessage messageFromManager = TDManager.kitsToSysexMessage(kitsInList);
         FileUtils.writeByteArrayToFile(file, messageFromManager.getMessage());
+    }
+
+    @Override
+    public void contentsChanged(ListDataEvent e) {
+        setEnabledByKits();
+    }
+
+    private void setEnabledByKits() {
+        setEnabled(outputKitsList.numberOfKits() > 0);
+    }
+
+    @Override
+    public void intervalAdded(ListDataEvent e) {
+    // Unimplemented
+    }
+
+    @Override
+    public void intervalRemoved(ListDataEvent e) {
+    // Unimplemented
     }
 }

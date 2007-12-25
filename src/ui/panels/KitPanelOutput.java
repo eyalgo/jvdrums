@@ -28,19 +28,12 @@
 
 package ui.panels;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import kits.TdKit;
 import ui.MainFrame;
 import ui.lists.OutputKitsList;
 import ui.lists.OutputKitsList.Direction;
+import ui.swing.actions.ClearListAction;
+import ui.swing.actions.MoveKitAction;
+import ui.swing.actions.RemoveKitsAction;
 import ui.swing.actions.SaveAction;
 import ui.swing.actions.SendToModuleAction;
 import utils.VDrumsUtils;
@@ -50,77 +43,18 @@ import utils.VDrumsUtils;
  */
 public final class KitPanelOutput extends KitsPanel {
     private static final long serialVersionUID = -5217989811338648085L;
-    private JButton removeKitButton;
-    private JButton moveUpButton;
-    private JButton moveDownButton;
-    private JButton clearButton;
 
     public KitPanelOutput(MainFrame parentFrame) {
         super(parentFrame, new OutputKitsList());
-        
-        removeKitButton = new JButton(removeFromList());
-        removeKitButton.setToolTipText("Remove from list");
-        
-        moveDownButton = new OutputButton("Move down", "down-32x32.png",
-                Direction.DECREASE_INDEX, VDrumsUtils.MAX_NUMBER_OF_KITS - 1);
-        moveUpButton = new OutputButton("Move up", "up-32x32.png", Direction.INCREASE_INDEX, 0);
-        
-        clearButton = new JButton(clearList());
-        clearButton.setToolTipText("Clear list");
-        
+
         addToButtonBar(new SaveAction(getParentFrame(), (OutputKitsList) getKitList()));
-        
-        addToButtonBar(new SendToModuleAction(getParentFrame(),(OutputKitsList) getKitList()));
-        addToButtonBar(removeKitButton);
-        addToButtonBar(clearButton);
-        addToButtonBar(moveUpButton);
-        addToButtonBar(moveDownButton);
-        moveDownButton.setEnabled(false);
-        moveUpButton.setEnabled(false);
-    }
 
-    @SuppressWarnings("serial")
-    private Action removeFromList() {
-        Icon icon = createIcon("delete-32x32.png");
-        Action action = new AbstractAction("", icon) {
-            public void actionPerformed(ActionEvent e) {
-                ((OutputKitsList) getKitList()).deleteSelectedKit();
-            }
-        };
-        return action;
-    }
-
-    @SuppressWarnings("serial")
-    private class OutputButton extends JButton implements ListSelectionListener {
-        private final int disabledIndex;
-
-        private OutputButton(final String tooltip, final String iconFileName,
-                final Direction direction, final int disabledIndex) {
-            super();
-            setAction(moveOperation(direction, "", iconFileName));
-            setToolTipText(tooltip);
-            getKitList().addListSelectionListener(this);
-            this.disabledIndex = disabledIndex;
-        }
-
-        @SuppressWarnings("serial")
-        private Action moveOperation(final Direction direction, final String label,
-                final String iconFileName) {
-            Icon icon = createIcon(iconFileName);
-            Action action = new AbstractAction(label, icon) {
-                public void actionPerformed(ActionEvent e) {
-                    ((OutputKitsList) getKitList()).moveSelection(direction);
-                }
-            };
-            return action;
-        }
-
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-            int selectedIndex = ((OutputKitsList) e.getSource()).getSelectedIndex();
-            TdKit selectedKit = (TdKit) ((OutputKitsList) e.getSource()).getSelectedValue();
-            setEnabled(selectedKit != null && selectedIndex != this.disabledIndex);
-        }
-
+        addToButtonBar(new SendToModuleAction(getParentFrame(), (OutputKitsList) getKitList()));
+        addToButtonBar(new RemoveKitsAction((OutputKitsList) getKitList()));
+        addToButtonBar(new ClearListAction(getKitList()));
+        addToButtonBar(new MoveKitAction(Direction.INCREASE_INDEX,
+                (OutputKitsList) getKitList(), VDrumsUtils.MAX_NUMBER_OF_KITS - 1));
+        addToButtonBar(new MoveKitAction(Direction.DECREASE_INDEX,
+                (OutputKitsList) getKitList(), 0));
     }
 }

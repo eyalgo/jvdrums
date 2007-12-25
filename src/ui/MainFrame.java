@@ -33,28 +33,28 @@ import java.awt.Dimension;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-import bias.Configuration;
-
 import midi.BulkSender;
+import ui.lists.InputKitsList;
+import ui.lists.OutputKitsList;
 import ui.panels.KitPanelInput;
 import ui.panels.KitPanelOutput;
 import ui.panels.KitsPanel;
 import ui.swing.actions.AboutAction;
+import ui.swing.actions.BrowseAction;
 import ui.swing.actions.ExitAction;
 import ui.swing.actions.MidiSourceAction;
+import ui.swing.actions.SaveAction;
 import ui.swing.actions.WebsiteAction;
 import ui.utils.ExitListener;
 import ui.utils.WindowUtilities;
+import bias.Configuration;
 import exceptions.VdrumException;
 
 /**
@@ -64,14 +64,6 @@ public final class MainFrame extends JFrame {
     private static final long serialVersionUID = -7164597771180443878L;
     private static Configuration config = Configuration.getRoot().get(MainFrame.class);
     private final BulkSender bulkSender;
-    private JButton connectButton;
-    private JMenu helpMenu;
-    private JMenu connectionMenu;
-    private JMenuBar jMenuBar1;
-    private JSplitPane jSplitPane1;
-    private JToolBar mainToolBar;
-    private KitsPanel inputPanel;
-    private KitsPanel outputPanel;
 
     /** Creates new form MainFrame */
     public MainFrame() {
@@ -85,28 +77,18 @@ public final class MainFrame extends JFrame {
         setMinimumSize(new Dimension(900, 600));
         setName("mainframe");
         WindowUtilities.setJavaLookAndFeel();
-        mainToolBar = new JToolBar();
-        connectButton = new JButton("Connect");
-        connectButton.setEnabled(false);
-        jSplitPane1 = new JSplitPane();
-        inputPanel = new KitPanelInput(this, (KitsPanel) (outputPanel = new KitPanelOutput(
-                this)));
-        jMenuBar1 = new JMenuBar();
+        JSplitPane jSplitPane1 = new JSplitPane();
+        KitsPanel outputPanel = new KitPanelOutput(this);
+        KitsPanel inputPanel = new KitPanelInput(this, outputPanel);
+        JMenuBar jMenuBar1 = new JMenuBar();
         JMenu fileMenu = new JMenu();
         config.get("fileMenu").read(fileMenu);
-        helpMenu = new JMenu();
+        JMenu helpMenu = new JMenu();
         config.get("helpMenu").read(helpMenu);
-        connectionMenu = new JMenu("Connection");
-
-        mainToolBar.setFloatable(false);
-        mainToolBar.setRollover(true);
-
-        connectButton.setFocusable(false);
-        connectButton.setHorizontalTextPosition(SwingConstants.CENTER);
-        connectButton.setVerticalTextPosition(SwingConstants.BOTTOM);
-        mainToolBar.add(connectButton);
-
-        getContentPane().add(mainToolBar, BorderLayout.NORTH);
+        JMenu connectionMenu = new JMenu();
+        config.get("connectionMenu").read(connectionMenu);
+        JMenu editMenu = new JMenu();
+        config.get("editMenu").read(editMenu);
 
         jSplitPane1.setResizeWeight(0.5);
         jSplitPane1.setAlignmentX(0.5f);
@@ -118,7 +100,9 @@ public final class MainFrame extends JFrame {
         jSplitPane1.setRightComponent(outputPanel);
 
         getContentPane().add(jSplitPane1, BorderLayout.CENTER);
-
+        fileMenu.add(new BrowseAction(this, (InputKitsList) inputPanel.getKitList(), false));
+        fileMenu.add(new SaveAction(this, (OutputKitsList) outputPanel.getKitList(), false));
+        fileMenu.addSeparator();
         fileMenu.add(new ExitAction());
         connectionMenu.add(new MidiSourceAction(this));
 
@@ -126,6 +110,7 @@ public final class MainFrame extends JFrame {
         helpMenu.add(new AboutAction(this));
         jMenuBar1.add(fileMenu);
         jMenuBar1.add(connectionMenu);
+        jMenuBar1.add(editMenu);
         jMenuBar1.add(helpMenu);
         setJMenuBar(jMenuBar1);
 

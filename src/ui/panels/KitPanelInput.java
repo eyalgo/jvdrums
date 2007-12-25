@@ -28,46 +28,23 @@
 
 package ui.panels;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JButton;
-
 import ui.MainFrame;
 import ui.lists.InputKitsList;
 import ui.swing.actions.BrowseAction;
+import ui.swing.actions.ClearListAction;
+import ui.swing.actions.LoadFromModuleAction;
 
 /**
  * @author egolan
  */
 public final class KitPanelInput extends KitsPanel {
     private static final long serialVersionUID = 3267475173137048327L;
-    private JButton loadKitsButton;
-    private JButton clearButton;
 
     public KitPanelInput(MainFrame parentFrame, KitsPanel outputPanel) {
         super(parentFrame, new InputKitsList(outputPanel.getKitList()));
 
-        loadKitsButton = new JButton(getFromModule());
-        loadKitsButton.setToolTipText("Get kits from module");
-        loadKitsButton.setEnabled(false);
-
-        clearButton = new JButton(clearList());
-        clearButton.setToolTipText("Clear list");
-
         addToButtonBar(new BrowseAction(getParentFrame(), (InputKitsList) getKitList()));
-        addToButtonBar(loadKitsButton);
-        addToButtonBar(clearButton);
-    }
-
-    @SuppressWarnings("serial")
-    private Action getFromModule() {
-        Icon icon = createIcon("dnldFrDev.png");
-        Action action = new AbstractAction("", icon) {
-            public void actionPerformed(ActionEvent e) {}
-        };
-        return action;
+        addToButtonBar(new LoadFromModuleAction());
+        addToButtonBar(new ClearListAction(getKitList()));
     }
 }

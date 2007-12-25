@@ -35,12 +35,10 @@ import java.io.IOException;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.swing.JFileChooser;
 
-import bias.Configuration;
-
-import exceptions.VdrumException;
-
 import ui.MainFrame;
 import ui.swing.SyxFileChooser;
+import bias.Configuration;
+import exceptions.VdrumException;
 
 /**
  * @author egolan
@@ -49,10 +47,13 @@ public abstract class FileAction extends BaseAction {
     private static Configuration configuration = Configuration.getRoot().get(FileAction.class);
     private final MainFrame mainFrame;
     String buttonStr = "";
-
-    protected FileAction(MainFrame mainFrame, String name) {
+    
+    protected FileAction(MainFrame mainFrame, String name, boolean withIcon) {
         this.mainFrame = mainFrame;
         configuration.get(name).read(this);
+        if (!withIcon) {
+            setSmallIcon(null);
+        }
     }
 
     @Override

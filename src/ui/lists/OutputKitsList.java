@@ -44,7 +44,14 @@ import utils.VDrumsUtils;
  */
 public final class OutputKitsList extends KitsList {
     public enum Direction {
-        DECREASE_INDEX, INCREASE_INDEX
+        DECREASE_INDEX("up"), INCREASE_INDEX("down");
+        private final String name;
+        Direction(String name) {
+            this.name = name;
+        }
+        public String getName() {
+            return name;
+        }
     }
 
     private static final long serialVersionUID = 7560978682051239230L;
@@ -174,10 +181,10 @@ public final class OutputKitsList extends KitsList {
             int newIndex = -1;
             switch (direction) {
                 case DECREASE_INDEX:
-                    newIndex = currentSelection + 1;
+                    newIndex = currentSelection - 1;
                     break;
                 case INCREASE_INDEX:
-                    newIndex = currentSelection - 1;
+                    newIndex = currentSelection + 1;
                     break;
             }
             return newIndex;
@@ -199,8 +206,8 @@ public final class OutputKitsList extends KitsList {
                 return -1;
             }
             kits[index] = kit;
-            fireContentsChanged(this, index, index);
             numberOfKits++;
+            fireContentsChanged(this, index, index);
             return index;
         }
 

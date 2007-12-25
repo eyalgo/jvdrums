@@ -25,50 +25,44 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package ui.panels;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
+package ui.swing.actions;
 
-import javax.swing.Action;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JToolBar;
+import java.awt.event.ActionEvent;
 
-import ui.MainFrame;
-import ui.lists.KitsList;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-public abstract class KitsPanel extends JPanel {
-    private static final long serialVersionUID = -5323945831812498619L;
-    private JScrollPane scrollPane;
-    private KitsList kitList;
-    private JToolBar buttonsPanel;
-    private final MainFrame parentFrame;
+import kits.TdKit;
 
-    public KitsPanel(MainFrame parentFrame, KitsList kistList) {
-        this.parentFrame = parentFrame;
-        setLayout(new BorderLayout());
-        kitList = kistList;
-        scrollPane = new JScrollPane();
-        scrollPane.setViewportView(kitList);
-        this.add(scrollPane, BorderLayout.CENTER);
-        buttonsPanel = new JToolBar();
-        this.add(buttonsPanel, BorderLayout.SOUTH);
-    }
-    
-    public final KitsList getKitList() {
-        return kitList;
+import ui.lists.OutputKitsList;
+import ui.lists.OutputKitsList.Direction;
+
+/**
+ * @author egolan
+ */
+@SuppressWarnings("serial")
+public final class MoveKitAction extends BaseAction implements ListSelectionListener {
+    final Direction direction;
+    final OutputKitsList outputKitsList;
+    private final int disabledIndex;
+
+    public MoveKitAction(Direction direction, OutputKitsList outputKitsList, int disabledIndex) {
+        this.direction = direction;
+        this.outputKitsList = outputKitsList;
+        this.disabledIndex = disabledIndex;
+        config.get(direction.getName()).read(this);
     }
 
-    final MainFrame getParentFrame() {
-        return this.parentFrame;
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        outputKitsList.moveSelection(direction);
     }
 
-    final void addToButtonBar(Component component) {
-        buttonsPanel.add(component);
-    }
-    
-    final void addToButtonBar(Action action) {
-        buttonsPanel.add(action);
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        int selectedIndex = ((OutputKitsList) e.getSource()).getSelectedIndex();
+        TdKit selectedKit = (TdKit) ((OutputKitsList) e.getSource()).getSelectedValue();
+        setEnabled(selectedKit != null && selectedIndex != this.disabledIndex);
     }
 }
