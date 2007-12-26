@@ -44,7 +44,7 @@ public final class KitPanelInput extends KitsPanel {
 
     public KitPanelInput(MainFrame parentFrame, KitsPanel outputPanel) {
         super(parentFrame);
-        inputKitsList = new InputKitsList(outputPanel);
+        inputKitsList = new InputKitsList(this, outputPanel);
         setListInPanel(inputKitsList);
         addToButtonBar(new BrowseAction(getParentFrame(), this));
         addToButtonBar(new LoadFromModuleAction());

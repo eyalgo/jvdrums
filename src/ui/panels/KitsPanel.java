@@ -63,7 +63,7 @@ public abstract class KitsPanel extends JPanel {
         scrollPane.setViewportView(kitList);
     }
     
-    final MainFrame getParentFrame() {
+    public final MainFrame getParentFrame() {
         return this.parentFrame;
     }
 

@@ -29,14 +29,18 @@
 package ui.lists;
 
 import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPopupMenu;
 
 import kits.TdKit;
+import ui.panels.KitsPanel;
 import utils.VDrumsUtils;
 
 /**
@@ -46,9 +50,11 @@ public final class OutputKitsList extends KitsList {
     public enum Direction {
         DECREASE_INDEX("up"), INCREASE_INDEX("down");
         private final String name;
+
         Direction(String name) {
             this.name = name;
         }
+
         public String getName() {
             return name;
         }
@@ -57,37 +63,59 @@ public final class OutputKitsList extends KitsList {
     private static final long serialVersionUID = 7560978682051239230L;
     private final OutputListModel myModel;
 
-    public OutputKitsList() {
+    public OutputKitsList(KitsPanel outputKistPanel) {
         myModel = new OutputListModel();
         this.setModel(myModel);
         this.setCellRenderer(new TdKitListRenderer());
         setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
+        final JPopupMenu popup = new JPopupMenu();
+        addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                maybeShowPopup(e);
+            }
+
+            public void mouseReleased(MouseEvent e) {
+                maybeShowPopup(e);
+            }
+
+            private void maybeShowPopup(MouseEvent e) {
+                if (e.isPopupTrigger())
+                    popup.show(OutputKitsList.this, e.getX(), e.getY());
+            }
+        });
+
+        /*
+         addToButtonBar(new SaveAction(getParentFrame(), this));
+        addToButtonBar(new SendToModuleAction(getParentFrame(), outputKitsList));
+        addToButtonBar(new RemoveKitsAction(outputKitsList));
+        addToButtonBar(new ClearListAction(outputKitsList));
+        addToButtonBar(new MoveKitAction(Direction.INCREASE_INDEX, outputKitsList,
+                VDrumsUtils.MAX_NUMBER_OF_KITS - 1));
+        addToButtonBar(new MoveKitAction(Direction.DECREASE_INDEX, outputKitsList, 0));
+         */
+//        popup.add(new SaveAction(outputKistPanel.getParentFrame(), outputKistPanel));
     }
 
     @Override
     public void addKit(TdKit kit) {
-        int index = addKit(kit, getSelectedIndex());
+        int index = myModel.addKit(kit, getSelectedIndex());
         increaseIndex(index);
-    }
-    
-    private int addKit(TdKit kit, int id) {
-        int index = myModel.addKit(kit, id);
-        return index;
     }
 
     public void addKits(TdKit[] kits) {
         if (kits.length < 1) {
             return;
         }
-        if (kits.length == 1) {
-            addKit(kits[0]);
-        } else {
-            for (TdKit kit : kits) {
-                addKit(kit, kit.getId()-1);
-            }
+        int index = getSelectedIndex();
+        if (index == -1) {
+            index = myModel.getFirstIndex();
+        }
+        for (TdKit kit : kits) {
+            index = myModel.addKit(kit, index);
+            increaseIndex(index);
+            index = getSelectedIndex();
         }
     }
-
 
     @Override
     public void clear() {

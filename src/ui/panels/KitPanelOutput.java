@@ -47,7 +47,7 @@ public final class KitPanelOutput extends KitsPanel {
 
     public KitPanelOutput(MainFrame parentFrame) {
         super(parentFrame);
-        outputKitsList = new OutputKitsList();
+        outputKitsList = new OutputKitsList(this);
         setListInPanel(outputKitsList);
         addToButtonBar(new SaveAction(getParentFrame(), this));
         addToButtonBar(new SendToModuleAction(getParentFrame(), outputKitsList));

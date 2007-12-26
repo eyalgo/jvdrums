@@ -8,6 +8,8 @@ import bias.Configuration;
 
 public abstract class BaseAction extends AbstractAction {
     static Configuration config = Configuration.getRoot().get(BaseAction.class);
+    public BaseAction () {
+    }
     public void setName(String name) {
         putValue(Action.NAME, name);
     }

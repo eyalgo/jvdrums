@@ -49,6 +49,7 @@ public abstract class FileAction extends BaseAction {
     String buttonStr = "";
     
     protected FileAction(MainFrame mainFrame, String name, boolean withIcon) {
+        super();
         this.mainFrame = mainFrame;
         configuration.get(name).read(this);
         if (!withIcon) {

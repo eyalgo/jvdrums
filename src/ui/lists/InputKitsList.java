@@ -36,10 +36,12 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
-
-import ui.panels.KitsPanel;
+import javax.swing.JPopupMenu;
 
 import kits.TdKit;
+import ui.panels.KitsPanel;
+import ui.swing.actions.BrowseAction;
+import ui.swing.actions.ClearListAction;
 
 /**
  * @author egolan
@@ -49,12 +51,27 @@ public final class InputKitsList extends KitsList {
     private final DefaultListModel myModel;
     private final KitsPanel outputKistPanel;
 
-    public InputKitsList(KitsPanel outputKistPanel) {
+    public InputKitsList(KitsPanel inputKitsPanel, KitsPanel outputKistPanel) {
         myModel = new DefaultListModel();
         this.setModel(myModel);
         this.setCellRenderer(new TdKitListRenderer());
         this.outputKistPanel = outputKistPanel;
+        final JPopupMenu popup = new JPopupMenu();
         addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                maybeShowPopup(e);
+            }
+
+            public void mouseReleased(MouseEvent e) {
+                maybeShowPopup(e);
+            }
+
+            private void maybeShowPopup(MouseEvent e) {
+                if (e.isPopupTrigger())
+                    popup.show(InputKitsList.this, e.getX(), e
+                            .getY());
+            }
+
             public void mouseClicked(MouseEvent evt) {
                 JList list = (JList) evt.getSource();
                 if (evt.getClickCount() == 2) { // Double-click
@@ -62,8 +79,16 @@ public final class InputKitsList extends KitsList {
                     int index = list.locationToIndex(evt.getPoint());
                     kitPressed(index);
                 }
+
             }
         });
+/*        addToButtonBar(new BrowseAction(getParentFrame(), this));
+        addToButtonBar(new LoadFromModuleAction());
+        addToButtonBar(new ClearListAction(inputKitsList));
+        addToButtonBar(new MoveRightAction(inputKitsList, outputPanel));
+*/
+        popup.add(new BrowseAction(inputKitsPanel.getParentFrame(), inputKitsPanel, false));
+        popup.add(new ClearListAction(this, false));
     }
 
     @SuppressWarnings("serial")
@@ -105,12 +130,12 @@ public final class InputKitsList extends KitsList {
     public void clear() {
         myModel.clear();
     }
-    
+
     public TdKit[] getSelectedKits() {
         Object[] objs = getSelectedValues();
         TdKit[] selectedKits = new TdKit[objs.length];
-        for (int i=0;i<objs.length;i++) {
-            selectedKits[i] = (TdKit)objs[i];
+        for (int i = 0; i < objs.length; i++) {
+            selectedKits[i] = (TdKit) objs[i];
         }
         return selectedKits;
     }

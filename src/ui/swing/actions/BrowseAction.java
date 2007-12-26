@@ -57,6 +57,9 @@ public final class BrowseAction extends FileAction {
         super(mainFrame, "browse", withIcon);
         this.kitsPanel = kitsPanel;
         config.get("browse").read(this);
+        if (!withIcon) {
+            setSmallIcon(null);
+        }
     }
 
     @Override

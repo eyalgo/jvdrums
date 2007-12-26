@@ -39,8 +39,16 @@ import ui.lists.KitsList;
 public class ClearListAction extends BaseAction {
     private final KitsList kitList;
     public ClearListAction(final KitsList kitList) {
+        this(kitList, true);
+    }
+
+    public ClearListAction(KitsList kitList, boolean withIcon) {
+        super();
         this.kitList = kitList;
         config.get("clear").read(this);
+        if (!withIcon) {
+            setSmallIcon(null);
+        }
     }
 
     @Override
