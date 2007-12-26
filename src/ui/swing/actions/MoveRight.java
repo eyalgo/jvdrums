@@ -26,43 +26,24 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package ui.panels;
+package ui.swing.actions;
 
-import ui.MainFrame;
-import ui.lists.KitsList;
-import ui.lists.OutputKitsList;
-import ui.lists.OutputKitsList.Direction;
-import ui.swing.actions.ClearListAction;
-import ui.swing.actions.MoveKitAction;
-import ui.swing.actions.RemoveKitsAction;
-import ui.swing.actions.SaveAction;
-import ui.swing.actions.SendToModuleAction;
-import utils.VDrumsUtils;
+import java.awt.event.ActionEvent;
 
 /**
  * @author egolan
+ *
  */
-public final class KitPanelOutput extends KitsPanel {
-    private static final long serialVersionUID = -5217989811338648085L;
-    private final OutputKitsList outputKitsList;
-
-    public KitPanelOutput(MainFrame parentFrame) {
-        super(parentFrame);
-        outputKitsList = new OutputKitsList();
-        setListInView(outputKitsList);
-
-        addToButtonBar(new SaveAction(getParentFrame(), outputKitsList));
-
-        addToButtonBar(new SendToModuleAction(getParentFrame(), outputKitsList));
-        addToButtonBar(new RemoveKitsAction(outputKitsList));
-        addToButtonBar(new ClearListAction(outputKitsList));
-        addToButtonBar(new MoveKitAction(Direction.INCREASE_INDEX, outputKitsList,
-                VDrumsUtils.MAX_NUMBER_OF_KITS - 1));
-        addToButtonBar(new MoveKitAction(Direction.DECREASE_INDEX, outputKitsList, 0));
+@SuppressWarnings("serial")
+public final class MoveRight extends BaseAction {
+    public MoveRight() {
+        
     }
 
     @Override
-    public KitsList getKitList() {
-        return outputKitsList;
+    public void actionPerformed(ActionEvent e) {
+    // TODO Auto-generated method stub
+
     }
+
 }

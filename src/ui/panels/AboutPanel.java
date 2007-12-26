@@ -28,9 +28,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import ui.swing.StandardDialog;
-
 import jvdrums.Info;
+import ui.swing.StandardDialog;
 
 /**
  * Panel that displays information about jOrgan.

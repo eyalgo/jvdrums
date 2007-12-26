@@ -39,7 +39,7 @@ import managers.TDManager;
 import org.apache.commons.io.FileUtils;
 
 import ui.MainFrame;
-import ui.lists.InputKitsList;
+import ui.lists.KitsList;
 import exceptions.VdrumException;
 
 /**
@@ -47,15 +47,15 @@ import exceptions.VdrumException;
  */
 @SuppressWarnings("serial")
 public final class BrowseAction extends FileAction {
-    private final InputKitsList inputKitsList;
+    private final KitsList kitsList;
 
-    public BrowseAction(MainFrame mainFrame, InputKitsList inputKitsList) {
-        this(mainFrame, inputKitsList, true);
+    public BrowseAction(MainFrame mainFrame, KitsList kitsList) {
+        this(mainFrame, kitsList, true);
     }
 
-    public BrowseAction(MainFrame mainFrame, InputKitsList inputKitsList, boolean withIcon) {
+    public BrowseAction(MainFrame mainFrame, KitsList kitsList, boolean withIcon) {
         super(mainFrame, "browse", withIcon);
-        this.inputKitsList = inputKitsList;
+        this.kitsList = kitsList;
         config.get("browse").read(this);
     }
 
@@ -66,7 +66,7 @@ public final class BrowseAction extends FileAction {
         TdKit[] kits = TDManager.bytesToKits(bytes);
         for (TdKit kit : kits) {
             if (kit != null) {
-                inputKitsList.addKit(kit);
+                kitsList.addKit(kit);
             }
         }
     }

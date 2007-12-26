@@ -28,7 +28,7 @@
 
 package ui.swing.actions;
 
-import java.awt.Cursor;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.Vector;
 
@@ -52,7 +52,9 @@ public final class SendToModuleAction extends BaseAction implements ListDataList
     private final MainFrame mainFrame;
     private final OutputKitsList outputKitsList;
     private final BulkSender bulkSender;
+    private String sendMessage;
 
+    //TODO Move all string to the properties file
     public SendToModuleAction(MainFrame mainFrame, OutputKitsList outputKitsList) {
         this.mainFrame = mainFrame;
         this.bulkSender = this.mainFrame.getBulkSender();
@@ -93,17 +95,22 @@ public final class SendToModuleAction extends BaseAction implements ListDataList
         ensureEventThread();
         final Vector<TdKit> actualKits = TDManager.kitsToKits(kits);
         Thread worker = new Thread() {
+            @Override
             public void run() {
-                mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                mainFrame.setEnabled(false);
+                mainFrame.operationStart(sendMessage, Color.RED);
                 for (final TdKit kit : actualKits) {
-                    System.out.println("Sending " + kit);
                     mainFrame.addInfo("Sending: " + kit.getName() + " to slot number "
                             + kit.getId());
                     bulkSender.sendKits(kit);
+                    // TODO Remove this !!!
+                    try {
+                        Thread.sleep(4000);
+                    }
+                    catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-                mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                mainFrame.setEnabled(true);
+                mainFrame.operationFinish();
             }
         };
         worker.start();

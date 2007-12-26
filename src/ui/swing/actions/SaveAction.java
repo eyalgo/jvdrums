@@ -43,29 +43,29 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import ui.MainFrame;
-import ui.lists.OutputKitsList;
+import ui.lists.KitsList;
 
 /**
  * @author egolan
  */
 @SuppressWarnings("serial")
 public final class SaveAction extends FileAction implements ListDataListener {
-    private final OutputKitsList outputKitsList;
+    private final KitsList kitsList;
     
-    public SaveAction(MainFrame mainFrame, OutputKitsList outputKitsList) {
-        this(mainFrame, outputKitsList, true);
+    public SaveAction(MainFrame mainFrame, KitsList kitsList) {
+        this(mainFrame, kitsList, true);
     }
 
-    public SaveAction(MainFrame mainFrame, OutputKitsList outputKitsList, boolean withIcon) {
+    public SaveAction(MainFrame mainFrame, KitsList kitsList, boolean withIcon) {
         super(mainFrame, "save", withIcon);
-        this.outputKitsList = outputKitsList;
-        this.outputKitsList.getModel().addListDataListener(this);
+        this.kitsList = kitsList;
+        this.kitsList.getModel().addListDataListener(this);
         setEnabledByKits();
     }
 
     @Override
     protected void handleAction(File file) throws InvalidMidiDataException, IOException {
-        final TdKit[] kitsInList = outputKitsList.getKits();
+        final TdKit[] kitsInList = kitsList.getKits();
         if (!FilenameUtils.isExtension(file.getName(), "syx")) {
             String name = file.getAbsolutePath() + ".syx";
             file = new File(name);
@@ -80,7 +80,7 @@ public final class SaveAction extends FileAction implements ListDataListener {
     }
 
     private void setEnabledByKits() {
-        setEnabled(outputKitsList.numberOfKits() > 0);
+        setEnabled(kitsList.numberOfKits() > 0);
     }
 
     @Override

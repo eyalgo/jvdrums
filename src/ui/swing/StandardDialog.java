@@ -37,7 +37,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.CompoundBorder;
 
 import ui.swing.actions.BaseAction;
-
 import bias.Configuration;
 
 /**

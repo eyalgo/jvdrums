@@ -107,6 +107,7 @@ public final class OutputKitsList extends KitsList {
         }
     }
 
+    @Override
     public int numberOfKits() {
         return myModel.numberOfKits();
     }

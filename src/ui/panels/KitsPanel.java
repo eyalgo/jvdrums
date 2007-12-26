@@ -41,25 +41,31 @@ import ui.lists.KitsList;
 public abstract class KitsPanel extends JPanel {
     private static final long serialVersionUID = -5323945831812498619L;
     private JScrollPane scrollPane;
-    private KitsList kitList;
+//    private KitsList kitList;
     private JToolBar buttonsPanel;
     private final MainFrame parentFrame;
 
-    public KitsPanel(MainFrame parentFrame, KitsList kistList) {
+    public KitsPanel(MainFrame parentFrame/*, KitsList kitList*/) {
         this.parentFrame = parentFrame;
         setLayout(new BorderLayout());
-        kitList = kistList;
+//        kitList = kistList;
         scrollPane = new JScrollPane();
-        scrollPane.setViewportView(kitList);
+//        scrollPane.setViewportView(kitList);
         this.add(scrollPane, BorderLayout.CENTER);
         buttonsPanel = new JToolBar();
         this.add(buttonsPanel, BorderLayout.SOUTH);
     }
     
-    public final KitsList getKitList() {
-        return kitList;
-    }
+    public abstract KitsList getKitList();
+    
+//    public final KitsList getKitList() {
+//        return kitList;
+//    }
 
+    final void setListInView(KitsList kitList) {
+        scrollPane.setViewportView(kitList);
+    }
+    
     final MainFrame getParentFrame() {
         return this.parentFrame;
     }

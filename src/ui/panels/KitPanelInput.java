@@ -30,21 +30,30 @@ package ui.panels;
 
 import ui.MainFrame;
 import ui.lists.InputKitsList;
+import ui.lists.KitsList;
 import ui.swing.actions.BrowseAction;
 import ui.swing.actions.ClearListAction;
 import ui.swing.actions.LoadFromModuleAction;
+import ui.swing.actions.MoveRight;
 
 /**
  * @author egolan
  */
 public final class KitPanelInput extends KitsPanel {
     private static final long serialVersionUID = 3267475173137048327L;
-
+    private final InputKitsList inputKitsList;
     public KitPanelInput(MainFrame parentFrame, KitsPanel outputPanel) {
-        super(parentFrame, new InputKitsList(outputPanel.getKitList()));
-
-        addToButtonBar(new BrowseAction(getParentFrame(), (InputKitsList) getKitList()));
+        super(parentFrame);
+        inputKitsList = new InputKitsList(outputPanel.getKitList());
+        setListInView(inputKitsList);
+        addToButtonBar(new BrowseAction(getParentFrame(), inputKitsList));
         addToButtonBar(new LoadFromModuleAction());
-        addToButtonBar(new ClearListAction(getKitList()));
+        addToButtonBar(new ClearListAction(inputKitsList));
+//        addToButtonBar(new MoveRight(inputKitsList));
+    }
+
+    @Override
+    public KitsList getKitList() {
+        return inputKitsList;
     }
 }

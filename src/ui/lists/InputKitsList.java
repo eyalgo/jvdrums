@@ -28,7 +28,6 @@
 
 package ui.lists;
 
-import java.awt.Color;
 import java.awt.Component;
 
 import javax.swing.DefaultListCellRenderer;
@@ -63,11 +62,11 @@ public final class InputKitsList extends KitsList {
                 TdKit kit = (TdKit) value;
                 label.setText(kit.getId()+" " + kit.getName());
             }
-            if (index%2 == 0) {
-                label.setBackground(Color.LIGHT_GRAY);
-            } else {
-                label.setBackground(Color.WHITE);
-            }
+//            if (index%2 == 0) {
+//                label.setBackground(Color.LIGHT_GRAY);
+//            } else {
+//                label.setBackground(Color.WHITE);
+//            }
             return (label);
         }
     }
@@ -96,5 +95,10 @@ public final class InputKitsList extends KitsList {
             kitsInList[i] = (TdKit) objectKitsInList[i];
         }
         return kitsInList;
+    }
+
+    @Override
+    public int numberOfKits() {
+        return myModel.getSize();
     }
 }

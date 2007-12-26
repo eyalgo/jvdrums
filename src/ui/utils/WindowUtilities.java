@@ -1,7 +1,10 @@
 package ui.utils;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Container;
+
+import javax.swing.JFrame;
+import javax.swing.UIManager;
 
 /** A few utilities that simplify using windows in Swing.
  *  1998-99 Marty Hall, http://www.apl.jhu.edu/~hall/java/

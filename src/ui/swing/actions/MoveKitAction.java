@@ -34,7 +34,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import kits.TdKit;
-
 import ui.lists.OutputKitsList;
 import ui.lists.OutputKitsList.Direction;
 

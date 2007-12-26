@@ -29,6 +29,7 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,6 +38,7 @@ import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
@@ -46,11 +48,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.SoftBevelBorder;
 
 import midi.BulkSender;
-import ui.lists.InputKitsList;
-import ui.lists.OutputKitsList;
 import ui.panels.KitPanelInput;
 import ui.panels.KitPanelOutput;
 import ui.panels.KitsPanel;
@@ -74,19 +73,22 @@ public final class MainFrame extends JFrame {
     private static Configuration config = Configuration.getRoot().get(MainFrame.class);
     private final BulkSender bulkSender;
     private final JTextArea infoText;
+    private final StatusBar statusBar;
 
-    /** Creates new form MainFrame */
     public MainFrame() {
-        super("JVDrums");
+        super();
+        config.read(this);
         bulkSender = new BulkSender();
-        infoText = new MultiLineLabel(10, 100);
-        infoText.setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
+        infoText = new MultiLineLabel(10, 70);
+        infoText.setBackground(new JTextArea().getBackground());
+        statusBar = new StatusBar();
     }
 
     public void initFrame() {
+        this.setLayout(new BorderLayout());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new ExitListener());
-        setMinimumSize(new Dimension(900, 800));
+        setMinimumSize(new Dimension(800, 700));
         setName("mainframe");
         WindowUtilities.setJavaLookAndFeel();
         JSplitPane jSplitPane1 = new JSplitPane();
@@ -114,12 +116,14 @@ public final class MainFrame extends JFrame {
         getContentPane().add(jSplitPane1, BorderLayout.CENTER);
         
         JPanel infoPanel = new JPanel();
-        infoPanel.add(new JScrollPane(infoText));
+        infoPanel.setLayout(new BorderLayout());
+        infoPanel.add(new JScrollPane(infoText), BorderLayout.CENTER);
+        infoPanel.add(statusBar, BorderLayout.SOUTH);
         
         getContentPane().add(infoPanel, BorderLayout.SOUTH);
         
-        fileMenu.add(new BrowseAction(this, (InputKitsList) inputPanel.getKitList(), false));
-        fileMenu.add(new SaveAction(this, (OutputKitsList) outputPanel.getKitList(), false));
+        fileMenu.add(new BrowseAction(this, inputPanel.getKitList(), false));
+        fileMenu.add(new SaveAction(this, outputPanel.getKitList(), false));
         fileMenu.addSeparator();
         fileMenu.add(new ExitAction());
         connectionMenu.add(new MidiSourceAction(this));
@@ -170,5 +174,30 @@ public final class MainFrame extends JFrame {
     public void addInfo(final String newInfo) {
         infoText.append(newInfo);
         infoText.append(System.getProperty("line.separator"));
+    }
+    
+    public void operationStart(String message, Color color) {
+        setEnabled(false);
+        statusBar.setForeground(color);
+        statusBar.setText(message);
+    }
+    
+    public void operationFinish() {
+        statusBar.setText(" ");
+        statusBar.setForeground(new JLabel().getForeground());
+        setEnabled(true);
+    }
+    
+    @SuppressWarnings("serial")
+    private class StatusBar extends JLabel {
+        private StatusBar() {
+            super();
+            setBorder (new BevelBorder(BevelBorder.LOWERED));
+            setMessage(" ");
+        }
+        
+        public void setMessage(String message) {
+            setText(" "+message);        
+        }        
     }
 }
