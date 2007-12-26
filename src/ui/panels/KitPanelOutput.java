@@ -54,7 +54,7 @@ public final class KitPanelOutput extends KitsPanel {
         addToButtonBar(new RemoveKitsAction(outputKitsList));
         addToButtonBar(new ClearListAction(outputKitsList));
         addToButtonBar(new MoveKitAction(Direction.INCREASE_INDEX, outputKitsList,
-                VDrumsUtils.MAX_NUMBER_OF_KITS - 1));
+                VDrumsUtils.MAX_NUMBER_OF_TD12_KITS - 1));
         addToButtonBar(new MoveKitAction(Direction.DECREASE_INDEX, outputKitsList, 0));
     }
 }

@@ -157,7 +157,7 @@ public final class OutputKitsList extends KitsList {
     private void increaseIndex(int index) {
         int selectedIndex = index;
         selectedIndex++;
-        if (selectedIndex < VDrumsUtils.MAX_NUMBER_OF_KITS) {
+        if (selectedIndex < VDrumsUtils.MAX_NUMBER_OF_TD12_KITS) {
             setSelectedIndex(selectedIndex);
         } else {
             setSelectedIndex(-1);
@@ -187,7 +187,7 @@ public final class OutputKitsList extends KitsList {
         private final TdKit[] kits;
 
         private OutputListModel() {
-            kits = new TdKit[VDrumsUtils.MAX_NUMBER_OF_KITS];
+            kits = new TdKit[VDrumsUtils.MAX_NUMBER_OF_TD12_KITS];
             clear();
         }
 

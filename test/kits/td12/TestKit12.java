@@ -15,8 +15,8 @@ import org.testng.annotations.Test;
 import resources.UtilsForTests;
 import exceptions.VdrumException;
 
-@Test(groups = {"kits"})
-public final class TestKit {
+@Test(groups = {"kits12"})
+public final class TestKit12 {
     //test commit
     private TD12Kit kit1;
     private TD12Kit kit25;

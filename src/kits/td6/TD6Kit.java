@@ -26,52 +26,42 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package kits.td12;
+package kits.td6;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
 
-import kits.TdKit;
-import midi.VdrumsSysexMessage;
-
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 
+import kits.TdKit;
+import kits.td12.TD12Kit;
+import midi.VdrumsSysexMessage;
 import utils.VDrumsUtils;
 import exceptions.BadMessageLengthException;
 import exceptions.VdrumException;
 
-public final class TD12Kit implements TdKit {
-    private static final int SART_NAME_LOCATION = 12;
-    private static final int NAME_MAX_LENGTH = 13;
-    private static final int TD_12_NUMBER_OF_SUB_PARTS = 16;
-    /**
-     * Each one of these SubParts is actually a SysexMessage
-     * 
-     * @see SysexMessage
-     */
-    private final TD12SubPart[] subParts;
+/**
+ * @author egolan
+ */
+public final class TD6Kit implements TdKit {
+    private static final int TD_6_NUMBER_OF_SUB_PARTS = 13;
+    private final TD6SubPart[] subParts;
     private final int id;
 
-    public TD12Kit(SysexMessage sysexMessage) throws InvalidMidiDataException, VdrumException {
-        this(sysexMessage.getMessage());
-    }
-
-    public TD12Kit(byte[] rawData) throws InvalidMidiDataException, VdrumException {
-        if (rawData.length != VDrumsUtils.TD12_KIT_SIZE) {
+    public TD6Kit(byte[] rawData) throws InvalidMidiDataException, VdrumException {
+        if (rawData.length != VDrumsUtils.TD6_KIT_SIZE) {
             throw new BadMessageLengthException(rawData.length);
         }
-        subParts = new TD12SubPart[TD_12_NUMBER_OF_SUB_PARTS];
+        subParts = new TD6SubPart[TD_6_NUMBER_OF_SUB_PARTS];
         for (int i = 0; i < subParts.length; i++) {
-            boolean lastPart = (i == (TD_12_NUMBER_OF_SUB_PARTS - 1));
-            subParts[i] = new TD12SubPart(rawData, i, lastPart);
+            boolean firstPart = (i == 0);
+            subParts[i] = new TD6SubPart(rawData, i, firstPart);
         }
         id = setImutableId();
     }
 
-    private TD12Kit(TD12SubPart[] subParts) {
-        this.subParts = subParts;
-        id = setImutableId();
+    public TD6Kit(SysexMessage sysexMessage) throws InvalidMidiDataException, VdrumException {
+        this(sysexMessage.getMessage());
     }
 
     private int setImutableId() {
@@ -87,58 +77,52 @@ public final class TD12Kit implements TdKit {
         return result;
     }
 
-    /**
-     * 
-     * @param newId
-     *            sets new location for the kit
-     * @return A new kit with new location.
-     * 
-     * @throws InvalidMidiDataException
-     * @throws IllegalArgumentException
-     *             for illegal values of id
-     */
-    @Override
-    public TD12Kit setNewId(final Integer newId) throws InvalidMidiDataException {
-        if (newId < 1 || newId > VDrumsUtils.MAX_NUMBER_OF_TD12_KITS) {
-            throw new IllegalArgumentException(" id " + newId);
-        }
-        final TD12SubPart[] newSubParts = new TD12SubPart[TD_12_NUMBER_OF_SUB_PARTS];
-        for (int i = 0; i < newSubParts.length; i++) {
-            newSubParts[i] = new TD12SubPart(subParts[i], newId);
-        }
-        final TD12Kit newKit = new TD12Kit(newSubParts);
-        return newKit;
-    }
-
     @Override
     public int getId() {
         return this.id;
     }
 
     @Override
-    public String getName() {
-        final byte[] partOneData = subParts[0].getMessage();
-        final byte[] rawName = new byte[NAME_MAX_LENGTH];
-        for (int i = 0; i < NAME_MAX_LENGTH; i++) {
-            rawName[i] = partOneData[i + SART_NAME_LOCATION];
-        }
-        String temp = new String(rawName);
-        final char nothing = 0x00;
-        temp = StringUtils.remove(temp, nothing);
-        final String name = StringUtils.trimToEmpty(temp);
-        return name;
+    public VdrumsSysexMessage[] getKitSubParts() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
     public SysexMessage getMessage() throws InvalidMidiDataException {
         byte[] data = null;
-        for (int i = 0; i < TD_12_NUMBER_OF_SUB_PARTS; i++) {
+        for (int i = 0; i < TD_6_NUMBER_OF_SUB_PARTS; i++) {
             data = ArrayUtils.addAll(data, subParts[i].getMessage());
         }
         final SysexMessage result = new VdrumsSysexMessage();
 
         result.setMessage(data, data.length);
         return result;
+    }
+
+    @Override
+    public String getName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TdKit setNewId(Integer newId) throws InvalidMidiDataException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        String newLine = System.getProperty("line.separator");
+        result.append(newLine);
+        result.append(this.getClass().getSimpleName()).append(" {");
+        result.append(newLine);
+        result.append(" Name: ").append(this.getName()).append(newLine);
+        result.append(" id: ").append(this.getId()).append(newLine);
+        result.append("}");
+        return result.toString();
     }
 
     @Override
@@ -149,8 +133,8 @@ public final class TD12Kit implements TdKit {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof TD12Kit) {
-            final TD12Kit other = (TD12Kit) obj;
+        if (obj instanceof TD6Kit) {
+            final TD6Kit other = (TD6Kit) obj;
             try {
                 return this.getMessage().equals(other.getMessage());
             }
@@ -170,22 +154,5 @@ public final class TD12Kit implements TdKit {
             result = 23 * result + subParts[i].hashCode();
         }
         return result;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder result = new StringBuilder();
-        String newLine = System.getProperty("line.separator");
-        result.append(newLine);
-        result.append( this.getClass().getSimpleName() ).append( " {" );
-        result.append(newLine);
-        result.append(" Name: ").append(this.getName()).append(newLine);
-        result.append(" id: ").append(this.getId()).append(newLine);
-        result.append("}");
-        return result.toString();
-    }
-
-    public VdrumsSysexMessage[] getKitSubParts() {
-        return subParts;
     }
 }

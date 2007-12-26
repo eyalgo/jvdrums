@@ -16,8 +16,8 @@ import exceptions.BadMessageLengthException;
 import exceptions.NotRolandException;
 import exceptions.VdrumException;
 
-@Test(groups = { "exception" })
-public class TestErrorsKit {
+@Test(groups = { "exception12" })
+public class TestErrorsKit12 {
     @Test(expectedExceptions = InvalidMidiDataException.class)
     public void checkBadStatus() throws URISyntaxException, IOException,
             InvalidMidiDataException, VdrumException {

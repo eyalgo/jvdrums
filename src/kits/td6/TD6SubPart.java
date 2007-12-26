@@ -26,39 +26,56 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package managers;
+package kits.td6;
 
 import javax.sound.midi.InvalidMidiDataException;
 
-import kits.TdKit;
-import kits.td12.TD12Kit;
-import kits.td6.TD6Kit;
-import exceptions.BadMessageLengthException;
-import exceptions.UnsupportedModuleException;
+import midi.VdrumsSysexMessage;
+
+import org.apache.commons.lang.ArrayUtils;
+
 import exceptions.VdrumException;
 
 /**
  * @author egolan
- * 
  */
-final class FactoryKits {
-    private FactoryKits() {
-    // No instance for this class
+final class TD6SubPart extends VdrumsSysexMessage {
+    private static final int SIZE_SUB_PART = 55;
+    private static final int SIZE_FIRST_SUB_PART = 37;
+    private static final int ID_ADDRESS_INDEX = 7;
+
+    public TD6SubPart(final byte[] kitRawData, final int location, final boolean firstPart)
+            throws InvalidMidiDataException, VdrumException {
+        int size;
+        if (firstPart) {
+            size = SIZE_FIRST_SUB_PART;
+        } else {
+            size = SIZE_SUB_PART;
+        }
+        int firstIndex;
+        if (firstPart) {
+            firstIndex = 0;
+        } else {
+            firstIndex = SIZE_FIRST_SUB_PART + (location-1) * SIZE_SUB_PART;
+        }
+
+        final byte[] partRawData = ArrayUtils.subarray(kitRawData, firstIndex, firstIndex
+                + size);
+        this.setMessage(partRawData, partRawData.length);
     }
 
-    static TdKit getKit(final byte[] kitBytes) throws InvalidMidiDataException, VdrumException {
-        try {
-            if (((kitBytes[3] & 0xFF) == 0) && ((kitBytes[4] & 0xFF) == 0)
-                    && ((kitBytes[5] & 0xFF) == 9)) {
-                return new TD12Kit(kitBytes);
-            }
-            if (((kitBytes[3] & 0xFF) == 0) && ((kitBytes[4] & 0xFF) == 63)) {
-                return new TD6Kit(kitBytes);
-            }
-            throw new UnsupportedModuleException();
+    int getId() {
+        final int msbAddress = getMessage()[ID_ADDRESS_INDEX];
+        return msbAddress + 1;
+    }
+
+    @Override
+    public int hashCode() {
+        final byte[] partRawData = this.getMessage();
+        int result = 23;
+        for (int i = 0; i < partRawData.length; i++) {
+            result = 17 * result + (partRawData[i] & 0xFF);
         }
-        catch (ArrayIndexOutOfBoundsException e) {
-            throw new BadMessageLengthException(kitBytes.length);
-        }
+        return result;
     }
 }

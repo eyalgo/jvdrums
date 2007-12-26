@@ -131,7 +131,7 @@ public final class TDManager {
             }
         }
         final TdKit[] tdKits;
-        tdKits = new TdKit[VDrumsUtils.MAX_NUMBER_OF_KITS];
+        tdKits = new TdKit[VDrumsUtils.MAX_NUMBER_OF_TD12_KITS];
         for (int i = 0; i < tdKits.length; i++) {
             tdKits[i] = null;
         }

@@ -50,7 +50,7 @@ import exceptions.BadChecksumException;
 import exceptions.NotRolandException;
 import exceptions.VdrumException;
 
-@Test(groups = { "manager" }, dependsOnGroups = { "kits", "exception" })
+@Test(groups = { "manager12" }, dependsOnGroups = { "kits12", "exception12" })
 public final class TestTD12Manager {
 
     private byte[] getBytesFromFile(final String fileName) throws IOException,

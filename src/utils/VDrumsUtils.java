@@ -29,13 +29,19 @@
 package utils;
 
 public final class VDrumsUtils {
-    public final static int MAX_NUMBER_OF_KITS = 50;
+    public final static int MAX_NUMBER_OF_TD12_KITS = 50;
+    public final static int MAX_NUMBER_OF_TD6_KITS = 99;
     public final static int ROLAND_ID = 65; // 0x41
     /**
      * Number of bytes for each kit.
      * It is 0x8C3 in HEX representation
      */
     public final static int TD12_KIT_SIZE = 2243;
+    
+    /**
+     * 0x2B9
+     */
+    public final static int TD6_KIT_SIZE = 697;
     
     /**
      * Calculates sum according to TD-12 MIDI Implementation (p.12)
