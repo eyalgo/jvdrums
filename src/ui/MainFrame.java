@@ -30,15 +30,23 @@ package ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.SoftBevelBorder;
 
 import midi.BulkSender;
 import ui.lists.InputKitsList;
@@ -46,6 +54,7 @@ import ui.lists.OutputKitsList;
 import ui.panels.KitPanelInput;
 import ui.panels.KitPanelOutput;
 import ui.panels.KitsPanel;
+import ui.swing.MultiLineLabel;
 import ui.swing.actions.AboutAction;
 import ui.swing.actions.BrowseAction;
 import ui.swing.actions.ExitAction;
@@ -64,17 +73,20 @@ public final class MainFrame extends JFrame {
     private static final long serialVersionUID = -7164597771180443878L;
     private static Configuration config = Configuration.getRoot().get(MainFrame.class);
     private final BulkSender bulkSender;
+    private final JTextArea infoText;
 
     /** Creates new form MainFrame */
     public MainFrame() {
         super("JVDrums");
         bulkSender = new BulkSender();
+        infoText = new MultiLineLabel(10, 100);
+        infoText.setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
     }
 
     public void initFrame() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new ExitListener());
-        setMinimumSize(new Dimension(900, 600));
+        setMinimumSize(new Dimension(900, 800));
         setName("mainframe");
         WindowUtilities.setJavaLookAndFeel();
         JSplitPane jSplitPane1 = new JSplitPane();
@@ -100,6 +112,12 @@ public final class MainFrame extends JFrame {
         jSplitPane1.setRightComponent(outputPanel);
 
         getContentPane().add(jSplitPane1, BorderLayout.CENTER);
+        
+        JPanel infoPanel = new JPanel();
+        infoPanel.add(new JScrollPane(infoText));
+        
+        getContentPane().add(infoPanel, BorderLayout.SOUTH);
+        
         fileMenu.add(new BrowseAction(this, (InputKitsList) inputPanel.getKitList(), false));
         fileMenu.add(new SaveAction(this, (OutputKitsList) outputPanel.getKitList(), false));
         fileMenu.addSeparator();
@@ -113,7 +131,17 @@ public final class MainFrame extends JFrame {
         jMenuBar1.add(editMenu);
         jMenuBar1.add(helpMenu);
         setJMenuBar(jMenuBar1);
+        
+        JButton conenct = new JButton("Connect");
+        conenct.addActionListener(new ActionListener() {
 
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+                
+            }
+            
+        });
+        getContentPane().add(conenct, BorderLayout.NORTH);
         pack();
     }
 
@@ -139,4 +167,8 @@ public final class MainFrame extends JFrame {
         }
     }
 
+    public void addInfo(final String newInfo) {
+        infoText.append(newInfo);
+        infoText.append(System.getProperty("line.separator"));
+    }
 }

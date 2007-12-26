@@ -28,6 +28,7 @@
 
 package ui.swing.actions;
 
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.util.Vector;
 
@@ -93,12 +94,16 @@ public final class SendToModuleAction extends BaseAction implements ListDataList
         final Vector<TdKit> actualKits = TDManager.kitsToKits(kits);
         Thread worker = new Thread() {
             public void run() {
+                mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                mainFrame.setEnabled(false);
                 for (final TdKit kit : actualKits) {
                     System.out.println("Sending " + kit);
-//                    uploadingPanel.addText("Sending: " + kit.getName() + " to slot number "
-//                            + kit.getId());
+                    mainFrame.addInfo("Sending: " + kit.getName() + " to slot number "
+                            + kit.getId());
                     bulkSender.sendKits(kit);
                 }
+                mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                mainFrame.setEnabled(true);
             }
         };
         worker.start();
