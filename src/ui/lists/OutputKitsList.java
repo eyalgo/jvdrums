@@ -66,18 +66,32 @@ public final class OutputKitsList extends KitsList {
 
     @Override
     public void addKit(TdKit kit) {
-        int index = myModel.addKit(kit, getSelectedIndex());
+        int index = addKit(kit, getSelectedIndex());
         increaseIndex(index);
     }
+    
+    private int addKit(TdKit kit, int id) {
+        int index = myModel.addKit(kit, id);
+        return index;
+    }
+
+    public void addKits(TdKit[] kits) {
+        if (kits.length < 1) {
+            return;
+        }
+        if (kits.length == 1) {
+            addKit(kits[0]);
+        } else {
+            for (TdKit kit : kits) {
+                addKit(kit, kit.getId()-1);
+            }
+        }
+    }
+
 
     @Override
     public void clear() {
         myModel.clear();
-    }
-
-    @Override
-    void kitPressed(int index) {
-    // TODO Auto-generated method stub
     }
 
     @Override
@@ -152,6 +166,7 @@ public final class OutputKitsList extends KitsList {
         private void removeSelectedKit(int selectedRow) {
             try {
                 kits[selectedRow] = null;
+                numberOfKits--;
                 fireContentsChanged(this, selectedRow, selectedRow);
             }
             catch (ArrayIndexOutOfBoundsException e) {
@@ -239,5 +254,4 @@ public final class OutputKitsList extends KitsList {
             return kits.length;
         }
     }
-
 }

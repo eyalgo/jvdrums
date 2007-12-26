@@ -34,35 +34,32 @@ import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
+import javax.swing.event.ListDataListener;
 
+import kits.TdKit;
 import ui.MainFrame;
 import ui.lists.KitsList;
 
 public abstract class KitsPanel extends JPanel {
     private static final long serialVersionUID = -5323945831812498619L;
     private JScrollPane scrollPane;
-//    private KitsList kitList;
     private JToolBar buttonsPanel;
     private final MainFrame parentFrame;
+    private  KitsList kitList;
 
-    public KitsPanel(MainFrame parentFrame/*, KitsList kitList*/) {
+    public KitsPanel(MainFrame parentFrame) {
         this.parentFrame = parentFrame;
         setLayout(new BorderLayout());
-//        kitList = kistList;
         scrollPane = new JScrollPane();
-//        scrollPane.setViewportView(kitList);
         this.add(scrollPane, BorderLayout.CENTER);
         buttonsPanel = new JToolBar();
         this.add(buttonsPanel, BorderLayout.SOUTH);
     }
     
-    public abstract KitsList getKitList();
-    
-//    public final KitsList getKitList() {
-//        return kitList;
-//    }
+//    public abstract KitsList getKitList();
 
-    final void setListInView(KitsList kitList) {
+    final void setListInPanel(KitsList kitList) {
+        this.kitList = kitList;
         scrollPane.setViewportView(kitList);
     }
     
@@ -76,5 +73,25 @@ public abstract class KitsPanel extends JPanel {
     
     final void addToButtonBar(Action action) {
         buttonsPanel.add(action);
+    }
+    
+    public final void addKit(TdKit kit) {
+        kitList.addKit(kit);
+    }
+
+    public final void addKits(TdKit[] kits) {
+        kitList.addKits(kits);
+    }
+    
+    public final int numberOfKits() {
+        return kitList.numberOfKits();
+    }
+    
+    public TdKit[] getKits() {
+        return kitList.getKits();
+    }
+
+    public void addListDataListener(ListDataListener l) {
+        kitList.getModel().addListDataListener(l);
     }
 }

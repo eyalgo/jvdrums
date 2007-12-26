@@ -30,20 +30,28 @@ package ui.swing.actions;
 
 import java.awt.event.ActionEvent;
 
+import kits.TdKit;
+import ui.lists.InputKitsList;
+import ui.panels.KitsPanel;
+
 /**
  * @author egolan
  *
  */
 @SuppressWarnings("serial")
-public final class MoveRight extends BaseAction {
-    public MoveRight() {
-        
+public final class MoveRightAction extends BaseAction {
+    final InputKitsList inputKitsList;
+    final KitsPanel kitPanelOutput;
+
+    public MoveRightAction(InputKitsList inputKitsList, KitsPanel kitPanelOutput) {
+        this.inputKitsList = inputKitsList;
+        this.kitPanelOutput = kitPanelOutput;
+        config.get("moveRight").read(this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-    // TODO Auto-generated method stub
-
+        TdKit[] selectedKits = inputKitsList.getSelectedKits();
+        kitPanelOutput.addKits(selectedKits);
     }
-
 }

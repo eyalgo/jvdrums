@@ -29,7 +29,6 @@
 package ui.panels;
 
 import ui.MainFrame;
-import ui.lists.KitsList;
 import ui.lists.OutputKitsList;
 import ui.lists.OutputKitsList.Direction;
 import ui.swing.actions.ClearListAction;
@@ -49,20 +48,13 @@ public final class KitPanelOutput extends KitsPanel {
     public KitPanelOutput(MainFrame parentFrame) {
         super(parentFrame);
         outputKitsList = new OutputKitsList();
-        setListInView(outputKitsList);
-
-        addToButtonBar(new SaveAction(getParentFrame(), outputKitsList));
-
+        setListInPanel(outputKitsList);
+        addToButtonBar(new SaveAction(getParentFrame(), this));
         addToButtonBar(new SendToModuleAction(getParentFrame(), outputKitsList));
         addToButtonBar(new RemoveKitsAction(outputKitsList));
         addToButtonBar(new ClearListAction(outputKitsList));
         addToButtonBar(new MoveKitAction(Direction.INCREASE_INDEX, outputKitsList,
                 VDrumsUtils.MAX_NUMBER_OF_KITS - 1));
         addToButtonBar(new MoveKitAction(Direction.DECREASE_INDEX, outputKitsList, 0));
-    }
-
-    @Override
-    public KitsList getKitList() {
-        return outputKitsList;
     }
 }

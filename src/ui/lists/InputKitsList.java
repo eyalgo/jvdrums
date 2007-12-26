@@ -29,27 +29,41 @@
 package ui.lists;
 
 import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
+import ui.panels.KitsPanel;
+
 import kits.TdKit;
 
 /**
  * @author egolan
- *
  */
 public final class InputKitsList extends KitsList {
     private static final long serialVersionUID = -1312290418423601870L;
     private final DefaultListModel myModel;
-    private final KitsList outputKistList;
-    public InputKitsList(KitsList outputKistList) {
+    private final KitsPanel outputKistPanel;
+
+    public InputKitsList(KitsPanel outputKistPanel) {
         myModel = new DefaultListModel();
         this.setModel(myModel);
         this.setCellRenderer(new TdKitListRenderer());
-        this.outputKistList = outputKistList;
+        this.outputKistPanel = outputKistPanel;
+        addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                JList list = (JList) evt.getSource();
+                if (evt.getClickCount() == 2) { // Double-click
+                    // Get item index
+                    int index = list.locationToIndex(evt.getPoint());
+                    kitPressed(index);
+                }
+            }
+        });
     }
 
     @SuppressWarnings("serial")
@@ -60,35 +74,49 @@ public final class InputKitsList extends KitsList {
                     isSelected, hasFocus);
             if (value != null && value instanceof TdKit) {
                 TdKit kit = (TdKit) value;
-                label.setText(kit.getId()+" " + kit.getName());
+                label.setText(kit.getId() + " " + kit.getName());
             }
-//            if (index%2 == 0) {
-//                label.setBackground(Color.LIGHT_GRAY);
-//            } else {
-//                label.setBackground(Color.WHITE);
-//            }
+            // if (index%2 == 0) {
+            // label.setBackground(Color.LIGHT_GRAY);
+            // } else {
+            // label.setBackground(Color.WHITE);
+            // }
             return (label);
         }
     }
-    
+
     @Override
     public void addKit(TdKit kit) {
         myModel.addElement(kit);
     }
 
     @Override
+    public void addKits(TdKit[] kits) {
+        for (TdKit kit : kits) {
+            addKit(kit);
+        }
+    }
+
     void kitPressed(int index) {
-        outputKistList.addKit((TdKit)myModel.elementAt(index));
+        outputKistPanel.addKit((TdKit) myModel.elementAt(index));
     }
 
     @Override
     public void clear() {
         myModel.clear();
     }
+    
+    public TdKit[] getSelectedKits() {
+        Object[] objs = getSelectedValues();
+        TdKit[] selectedKits = new TdKit[objs.length];
+        for (int i=0;i<objs.length;i++) {
+            selectedKits[i] = (TdKit)objs[i];
+        }
+        return selectedKits;
+    }
 
     @Override
-    public
-    final TdKit[] getKits() {
+    public TdKit[] getKits() {
         Object[] objectKitsInList = myModel.toArray();
         TdKit[] kitsInList = new TdKit[objectKitsInList.length];
         for (int i = 0; i < objectKitsInList.length; i++) {

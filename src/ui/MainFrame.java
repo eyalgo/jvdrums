@@ -122,8 +122,8 @@ public final class MainFrame extends JFrame {
         
         getContentPane().add(infoPanel, BorderLayout.SOUTH);
         
-        fileMenu.add(new BrowseAction(this, inputPanel.getKitList(), false));
-        fileMenu.add(new SaveAction(this, outputPanel.getKitList(), false));
+        fileMenu.add(new BrowseAction(this, inputPanel, false));
+        fileMenu.add(new SaveAction(this, outputPanel, false));
         fileMenu.addSeparator();
         fileMenu.add(new ExitAction());
         connectionMenu.add(new MidiSourceAction(this));
