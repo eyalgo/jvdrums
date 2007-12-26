@@ -37,8 +37,8 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
 
 import kits.TdKit;
+import kits.VdrumsSysexMessage;
 import kits.td12.TD12Kit;
-import midi.VdrumsSysexMessage;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;

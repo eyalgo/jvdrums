@@ -26,7 +26,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package midi;
+package kits;
 
 import java.util.Arrays;
 

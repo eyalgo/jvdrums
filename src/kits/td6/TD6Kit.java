@@ -31,11 +31,12 @@ package kits.td6;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
 
+import kits.TdKit;
+import kits.TdSubPart;
+import kits.VdrumsSysexMessage;
+
 import org.apache.commons.lang.ArrayUtils;
 
-import kits.TdKit;
-import kits.td12.TD12Kit;
-import midi.VdrumsSysexMessage;
 import utils.VDrumsUtils;
 import exceptions.BadMessageLengthException;
 import exceptions.VdrumException;
@@ -45,14 +46,14 @@ import exceptions.VdrumException;
  */
 public final class TD6Kit implements TdKit {
     private static final int TD_6_NUMBER_OF_SUB_PARTS = 13;
-    private final TD6SubPart[] subParts;
+    private final TdSubPart[] subParts;
     private final int id;
 
     public TD6Kit(byte[] rawData) throws InvalidMidiDataException, VdrumException {
         if (rawData.length != VDrumsUtils.TD6_KIT_SIZE) {
             throw new BadMessageLengthException(rawData.length);
         }
-        subParts = new TD6SubPart[TD_6_NUMBER_OF_SUB_PARTS];
+        subParts = new TdSubPart[TD_6_NUMBER_OF_SUB_PARTS];
         for (int i = 0; i < subParts.length; i++) {
             boolean firstPart = (i == 0);
             subParts[i] = new TD6SubPart(rawData, i, firstPart);

@@ -30,19 +30,17 @@ package kits.td6;
 
 import javax.sound.midi.InvalidMidiDataException;
 
-import midi.VdrumsSysexMessage;
-
-import org.apache.commons.lang.ArrayUtils;
-
+import kits.TdSubPart;
 import exceptions.VdrumException;
 
 /**
  * @author egolan
  */
-final class TD6SubPart extends VdrumsSysexMessage {
+public final class TD6SubPart extends TdSubPart {
     private static final int SIZE_SUB_PART = 55;
     private static final int SIZE_FIRST_SUB_PART = 37;
-    private static final int ID_ADDRESS_INDEX = 7;
+    public static final int ID_ADDRESS_INDEX = 7;
+    public static final int MSB_ADDRESS_INDEX = 6;
 
     public TD6SubPart(final byte[] kitRawData, final int location, final boolean firstPart)
             throws InvalidMidiDataException, VdrumException {
@@ -56,26 +54,32 @@ final class TD6SubPart extends VdrumsSysexMessage {
         if (firstPart) {
             firstIndex = 0;
         } else {
-            firstIndex = SIZE_FIRST_SUB_PART + (location-1) * SIZE_SUB_PART;
+            firstIndex = SIZE_FIRST_SUB_PART + (location - 1) * SIZE_SUB_PART;
         }
+        int from = firstIndex;
+        int to = firstIndex + size;
 
-        final byte[] partRawData = ArrayUtils.subarray(kitRawData, firstIndex, firstIndex
-                + size);
-        this.setMessage(partRawData, partRawData.length);
+        createData(kitRawData, from, to);
     }
 
-    int getId() {
-        final int msbAddress = getMessage()[ID_ADDRESS_INDEX];
-        return msbAddress + 1;
+    /**
+     * Copy Constructor. Gets the message from the original SysexMessage. The getMessage()
+     * creates a copy of the data, so it won't be changed.
+     * 
+     * @param origtRawData
+     * @throws InvalidMidiDataException
+     */
+    TD6SubPart(final TdSubPart origtRawData, final int kitId) throws InvalidMidiDataException {
+        copyConstructor(origtRawData, kitId);
     }
 
     @Override
-    public int hashCode() {
-        final byte[] partRawData = this.getMessage();
-        int result = 23;
-        for (int i = 0; i < partRawData.length; i++) {
-            result = 17 * result + (partRawData[i] & 0xFF);
-        }
-        return result;
+    protected int getIdAddressIndex() {
+        return ID_ADDRESS_INDEX;
+    }
+
+    @Override
+    protected int getMsbAddressIndex() {
+        return MSB_ADDRESS_INDEX;
     }
 }

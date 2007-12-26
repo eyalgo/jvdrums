@@ -32,7 +32,8 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
 
 import kits.TdKit;
-import midi.VdrumsSysexMessage;
+import kits.TdSubPart;
+import kits.VdrumsSysexMessage;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -50,7 +51,7 @@ public final class TD12Kit implements TdKit {
      * 
      * @see SysexMessage
      */
-    private final TD12SubPart[] subParts;
+    private final TdSubPart[] subParts;
     private final int id;
 
     public TD12Kit(SysexMessage sysexMessage) throws InvalidMidiDataException, VdrumException {
@@ -61,7 +62,7 @@ public final class TD12Kit implements TdKit {
         if (rawData.length != VDrumsUtils.TD12_KIT_SIZE) {
             throw new BadMessageLengthException(rawData.length);
         }
-        subParts = new TD12SubPart[TD_12_NUMBER_OF_SUB_PARTS];
+        subParts = new TdSubPart[TD_12_NUMBER_OF_SUB_PARTS];
         for (int i = 0; i < subParts.length; i++) {
             boolean lastPart = (i == (TD_12_NUMBER_OF_SUB_PARTS - 1));
             subParts[i] = new TD12SubPart(rawData, i, lastPart);
@@ -69,7 +70,7 @@ public final class TD12Kit implements TdKit {
         id = setImutableId();
     }
 
-    private TD12Kit(TD12SubPart[] subParts) {
+    private TD12Kit(TdSubPart[] subParts) {
         this.subParts = subParts;
         id = setImutableId();
     }
@@ -102,7 +103,7 @@ public final class TD12Kit implements TdKit {
         if (newId < 1 || newId > VDrumsUtils.MAX_NUMBER_OF_TD12_KITS) {
             throw new IllegalArgumentException(" id " + newId);
         }
-        final TD12SubPart[] newSubParts = new TD12SubPart[TD_12_NUMBER_OF_SUB_PARTS];
+        final TdSubPart[] newSubParts = new TdSubPart[TD_12_NUMBER_OF_SUB_PARTS];
         for (int i = 0; i < newSubParts.length; i++) {
             newSubParts[i] = new TD12SubPart(subParts[i], newId);
         }

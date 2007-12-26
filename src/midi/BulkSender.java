@@ -34,6 +34,7 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 
 import kits.TdKit;
+import kits.VdrumsSysexMessage;
 
 /**
  * @author egolan

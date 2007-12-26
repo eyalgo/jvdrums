@@ -30,24 +30,16 @@ package kits.td12;
 
 import javax.sound.midi.InvalidMidiDataException;
 
-import midi.VdrumsSysexMessage;
-
-import org.apache.commons.lang.ArrayUtils;
-
-import utils.VDrumsUtils;
-import exceptions.BadChecksumException;
-import exceptions.NotRolandException;
+import kits.TdSubPart;
 import exceptions.VdrumException;
 
-final class TD12SubPart extends VdrumsSysexMessage {
-    private static final int ROLAND_ID_INDEX = 1;
-    private static final int MSB_ADDRESS_INDEX = 7; // It is the 8th byte
+public final class TD12SubPart extends TdSubPart {
+    public static final int MSB_ADDRESS_INDEX = 7; // It is the 8th byte
     private static final int ID_ADDRESS_INDEX = 8;
     /** Number of bytes each sub part in the kit (raw data) */
     private static final int SIZE_SUB_PART = 141;
     /** The F part (16th) is smaller and has only 128 bytes */
     private static final int SIZE_LAST_SUB_PART = 128;
-    private final int checksumIndex;
 
     TD12SubPart(byte[] kitRawData, final int location, boolean isLastPart)
             throws InvalidMidiDataException, VdrumException {
@@ -57,52 +49,23 @@ final class TD12SubPart extends VdrumsSysexMessage {
         } else {
             size = SIZE_SUB_PART;
         }
-        final byte[] partRawData = ArrayUtils.subarray(kitRawData, location * SIZE_SUB_PART,
-                location * SIZE_SUB_PART + size);
-        checksumIndex = partRawData.length - 2;
-        this.setMessage(partRawData, partRawData.length);
-        int inputCheckSum = this.getMessage()[checksumIndex];
-        final int checksum = VDrumsUtils.calculateChecksum(ArrayUtils.subarray(this
-                .getMessage(), MSB_ADDRESS_INDEX, checksumIndex));
-        if (inputCheckSum != checksum) {
-            throw new BadChecksumException(inputCheckSum, checksum);
-        }
-        if (this.getMessage()[ROLAND_ID_INDEX] != VDrumsUtils.ROLAND_ID) {
-            throw new NotRolandException(this.getMessage()[ROLAND_ID_INDEX]);
-        }
+        int from = location * SIZE_SUB_PART;
+        int to = location * SIZE_SUB_PART + size;
+        createData(kitRawData, from, to);
     }
 
-    /**
-     * Copy Constructor. Gets the message from the original SysexMessage. The
-     * getMessage() creates a copy of the data, so it won't be changed.
-     * 
-     * @param origtRawData
-     * @throws InvalidMidiDataException
-     */
-    TD12SubPart(final TD12SubPart origtRawData, final int kitId)
+    TD12SubPart(final TdSubPart origtRawData, final int kitId)
             throws InvalidMidiDataException {
-        final byte[] partRawData = origtRawData.getMessage();
-        final Integer dataId = kitId - 1;
-        partRawData[ID_ADDRESS_INDEX] = dataId.byteValue();
-        checksumIndex = partRawData.length - 2;
-        final int checksum = VDrumsUtils.calculateChecksum(ArrayUtils.subarray(partRawData,
-                MSB_ADDRESS_INDEX, checksumIndex));
-        partRawData[checksumIndex] = Integer.valueOf(checksum).byteValue();
-        this.setMessage(partRawData, partRawData.length);
-    }
-
-    int getId() {
-        final int msbAddress = getMessage()[ID_ADDRESS_INDEX];
-        return msbAddress + 1;
+        copyConstructor(origtRawData, kitId);
     }
 
     @Override
-    public int hashCode() {
-        final byte[] partRawData = this.getMessage();
-        int result = 23;
-        for (int i = 0; i < partRawData.length; i++) {
-            result = 17 * result + (partRawData[i] & 0xFF);
-        }
-        return result;
+    protected int getIdAddressIndex() {
+        return ID_ADDRESS_INDEX;
+    }
+
+    @Override
+    protected int getMsbAddressIndex() {
+        return MSB_ADDRESS_INDEX;
     }
 }
