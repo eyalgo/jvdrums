@@ -88,7 +88,7 @@ public final class MainFrame extends JFrame {
         addWindowListener(new ExitListener());
         setMinimumSize(new Dimension(800, 700));
         setName("mainframe");
-        WindowUtilities.setJavaLookAndFeel();
+        WindowUtilities.setLiquidLookAndFeel();
         JSplitPane jSplitPane1 = new JSplitPane();
         KitsPanel outputPanel = new KitPanelOutput(this, new Td12Info());
         KitsPanel inputPanel = new KitPanelInput(this, outputPanel);
