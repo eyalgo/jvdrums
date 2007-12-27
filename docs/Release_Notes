@@ -19,3 +19,6 @@ Release 0.7 - Alpha 2 Release:
 	- Showing which kit is downloaded to the module.
 * Supporting TD-6
 	- The user can choose the output module
+**************************************************
+!!! TD-6 options were not tested with a module !!!
+**************************************************
