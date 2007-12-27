@@ -87,7 +87,25 @@ public final class TestTD6Manager {
             InvalidMidiDataException, VdrumException {
         final SysexMessage message = getMessageFromFile("td6Saz97.syx");
         TdKit[] kitsFromManager = TDManager.sysexMessageToKits(message);
-        TdKit maple3Kit = kitsFromManager[97];
+        TdKit maple3Kit = kitsFromManager[96];
         Assert.assertEquals(maple3Kit.getMessage(), message);
+    }
+
+    public void checkBytesToKit25() throws URISyntaxException, IOException,
+            InvalidMidiDataException, VdrumException {
+        final byte[] bytes = getBytesFromFile("td6Saz97.syx");
+
+        TdKit[] kitsFromManager = TDManager.bytesToKits(bytes);
+        for (int i = 0; i < kitsFromManager.length; i++) {
+            if (i != 96) {
+                if (kitsFromManager[i] != null) {
+                    Assert.fail(i + " is not null");
+                }
+            }
+        }
+        final File file25 = UtilsForTests.getFile("td6Saz97.syx");
+        byte[] kitBytes25 = FileUtils.readFileToByteArray(file25);
+        TdKit kit25 = new TD6Kit(kitBytes25);
+        Assert.assertEquals(kitsFromManager[96], kit25);
     }
 }
