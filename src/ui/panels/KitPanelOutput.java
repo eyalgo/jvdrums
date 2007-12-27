@@ -51,7 +51,7 @@ import ui.swing.actions.SendToModuleAction;
 public final class KitPanelOutput extends KitsPanel implements ActionListener {
     private static final long serialVersionUID = -5217989811338648085L;
     private final OutputKitsList outputKitsList;
-    private final MoveKitAction moveKitAction;
+    private final MoveKitAction increaseIndexMoveAction;
 
     public KitPanelOutput(MainFrame parentFrame, TdInfo tdInfo) {
         super(parentFrame);
@@ -61,9 +61,9 @@ public final class KitPanelOutput extends KitsPanel implements ActionListener {
         addToButtonBar(new SendToModuleAction(getParentFrame(), outputKitsList));
         addToButtonBar(new RemoveKitsAction(outputKitsList));
         addToButtonBar(new ClearListAction(outputKitsList));
-        moveKitAction = new MoveKitAction(Direction.INCREASE_INDEX, outputKitsList, tdInfo
+        increaseIndexMoveAction = new MoveKitAction(Direction.INCREASE_INDEX, outputKitsList, tdInfo
                 .getMaxNumberOfKits() - 1);
-        addToButtonBar(moveKitAction);
+        addToButtonBar(increaseIndexMoveAction);
         addToButtonBar(new MoveKitAction(Direction.DECREASE_INDEX, outputKitsList, 0));
         JComboBox modulesChooserCombo = new ModulesChooserCombo(tdInfo);
         modulesChooserCombo.addActionListener(this);
@@ -71,7 +71,7 @@ public final class KitPanelOutput extends KitsPanel implements ActionListener {
     }
 
     public void setMaxNumberOfKits(int maxNumberOfKits) {
-        moveKitAction.setMaxNumberOfKits(maxNumberOfKits);
+        increaseIndexMoveAction.setMaxNumberOfKits(maxNumberOfKits);
     }
 
     @SuppressWarnings("serial")
@@ -90,7 +90,7 @@ public final class KitPanelOutput extends KitsPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         JComboBox cb = (JComboBox) e.getSource();
         TdInfo tdInfo = (TdInfo) cb.getSelectedItem();
-        moveKitAction.setMaxNumberOfKits(tdInfo.getMaxNumberOfKits() - 1);
+        increaseIndexMoveAction.setMaxNumberOfKits(tdInfo.getMaxNumberOfKits() - 1);
         outputKitsList.setTdInfo(tdInfo);
     }
 }
