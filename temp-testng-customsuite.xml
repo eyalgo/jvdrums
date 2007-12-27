@@ -1,0 +1,19 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="JVDrums by groups">
+  <test verbose="2" name="G:kits6,exception12,manager12,kits12" annotations="JDK">
+    <groups>
+      <run>
+        <include name="kits6"/>
+        <include name="exception12"/>
+        <include name="manager12"/>
+        <include name="kits12"/>
+      </run>
+    </groups>
+    <classes>
+      <class name="managers.TestTD12Manager"/>
+      <class name="kits.td12.TestErrorsKit12"/>
+      <class name="kits.td6.TestKit6"/>
+      <class name="kits.td12.TestKit12"/>
+    </classes>
+  </test>
+</suite>

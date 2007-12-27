@@ -41,10 +41,18 @@ import utils.VDrumsUtils;
  * @author egolan
  */
 public abstract class TdSubPart extends VdrumsSysexMessage {
+    private final static int ROLAND_ID = 65; // 0x41
     protected static final int ROLAND_ID_INDEX = 1;
+    private final int idAddressIndex;
+    private final int msbAddressIndex;
 
+    protected TdSubPart(int idAddressIndex, int msbAddressIndex) {
+        this.idAddressIndex = idAddressIndex;
+        this.msbAddressIndex = msbAddressIndex;
+    }
+    
     public final int getId() {
-        final int msbAddress = getMessage()[getIdAddressIndex()];
+        final int msbAddress = getMessage()[idAddressIndex];
         return msbAddress + 1;
     }
 
@@ -69,10 +77,10 @@ public abstract class TdSubPart extends VdrumsSysexMessage {
             throws InvalidMidiDataException {
         final byte[] partRawData = origtRawData.getMessage();
         final Integer dataId = kitId - 1;
-        partRawData[getIdAddressIndex()] = dataId.byteValue();
+        partRawData[idAddressIndex] = dataId.byteValue();
         int checksumIndex = partRawData.length - 2;
-        final int checksum = VDrumsUtils.calculateChecksum(ArrayUtils.subarray(partRawData,
-                getMsbAddressIndex(), checksumIndex));
+        final int checksum = calculateChecksum(ArrayUtils.subarray(partRawData,
+                msbAddressIndex, checksumIndex));
         partRawData[checksumIndex] = Integer.valueOf(checksum).byteValue();
         this.setMessage(partRawData, partRawData.length);
     }
@@ -82,17 +90,28 @@ public abstract class TdSubPart extends VdrumsSysexMessage {
         int checksumIndex = partRawData.length - 2;
         this.setMessage(partRawData, partRawData.length);
         int inputCheckSum = this.getMessage()[checksumIndex];
-        final int checksum = VDrumsUtils.calculateChecksum(ArrayUtils.subarray(this
-                .getMessage(), getMsbAddressIndex(), checksumIndex));
+        final int checksum = calculateChecksum(ArrayUtils.subarray(this
+                .getMessage(), msbAddressIndex, checksumIndex));
         if (inputCheckSum != checksum) {
             throw new BadChecksumException(inputCheckSum, checksum);
         }
-        if (this.getMessage()[ROLAND_ID_INDEX] != VDrumsUtils.ROLAND_ID) {
+        if (this.getMessage()[ROLAND_ID_INDEX] != ROLAND_ID) {
             throw new NotRolandException(this.getMessage()[ROLAND_ID_INDEX]);
         }
     }
+    
+    private int calculateChecksum(final byte[] data){
+        int sum = 0;
+        for (int i=0;i<data.length;i++){
+            int currentInt = (int)data[i]& 0xFF;
+            sum += currentInt;
+        }
+        final int reminder = sum % 128;
+        if (reminder == 0) {
+            return 0;
+        }
+        final int checksum = 128 - reminder;
+        return checksum;
+    }
 
-    protected abstract int getIdAddressIndex();
-
-    protected abstract int getMsbAddressIndex();
 }

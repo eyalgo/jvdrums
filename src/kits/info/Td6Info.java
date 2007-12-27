@@ -26,47 +26,37 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package utils;
+package kits.info;
 
-public final class VDrumsUtils {
-    public final static int MAX_NUMBER_OF_TD12_KITS = 50;
-    public final static int MAX_NUMBER_OF_TD6_KITS = 99;
-    public final static int ROLAND_ID = 65; // 0x41
-    /**
-     * Number of bytes for each kit.
-     * It is 0x8C3 in HEX representation
-     */
-    public final static int TD12_KIT_SIZE = 2243;
+public final class Td6Info implements TdInfo {
+    public static final int SART_NAME_INDEX = 10;
+    public static final int NAME_MAX_LENGTH = 8;
+    public static final int NUMBER_OF_SUB_PARTS = 13;
+    public final static int MAX_NUMBER_OF_KITS = 99;
+    public final static int KIT_SIZE = 697;
     
-    /**
-     * 0x2B9
-     */
-    public final static int TD6_KIT_SIZE = 697;
-    
-    /**
-     * Calculates sum according to TD-12 MIDI Implementation (p.12)
-     * sum of bytes
-     * sum mod 128 = reminder
-     * 128 - reminder = checksum
-     * 
-     * @param data byte[]
-     * @return
-     */
-    public static int calculateChecksum(final byte[] data){
-        int sum = 0;
-        for (int i=0;i<data.length;i++){
-            int currentInt = (int)data[i]& 0xFF;
-            sum += currentInt;
-        }
-        final int reminder = sum % 128;
-        if (reminder == 0) {
-            return 0;
-        }
-        final int checksum = 128 - reminder;
-        return checksum;
+    @Override
+    public int getMaxLength() {
+        return NAME_MAX_LENGTH;
     }
 
-    private VDrumsUtils() {
-    // The class should not be have instances
+    @Override
+    public int getNumberOfSubParts() {
+        return NUMBER_OF_SUB_PARTS;
+    }
+
+    @Override
+    public int getStartNameIndex() {
+        return SART_NAME_INDEX;
+    }
+
+    @Override
+    public int getMaxNumberOfKits() {
+        return MAX_NUMBER_OF_KITS;
+    }
+
+    @Override
+    public int getKitSize() {
+        return KIT_SIZE;
     }
 }

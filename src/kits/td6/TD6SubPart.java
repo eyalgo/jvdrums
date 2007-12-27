@@ -44,6 +44,7 @@ public final class TD6SubPart extends TdSubPart {
 
     public TD6SubPart(final byte[] kitRawData, final int location, final boolean firstPart)
             throws InvalidMidiDataException, VdrumException {
+        super(ID_ADDRESS_INDEX, MSB_ADDRESS_INDEX);
         int size;
         if (firstPart) {
             size = SIZE_FIRST_SUB_PART;
@@ -70,16 +71,7 @@ public final class TD6SubPart extends TdSubPart {
      * @throws InvalidMidiDataException
      */
     TD6SubPart(final TdSubPart origtRawData, final int kitId) throws InvalidMidiDataException {
+        super(ID_ADDRESS_INDEX, MSB_ADDRESS_INDEX);
         copyConstructor(origtRawData, kitId);
-    }
-
-    @Override
-    protected int getIdAddressIndex() {
-        return ID_ADDRESS_INDEX;
-    }
-
-    @Override
-    protected int getMsbAddressIndex() {
-        return MSB_ADDRESS_INDEX;
     }
 }

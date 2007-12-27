@@ -33,27 +33,23 @@ import javax.sound.midi.SysexMessage;
 
 import kits.TdKit;
 import kits.TdSubPart;
-import kits.VdrumsSysexMessage;
-
-import org.apache.commons.lang.ArrayUtils;
-
-import utils.VDrumsUtils;
+import kits.info.Td6Info;
 import exceptions.BadMessageLengthException;
 import exceptions.VdrumException;
 
 /**
  * @author egolan
  */
-public final class TD6Kit implements TdKit {
-    private static final int TD_6_NUMBER_OF_SUB_PARTS = 13;
-    private final TdSubPart[] subParts;
+public final class TD6Kit extends TdKit {
     private final int id;
 
     public TD6Kit(byte[] rawData) throws InvalidMidiDataException, VdrumException {
-        if (rawData.length != VDrumsUtils.TD6_KIT_SIZE) {
+        super(Td6Info.NUMBER_OF_SUB_PARTS, Td6Info.NAME_MAX_LENGTH, Td6Info.SART_NAME_INDEX,
+                Td6Info.MAX_NUMBER_OF_KITS);
+        if (rawData.length != Td6Info.KIT_SIZE) {
             throw new BadMessageLengthException(rawData.length);
         }
-        subParts = new TdSubPart[TD_6_NUMBER_OF_SUB_PARTS];
+        subParts = new TdSubPart[Td6Info.NUMBER_OF_SUB_PARTS];
         for (int i = 0; i < subParts.length; i++) {
             boolean firstPart = (i == 0);
             subParts[i] = new TD6SubPart(rawData, i, firstPart);
@@ -61,21 +57,14 @@ public final class TD6Kit implements TdKit {
         id = setImutableId();
     }
 
-    public TD6Kit(SysexMessage sysexMessage) throws InvalidMidiDataException, VdrumException {
-        this(sysexMessage.getMessage());
+    private TD6Kit(TdSubPart[] subParts) {
+        super(Td6Info.NUMBER_OF_SUB_PARTS, Td6Info.NAME_MAX_LENGTH, Td6Info.SART_NAME_INDEX,
+                Td6Info.MAX_NUMBER_OF_KITS, subParts);
+        id = setImutableId();
     }
 
-    private int setImutableId() {
-        int result = 0;
-        for (int i = 0; i < subParts.length; i++) {
-            result += this.subParts[i].getId();
-        }
-        if (result % subParts.length != 0) {
-            throw new RuntimeException();
-        }
-        result = result / subParts.length;
-
-        return result;
+    public TD6Kit(SysexMessage sysexMessage) throws InvalidMidiDataException, VdrumException {
+        this(sysexMessage.getMessage());
     }
 
     @Override
@@ -84,76 +73,14 @@ public final class TD6Kit implements TdKit {
     }
 
     @Override
-    public VdrumsSysexMessage[] getKitSubParts() {
-        // TODO Auto-generated method stub
-        return null;
+    protected TdKit getNewKit(TdSubPart[] newSubParts) {
+        TdKit newTd6Kit = new TD6Kit(newSubParts);
+        return newTd6Kit;
     }
 
     @Override
-    public SysexMessage getMessage() throws InvalidMidiDataException {
-        byte[] data = null;
-        for (int i = 0; i < TD_6_NUMBER_OF_SUB_PARTS; i++) {
-            data = ArrayUtils.addAll(data, subParts[i].getMessage());
-        }
-        final SysexMessage result = new VdrumsSysexMessage();
-
-        result.setMessage(data, data.length);
-        return result;
-    }
-
-    @Override
-    public String getName() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public TdKit setNewId(Integer newId) throws InvalidMidiDataException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder result = new StringBuilder();
-        String newLine = System.getProperty("line.separator");
-        result.append(newLine);
-        result.append(this.getClass().getSimpleName()).append(" {");
-        result.append(newLine);
-        result.append(" Name: ").append(this.getName()).append(newLine);
-        result.append(" id: ").append(this.getId()).append(newLine);
-        result.append("}");
-        return result.toString();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof TD6Kit) {
-            final TD6Kit other = (TD6Kit) obj;
-            try {
-                return this.getMessage().equals(other.getMessage());
-            }
-            catch (InvalidMidiDataException e) {
-                throw new RuntimeException("Got InvalidMidiDataException in equals "
-                        + this.toString());
-            }
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        int result = 17;
-        for (int i = 0; i < subParts.length; i++) {
-            result = 23 * result + subParts[i].hashCode();
-        }
-        return result;
+    protected TdSubPart getNewSubPart(TdSubPart subPart, Integer newId)
+            throws InvalidMidiDataException {
+        return new TD6SubPart(subPart, newId);
     }
 }

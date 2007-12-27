@@ -26,38 +26,16 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package kits.td12;
+package kits.info;
 
-import javax.sound.midi.InvalidMidiDataException;
-
-import kits.TdSubPart;
-import exceptions.VdrumException;
-
-public final class TD12SubPart extends TdSubPart {
-    public static final int MSB_ADDRESS_INDEX = 7; // It is the 8th byte
-    private static final int ID_ADDRESS_INDEX = 8;
-    /** Number of bytes each sub part in the kit (raw data) */
-    private static final int SIZE_SUB_PART = 141;
-    /** The F part (16th) is smaller and has only 128 bytes */
-    private static final int SIZE_LAST_SUB_PART = 128;
-
-    TD12SubPart(byte[] kitRawData, final int location, boolean isLastPart)
-            throws InvalidMidiDataException, VdrumException {
-        super(ID_ADDRESS_INDEX, MSB_ADDRESS_INDEX);
-        int size;
-        if (isLastPart) {
-            size = SIZE_LAST_SUB_PART;
-        } else {
-            size = SIZE_SUB_PART;
-        }
-        int from = location * SIZE_SUB_PART;
-        int to = location * SIZE_SUB_PART + size;
-        createData(kitRawData, from, to);
-    }
-
-    TD12SubPart(final TdSubPart origtRawData, final int kitId)
-            throws InvalidMidiDataException {
-        super(ID_ADDRESS_INDEX, MSB_ADDRESS_INDEX);
-        copyConstructor(origtRawData, kitId);
-    }
+/**
+ * @author egolan
+ *
+ */
+public interface TdInfo {
+    public int getStartNameIndex();
+    public int getMaxLength();
+    public int getNumberOfSubParts();
+    public int getMaxNumberOfKits();
+    public int getKitSize();
 }

@@ -37,10 +37,10 @@ import javax.sound.midi.SysexMessage;
 
 import kits.TdKit;
 import kits.VdrumsSysexMessage;
+import kits.info.Td12Info;
 
 import org.apache.commons.lang.ArrayUtils;
 
-import utils.VDrumsUtils;
 import exceptions.VdrumException;
 
 /**
@@ -127,16 +127,16 @@ public final class TDManager {
         for (int i = 0; i < byteMessage.length; i++) {
             if (((byteMessage[i] & 0xFF) == 240) && ((byteMessage[i + 7] & 0xFF) == 114)) {
                 indexes.add(Integer.valueOf(i));
-                i += VDrumsUtils.TD12_KIT_SIZE - 20;
+                i += Td12Info.KIT_SIZE - 20;
             }
         }
         final TdKit[] tdKits;
-        tdKits = new TdKit[VDrumsUtils.MAX_NUMBER_OF_TD12_KITS];
+        tdKits = new TdKit[Td12Info.MAX_NUMBER_OF_KITS];
         for (int i = 0; i < tdKits.length; i++) {
             tdKits[i] = null;
         }
         for (Integer index : indexes) {
-            final int finishKitsMessage = index + VDrumsUtils.TD12_KIT_SIZE;
+            final int finishKitsMessage = index + Td12Info.KIT_SIZE;
             final byte[] kitBytes = ArrayUtils.subarray(byteMessage, index, finishKitsMessage);
             final TdKit tempKit = FactoryKits.getKit(kitBytes);
             final int kitId = tempKit.getId();

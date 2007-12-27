@@ -26,38 +26,41 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package kits.td12;
+package kits.info;
 
-import javax.sound.midi.InvalidMidiDataException;
-
-import kits.TdSubPart;
-import exceptions.VdrumException;
-
-public final class TD12SubPart extends TdSubPart {
-    public static final int MSB_ADDRESS_INDEX = 7; // It is the 8th byte
-    private static final int ID_ADDRESS_INDEX = 8;
-    /** Number of bytes each sub part in the kit (raw data) */
-    private static final int SIZE_SUB_PART = 141;
-    /** The F part (16th) is smaller and has only 128 bytes */
-    private static final int SIZE_LAST_SUB_PART = 128;
-
-    TD12SubPart(byte[] kitRawData, final int location, boolean isLastPart)
-            throws InvalidMidiDataException, VdrumException {
-        super(ID_ADDRESS_INDEX, MSB_ADDRESS_INDEX);
-        int size;
-        if (isLastPart) {
-            size = SIZE_LAST_SUB_PART;
-        } else {
-            size = SIZE_SUB_PART;
-        }
-        int from = location * SIZE_SUB_PART;
-        int to = location * SIZE_SUB_PART + size;
-        createData(kitRawData, from, to);
+/**
+ * @author egolan
+ *
+ */
+public final class Td12Info implements TdInfo {
+    public static final int SART_NAME_INDEX = 12;
+    public static final int NAME_MAX_LENGTH = 13;
+    public static final int NUMBER_OF_SUB_PARTS = 16;
+    public final static int MAX_NUMBER_OF_KITS = 50;
+    public final static int KIT_SIZE = 2243;
+    
+    @Override
+    public int getMaxLength() {
+        return NAME_MAX_LENGTH;
     }
 
-    TD12SubPart(final TdSubPart origtRawData, final int kitId)
-            throws InvalidMidiDataException {
-        super(ID_ADDRESS_INDEX, MSB_ADDRESS_INDEX);
-        copyConstructor(origtRawData, kitId);
+    @Override
+    public int getNumberOfSubParts() {
+        return NUMBER_OF_SUB_PARTS;
+    }
+
+    @Override
+    public int getStartNameIndex() {
+        return SART_NAME_INDEX;
+    }
+
+    @Override
+    public int getMaxNumberOfKits() {
+        return MAX_NUMBER_OF_KITS;
+    }
+
+    @Override
+    public int getKitSize() {
+        return KIT_SIZE;
     }
 }
