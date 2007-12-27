@@ -119,29 +119,15 @@ public final class TestKit6 {
         }
     }
 
-//    public void checkEqualsAftterNewId() throws IOException, InvalidMidiDataException,
-//            URISyntaxException, VdrumException {
-//        File fileSaz = UtilsForTests.getFile("td6.syx");
-//        byte[] saz97Bytes = FileUtils.readFileToByteArray(fileSaz);
-//        TdKit kitSaz97 = new TD6Kit(saz97Bytes);
-//        TdKit kitSaz12 = kitSaz97.setNewId(12);
-//        File fileSaz12 = UtilsForTests.getFile("td6Saz12.syx");
-//        byte[] saz12Bytes = FileUtils.readFileToByteArray(fileSaz12);
-//        TdKit fileKitSaz12 = new TD6Kit(saz12Bytes);
-//        Assert.assertEquals(kitSaz12, fileKitSaz12);
-//    }
-
-//    public void checkHashAftterNewId() throws IOException, InvalidMidiDataException,
-//            URISyntaxException, VdrumException {
-//        File fileSaz97 = UtilsForTests.getFile("td6.syx");
-//        byte[] saz97Bytes = FileUtils.readFileToByteArray(fileSaz97);
-//        TdKit kitSaz97 = new TD6Kit(saz97Bytes);
-//        TdKit kitMaple4 = kitMaple3.setNewId(4);
-//        File fileMaple4 = UtilsForTests.getFile("maple4.syx");
-//        byte[] maple4Bytes = FileUtils.readFileToByteArray(fileMaple4);
-//        TdKit fileKitMaple4 = new TD12Kit(maple4Bytes);
-//        Assert.assertTrue(kitMaple4.hashCode() == fileKitMaple4.hashCode(),
-//                "kitMaple4.hashCode=" + kitMaple4.hashCode() + " fileKitMaple4.hashCode="
-//                        + fileKitMaple4.hashCode());
-//    }
+    public void checkEqualsandHashAftterNewId() throws IOException, InvalidMidiDataException,
+            URISyntaxException, VdrumException {
+        TdKit kitSaz6 = kitSaz97.setNewId(6);
+        File fileSaz6 = UtilsForTests.getFile("td6Saz6.syx");
+        byte[] saz6Bytes = FileUtils.readFileToByteArray(fileSaz6);
+        TdKit fileKitSaz6 = new TD6Kit(saz6Bytes);
+        Assert.assertEquals(kitSaz6, fileKitSaz6);
+        Assert.assertTrue(kitSaz6.hashCode() == fileKitSaz6.hashCode(),
+                "kitMaple4.hashCode=" + kitSaz6.hashCode() + " fileKitMaple4.hashCode="
+                        + fileKitSaz6.hashCode());
+    }
 }

@@ -35,8 +35,6 @@ import org.apache.commons.lang.ArrayUtils;
 import exceptions.BadChecksumException;
 import exceptions.NotRolandException;
 
-import utils.VDrumsUtils;
-
 /**
  * @author egolan
  */

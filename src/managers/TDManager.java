@@ -28,8 +28,6 @@
 
 package managers;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Vector;
 
 import javax.sound.midi.InvalidMidiDataException;
@@ -37,7 +35,6 @@ import javax.sound.midi.SysexMessage;
 
 import kits.TdKit;
 import kits.VdrumsSysexMessage;
-import kits.info.Td12Info;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -61,7 +58,7 @@ public final class TDManager {
      * @throws InvalidMidiDataException
      * @throws VdrumException
      */
-    public static Vector<TdKit> kitsToKits(TdKit[] originalKits) throws InvalidMidiDataException,
+    public final static Vector<TdKit> kitsToKits(TdKit[] originalKits) throws InvalidMidiDataException,
             VdrumException {
         final Vector<TdKit> returnedKits = new Vector<TdKit>();
         for (int i = 0; i < originalKits.length; i++) {
@@ -77,7 +74,7 @@ public final class TDManager {
      *            TdKit[]
      * @throws InvalidMidiDataException
      */
-    public static SysexMessage kitsToSysexMessage(TdKit[] kits)
+    public final static SysexMessage kitsToSysexMessage(TdKit[] kits)
             throws InvalidMidiDataException {
         byte[] data = null;
         for (int i = 0; i < kits.length; i++) {
@@ -98,51 +95,18 @@ public final class TDManager {
      * @throws InvalidMidiDataException
      * @throws VdrumException
      */
-    public static TdKit[] bytesToKits(byte[] kitBytes) throws InvalidMidiDataException,
+    public final static TdKit[] bytesToKits(byte[] kitBytes) throws InvalidMidiDataException,
             VdrumException {
         SysexMessage message = new VdrumsSysexMessage();
         message.setMessage(kitBytes, kitBytes.length);
-        return sysexMessageToKits(message);
+        TDModulesManager moduleManager = FactoryKits.getTdModuleManager(kitBytes);
+        return moduleManager.sysexMessageToKits(message);
     }
 
-    /**
-     * Gets a message in a Sysex format. Parses the bytes in the message into an array of TdKit
-     * (TD-12) Each message of a kit must start with 0xF0 which is (after masking) 240. The
-     * kit's address is 0x72 which is 114 and is located in the eigth index (starting 0). We
-     * ignore the status byte and adress byte of the "inner" parts of the kits. We ignore by
-     * advancing the index (i) almost all the kit's size.
-     * 
-     * @param message
-     *            SysexMessage
-     * @return TdKit[]
-     * @throws InvalidMidiDataException
-     *             if generic problem in building the kits (like status byte)
-     * @throws VdrumException
-     *             can be bad checksum, not roland kit etc.
-     */
-    public static TdKit[] sysexMessageToKits(SysexMessage message)
-            throws InvalidMidiDataException, VdrumException {
-        final byte[] byteMessage = message.getMessage();
-        final Collection<Integer> indexes = new ArrayList<Integer>();
-        for (int i = 0; i < byteMessage.length; i++) {
-            if (((byteMessage[i] & 0xFF) == 240) && ((byteMessage[i + 7] & 0xFF) == 114)) {
-                indexes.add(Integer.valueOf(i));
-                i += Td12Info.KIT_SIZE - 20;
-            }
-        }
-        final TdKit[] tdKits;
-        tdKits = new TdKit[Td12Info.MAX_NUMBER_OF_KITS];
-        for (int i = 0; i < tdKits.length; i++) {
-            tdKits[i] = null;
-        }
-        for (Integer index : indexes) {
-            final int finishKitsMessage = index + Td12Info.KIT_SIZE;
-            final byte[] kitBytes = ArrayUtils.subarray(byteMessage, index, finishKitsMessage);
-            final TdKit tempKit = FactoryKits.getKit(kitBytes);
-            final int kitId = tempKit.getId();
-            tdKits[kitId - 1] = tempKit;
-        }
-        return tdKits;
+    // A method for tests
+    static TdKit[] sysexMessageToKits(SysexMessage message) throws InvalidMidiDataException, VdrumException {
+        byte[] bytes = message.getMessage();
+        TDModulesManager moduleManager = FactoryKits.getTdModuleManager(bytes );
+        return moduleManager.sysexMessageToKits(message);
     }
-
 }

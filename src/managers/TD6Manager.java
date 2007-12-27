@@ -28,53 +28,54 @@
 
 package managers;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.SysexMessage;
 
 import kits.TdKit;
-import kits.td12.TD12Kit;
+import kits.info.Td6Info;
 import kits.td6.TD6Kit;
-import exceptions.BadMessageLengthException;
-import exceptions.UnsupportedModuleException;
+
+import org.apache.commons.lang.ArrayUtils;
+
 import exceptions.VdrumException;
 
 /**
  * @author egolan
  */
-final class FactoryKits {
-    private FactoryKits() {
-    // No instance for this class
+final class TD6Manager implements TDModulesManager {
+
+    @Override
+    public TdKit[] sysexMessageToKits(SysexMessage message) throws InvalidMidiDataException,
+            VdrumException {
+        final byte[] byteMessage = message.getMessage();
+        final Collection<Integer> indexes = new ArrayList<Integer>();
+        for (int i = 0; i < byteMessage.length; i++) {
+            if (((byteMessage[i] & 0xFF) == 240) && ((byteMessage[i + 7] & 0xFF) == 96)) {
+                indexes.add(Integer.valueOf(i));
+                i += Td6Info.KIT_SIZE - 20;
+            }
+        }
+        final TdKit[] tdKits;
+        tdKits = new TdKit[Td6Info.MAX_NUMBER_OF_KITS];
+        for (int i = 0; i < tdKits.length; i++) {
+            tdKits[i] = null;
+        }
+        for (Integer index : indexes) {
+            final int finishKitsMessage = index + Td6Info.KIT_SIZE;
+            final byte[] kitBytes = ArrayUtils.subarray(byteMessage, index, finishKitsMessage);
+            final TdKit tempKit = getKit(kitBytes);
+            final int kitId = tempKit.getId();
+            tdKits[kitId - 1] = tempKit;
+        }
+        return tdKits;
     }
 
-//    static TdKit getKit(final byte[] kitBytes) throws InvalidMidiDataException, VdrumException {
-//        try {
-//            if (((kitBytes[3] & 0xFF) == 0) && ((kitBytes[4] & 0xFF) == 0)
-//                    && ((kitBytes[5] & 0xFF) == 9)) {
-//                return new TD12Kit(kitBytes);
-//            }
-//            if (((kitBytes[3] & 0xFF) == 0) && ((kitBytes[4] & 0xFF) == 63)) {
-//                return new TD6Kit(kitBytes);
-//            }
-//            throw new UnsupportedModuleException();
-//        }
-//        catch (ArrayIndexOutOfBoundsException e) {
-//            throw new BadMessageLengthException(kitBytes.length);
-//        }
-//    }
-
-    static TDModulesManager getTdModuleManager(final byte[] kitBytes)
-            throws UnsupportedModuleException, BadMessageLengthException {
-        try {
-            if (((kitBytes[3] & 0xFF) == 0) && ((kitBytes[4] & 0xFF) == 0)
-                    && ((kitBytes[5] & 0xFF) == 9)) {
-                return new TD12Manager();
-            }
-             if (((kitBytes[3] & 0xFF) == 0) && ((kitBytes[4] & 0xFF) == 63)) {
-                return new TD6Manager();
-            }
-            throw new UnsupportedModuleException();
-        }
-        catch (ArrayIndexOutOfBoundsException e) {
-            throw new BadMessageLengthException(kitBytes.length);
-        }
+    @Override
+    public TdKit getKit(byte[] kitBytes) throws InvalidMidiDataException, VdrumException {
+        return new TD6Kit(kitBytes);
     }
+
 }

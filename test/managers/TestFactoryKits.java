@@ -52,32 +52,32 @@ import exceptions.VdrumException;
  */
 @Test(groups = {"manager"})
 public final class TestFactoryKits {
-    private byte[] getFileBytes(final String fileName) throws URISyntaxException, IOException {
-        final File file = UtilsForTests.getFile(fileName);
-        byte[] fileBytes = FileUtils.readFileToByteArray(file);
-        return fileBytes;
-    }
-    
-    public void checkKitTd12() throws URISyntaxException, IOException, InvalidMidiDataException, VdrumException {
-        byte[] kitBytes = getFileBytes("airtime20.syx");
-        TdKit kit = FactoryKits.getKit(kitBytes);
-        Assert.assertTrue(kit instanceof TD12Kit);
-    }
-    
-    @Test(expectedExceptions = UnsupportedModuleException.class)
-    public void checkNotSupportedModule() throws URISyntaxException, IOException, InvalidMidiDataException, VdrumException {
-        byte[] kitBytes = getFileBytes("notTd12.syx");
-        FactoryKits.getKit(kitBytes);
-    }
-    
-    @Test(expectedExceptions = BadMessageLengthException.class)
-    public void checkArrayOutOfBound() throws URISyntaxException, IOException, InvalidMidiDataException, VdrumException {
-        byte[] kitBytes = getFileBytes("small.syx");
-        FactoryKits.getKit(kitBytes);
-    }
-    
-    public void checkKitTd6() throws URISyntaxException, IOException, InvalidMidiDataException, VdrumException {
-        byte[] kitBytes = getFileBytes("td6.syx");
-        FactoryKits.getKit(kitBytes);
-    }
+//    private byte[] getFileBytes(final String fileName) throws URISyntaxException, IOException {
+//        final File file = UtilsForTests.getFile(fileName);
+//        byte[] fileBytes = FileUtils.readFileToByteArray(file);
+//        return fileBytes;
+//    }
+//    
+//    public void checkKitTd12() throws URISyntaxException, IOException, InvalidMidiDataException, VdrumException {
+//        byte[] kitBytes = getFileBytes("airtime20.syx");
+//        TdKit kit = FactoryKits.getKit(kitBytes);
+//        Assert.assertTrue(kit instanceof TD12Kit);
+//    }
+//    
+//    @Test(expectedExceptions = UnsupportedModuleException.class)
+//    public void checkNotSupportedModule() throws URISyntaxException, IOException, InvalidMidiDataException, VdrumException {
+//        byte[] kitBytes = getFileBytes("notTd12.syx");
+//        FactoryKits.getKit(kitBytes);
+//    }
+//    
+//    @Test(expectedExceptions = BadMessageLengthException.class)
+//    public void checkArrayOutOfBound() throws URISyntaxException, IOException, InvalidMidiDataException, VdrumException {
+//        byte[] kitBytes = getFileBytes("small.syx");
+//        FactoryKits.getKit(kitBytes);
+//    }
+//    
+//    public void checkKitTd6() throws URISyntaxException, IOException, InvalidMidiDataException, VdrumException {
+//        byte[] kitBytes = getFileBytes("td6.syx");
+//        FactoryKits.getKit(kitBytes);
+//    }
 }
