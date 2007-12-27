@@ -32,7 +32,6 @@ import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.AbstractListModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JLabel;
@@ -40,8 +39,8 @@ import javax.swing.JList;
 import javax.swing.JPopupMenu;
 
 import kits.TdKit;
+import kits.info.TdInfo;
 import ui.panels.KitsPanel;
-import utils.VDrumsUtils;
 
 /**
  * @author egolan
@@ -62,9 +61,11 @@ public final class OutputKitsList extends KitsList {
 
     private static final long serialVersionUID = 7560978682051239230L;
     private final OutputListModel myModel;
+    private TdInfo tdInfo;
 
-    public OutputKitsList(KitsPanel outputKistPanel) {
+    public OutputKitsList(KitsPanel outputKistPanel, TdInfo tdInfo) {
         myModel = new OutputListModel();
+        setTdInfo(tdInfo);
         this.setModel(myModel);
         this.setCellRenderer(new TdKitListRenderer());
         setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
@@ -94,6 +95,11 @@ public final class OutputKitsList extends KitsList {
         addToButtonBar(new MoveKitAction(Direction.DECREASE_INDEX, outputKitsList, 0));
          */
 //        popup.add(new SaveAction(outputKistPanel.getParentFrame(), outputKistPanel));
+    }
+
+    public void setTdInfo(TdInfo tdInfo) {
+        this.tdInfo = tdInfo;
+        myModel.setTdInfo(tdInfo);
     }
 
     @Override
@@ -157,7 +163,7 @@ public final class OutputKitsList extends KitsList {
     private void increaseIndex(int index) {
         int selectedIndex = index;
         selectedIndex++;
-        if (selectedIndex < VDrumsUtils.MAX_NUMBER_OF_TD12_KITS) {
+        if (selectedIndex < tdInfo.getMaxNumberOfKits()) {
             setSelectedIndex(selectedIndex);
         } else {
             setSelectedIndex(-1);
@@ -178,108 +184,6 @@ public final class OutputKitsList extends KitsList {
         final int selectedRow = this.getSelectedIndex();
         if (selectedRow != -1) {
             myModel.removeSelectedKit(selectedRow);
-        }
-    }
-
-    @SuppressWarnings("serial")
-    private class OutputListModel extends AbstractListModel {
-        private int numberOfKits;
-        private final TdKit[] kits;
-
-        private OutputListModel() {
-            kits = new TdKit[VDrumsUtils.MAX_NUMBER_OF_TD12_KITS];
-            clear();
-        }
-
-        private void removeSelectedKit(int selectedRow) {
-            try {
-                kits[selectedRow] = null;
-                numberOfKits--;
-                fireContentsChanged(this, selectedRow, selectedRow);
-            }
-            catch (ArrayIndexOutOfBoundsException e) {
-                e.printStackTrace();
-            }
-        }
-
-        private int moveSelection(final int currentSelection, final Direction direction) {
-            int newIndex = getNewIndex(currentSelection, direction);
-            if (newIndex == -1) {
-                return -1;
-            }
-            try {
-                TdKit otherKit = kits[newIndex];
-                TdKit selectedKit = kits[currentSelection];
-                kits[newIndex] = selectedKit;
-                kits[currentSelection] = otherKit;
-                fireContentsChanged(this, currentSelection, newIndex);
-            }
-            catch (ArrayIndexOutOfBoundsException e) {
-                e.printStackTrace();
-                return -1;
-            }
-            return newIndex;
-        }
-
-        private int getNewIndex(final int currentSelection, final Direction direction) {
-            int newIndex = -1;
-            switch (direction) {
-                case DECREASE_INDEX:
-                    newIndex = currentSelection - 1;
-                    break;
-                case INCREASE_INDEX:
-                    newIndex = currentSelection + 1;
-                    break;
-            }
-            return newIndex;
-        }
-
-        private int numberOfKits() {
-            return numberOfKits;
-        }
-
-        private TdKit[] getKits() {
-            return kits;
-        }
-
-        private int addKit(TdKit kit, int index) {
-            if (index < 0) {
-                index = getFirstIndex();
-            }
-            if (index == -1) {
-                return -1;
-            }
-            kits[index] = kit;
-            numberOfKits++;
-            fireContentsChanged(this, index, index);
-            return index;
-        }
-
-        private int getFirstIndex() {
-            for (int i = 0; i < kits.length; i++) {
-                if (kits[i] == null) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        private void clear() {
-            for (int i = 0; i < kits.length; i++) {
-                kits[i] = null;
-            }
-            numberOfKits = 0;
-            fireContentsChanged(this, 0, kits.length);
-        }
-
-        @Override
-        public Object getElementAt(int index) {
-            return kits[index];
-        }
-
-        @Override
-        public int getSize() {
-            return kits.length;
         }
     }
 }

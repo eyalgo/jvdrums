@@ -53,7 +53,8 @@ public abstract class KitsPanel extends JPanel {
         scrollPane = new JScrollPane();
         this.add(scrollPane, BorderLayout.CENTER);
         buttonsPanel = new JToolBar();
-        this.add(buttonsPanel, BorderLayout.SOUTH);
+        buttonsPanel.setFloatable(false);
+        this.add(buttonsPanel, BorderLayout.NORTH);
     }
     
 //    public abstract KitsList getKitList();

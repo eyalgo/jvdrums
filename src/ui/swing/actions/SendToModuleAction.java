@@ -102,13 +102,13 @@ public final class SendToModuleAction extends BaseAction implements ListDataList
                     mainFrame.addInfo("Sending: " + kit.getName() + " to slot number "
                             + kit.getId());
                     bulkSender.sendKits(kit);
-                    // TODO Remove this !!!
-                    try {
-                        Thread.sleep(4000);
-                    }
-                    catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+//                    // TODO Remove this !!!
+//                    try {
+//                        Thread.sleep(4000);
+//                    }
+//                    catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
                 }
                 mainFrame.operationFinish();
             }

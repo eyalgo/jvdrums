@@ -26,38 +26,23 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package kits.td12;
+package kits.info;
 
-import javax.sound.midi.InvalidMidiDataException;
+import java.util.Vector;
 
-import kits.TdSubPart;
-import kits.info.Td12Info;
-import exceptions.VdrumException;
-
-public final class TD12SubPart extends TdSubPart {
-    private static final int ID_ADDRESS_INDEX = 8;
-    /** Number of bytes each sub part in the kit (raw data) */
-    private static final int SIZE_SUB_PART = 141;
-    /** The F part (16th) is smaller and has only 128 bytes */
-    private static final int SIZE_LAST_SUB_PART = 128;
-
-    TD12SubPart(byte[] kitRawData, final int location, boolean isLastPart)
-            throws InvalidMidiDataException, VdrumException {
-        super(ID_ADDRESS_INDEX, Td12Info.MSB_ADDRESS_INDEX);
-        int size;
-        if (isLastPart) {
-            size = SIZE_LAST_SUB_PART;
-        } else {
-            size = SIZE_SUB_PART;
-        }
-        int from = location * SIZE_SUB_PART;
-        int to = location * SIZE_SUB_PART + size;
-        createData(kitRawData, from, to);
+/**
+ * @author egolan
+ *
+ */
+public final class InfoManager {
+    private InfoManager() {
+        //No instance
     }
-
-    TD12SubPart(final TdSubPart origtRawData, final int kitId)
-            throws InvalidMidiDataException {
-        super(ID_ADDRESS_INDEX, Td12Info.MSB_ADDRESS_INDEX);
-        copyConstructor(origtRawData, kitId);
+    
+    public static Vector<TdInfo> availableModulesInfo() {
+        Vector<TdInfo> result = new Vector<TdInfo>();
+        result.add(new Td6Info());
+        result.add(new Td12Info());
+        return result;
     }
 }

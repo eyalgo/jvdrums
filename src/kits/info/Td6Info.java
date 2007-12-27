@@ -28,11 +28,13 @@
 
 package kits.info;
 
-public final class Td6Info implements TdInfo {
+public final class Td6Info extends TdInfo {
+    public static final String NAME = "TD-6";
     public static final int SART_NAME_INDEX = 10;
     public static final int NAME_MAX_LENGTH = 8;
     public static final int NUMBER_OF_SUB_PARTS = 13;
     public final static int MAX_NUMBER_OF_KITS = 99;
+    public static final int MSB_ADDRESS_INDEX = 6;
     public final static int KIT_SIZE = 697;
     
     @Override
@@ -58,5 +60,15 @@ public final class Td6Info implements TdInfo {
     @Override
     public int getKitSize() {
         return KIT_SIZE;
+    }
+
+    @Override
+    public int getMsbAddressIndex() {
+        return MSB_ADDRESS_INDEX;
+    }
+
+    @Override
+    String getNameToDisplay() {
+        return NAME;
     }
 }

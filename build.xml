@@ -108,7 +108,7 @@
 	</target>
 
 	<target name="test" depends="copy">
-		<testng groups="manager , kits , exception" sourceDir="${dir.build}" outputDir="${dir.test.result}" classpath="${dir.build}" haltonfailure="true">
+		<testng groups="kits6 manager6 exception12 kits12 manager12" sourceDir="${dir.build}" outputDir="${dir.test.result}" classpath="${dir.build}" haltonfailure="true">
 			<classfileset dir="${dir.build}">
 				<include name="**/*.class" />
 			</classfileset>

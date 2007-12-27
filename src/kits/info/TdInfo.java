@@ -32,10 +32,24 @@ package kits.info;
  * @author egolan
  *
  */
-public interface TdInfo {
-    public int getStartNameIndex();
-    public int getMaxLength();
-    public int getNumberOfSubParts();
-    public int getMaxNumberOfKits();
-    public int getKitSize();
+public abstract class TdInfo {
+    public abstract int getStartNameIndex();
+    public abstract int getMaxLength();
+    public abstract int getNumberOfSubParts();
+    public abstract int getMaxNumberOfKits();
+    public abstract int getKitSize();
+    public abstract int getMsbAddressIndex();
+    abstract String getNameToDisplay();
+    @Override
+    public final boolean equals(Object obj) {
+        return getNameToDisplay().equals(((TdInfo)obj).getNameToDisplay());
+    }
+    @Override
+    public final int hashCode() {
+        return getNameToDisplay().hashCode();
+    }
+    @Override
+    public final String toString() {
+        return getNameToDisplay();
+    }
 }

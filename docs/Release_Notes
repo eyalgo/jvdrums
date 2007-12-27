@@ -11,9 +11,11 @@ Release 0.7 - Alpha Release:
 * There is no indication that the kits are downloaded.
 * There is no indication that the download has finished.
 
-Release 0.8 - Alpha Release:
+Release 0.7 - Alpha 2 Release:
 * Added browse and save in the menu bar.
 * Added multi selection of kits in the input list as well as to add more than one kit
 	to the output list.
 * Added information area and status bar.
-	- Showing wich kit is downloaded to the module.
+	- Showing which kit is downloaded to the module.
+* Supporting TD-6
+	- The user can choose the output module

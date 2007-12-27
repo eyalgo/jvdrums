@@ -93,19 +93,19 @@ public final class TestTD6Manager {
 
     public void checkBytesToKit25() throws URISyntaxException, IOException,
             InvalidMidiDataException, VdrumException {
-        final byte[] bytes = getBytesFromFile("td6Saz97.syx");
+        final byte[] bytes = getBytesFromFile("td6Saz6.syx");
 
         TdKit[] kitsFromManager = TDManager.bytesToKits(bytes);
         for (int i = 0; i < kitsFromManager.length; i++) {
-            if (i != 96) {
+            if (i != 5) {
                 if (kitsFromManager[i] != null) {
                     Assert.fail(i + " is not null");
                 }
             }
         }
-        final File file25 = UtilsForTests.getFile("td6Saz97.syx");
-        byte[] kitBytes25 = FileUtils.readFileToByteArray(file25);
-        TdKit kit25 = new TD6Kit(kitBytes25);
-        Assert.assertEquals(kitsFromManager[96], kit25);
+        final File file6 = UtilsForTests.getFile("td6Saz6.syx");
+        byte[] kitBytes6 = FileUtils.readFileToByteArray(file6);
+        TdKit kit6 = new TD6Kit(kitBytes6);
+        Assert.assertEquals(kitsFromManager[5], kit6);
     }
 }

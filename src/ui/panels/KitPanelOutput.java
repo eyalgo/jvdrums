@@ -28,6 +28,14 @@
 
 package ui.panels;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
+
+import javax.swing.JComboBox;
+
+import kits.info.InfoManager;
+import kits.info.TdInfo;
 import ui.MainFrame;
 import ui.lists.OutputKitsList;
 import ui.lists.OutputKitsList.Direction;
@@ -36,25 +44,53 @@ import ui.swing.actions.MoveKitAction;
 import ui.swing.actions.RemoveKitsAction;
 import ui.swing.actions.SaveAction;
 import ui.swing.actions.SendToModuleAction;
-import utils.VDrumsUtils;
 
 /**
  * @author egolan
  */
-public final class KitPanelOutput extends KitsPanel {
+public final class KitPanelOutput extends KitsPanel implements ActionListener {
     private static final long serialVersionUID = -5217989811338648085L;
     private final OutputKitsList outputKitsList;
+    private final MoveKitAction moveKitAction;
 
-    public KitPanelOutput(MainFrame parentFrame) {
+    public KitPanelOutput(MainFrame parentFrame, TdInfo tdInfo) {
         super(parentFrame);
-        outputKitsList = new OutputKitsList(this);
+        outputKitsList = new OutputKitsList(this, tdInfo);
         setListInPanel(outputKitsList);
         addToButtonBar(new SaveAction(getParentFrame(), this));
         addToButtonBar(new SendToModuleAction(getParentFrame(), outputKitsList));
         addToButtonBar(new RemoveKitsAction(outputKitsList));
         addToButtonBar(new ClearListAction(outputKitsList));
-        addToButtonBar(new MoveKitAction(Direction.INCREASE_INDEX, outputKitsList,
-                VDrumsUtils.MAX_NUMBER_OF_TD12_KITS - 1));
+        moveKitAction = new MoveKitAction(Direction.INCREASE_INDEX, outputKitsList, tdInfo
+                .getMaxNumberOfKits() - 1);
+        addToButtonBar(moveKitAction);
         addToButtonBar(new MoveKitAction(Direction.DECREASE_INDEX, outputKitsList, 0));
+        JComboBox modulesChooserCombo = new ModulesChooserCombo(tdInfo);
+        modulesChooserCombo.addActionListener(this);
+        addToButtonBar(modulesChooserCombo);
+    }
+
+    public void setMaxNumberOfKits(int maxNumberOfKits) {
+        moveKitAction.setMaxNumberOfKits(maxNumberOfKits);
+    }
+
+    @SuppressWarnings("serial")
+    private static class ModulesChooserCombo extends JComboBox {
+        private ModulesChooserCombo(TdInfo defaultTdInfo) {
+            Vector<TdInfo> availableModulesInfo = InfoManager.availableModulesInfo();
+            for (TdInfo tdInfo : availableModulesInfo) {
+                addItem(tdInfo);
+            }
+            setSelectedItem(defaultTdInfo);
+            setFocusable(false);
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        JComboBox cb = (JComboBox) e.getSource();
+        TdInfo tdInfo = (TdInfo) cb.getSelectedItem();
+        moveKitAction.setMaxNumberOfKits(tdInfo.getMaxNumberOfKits() - 1);
+        outputKitsList.setTdInfo(tdInfo);
     }
 }

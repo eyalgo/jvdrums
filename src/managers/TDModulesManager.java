@@ -37,8 +37,8 @@ import exceptions.VdrumException;
 /**
  * @author egolan
  */
-interface TDModulesManager {
-    TdKit[] sysexMessageToKits(SysexMessage message) throws InvalidMidiDataException,
+public interface TDModulesManager {
+    public TdKit[] sysexMessageToKits(SysexMessage message) throws InvalidMidiDataException,
             VdrumException;
-    TdKit getKit(final byte[] kitBytes) throws InvalidMidiDataException, VdrumException;
+    public TdKit getKit(final byte[] kitBytes) throws InvalidMidiDataException, VdrumException;
 }

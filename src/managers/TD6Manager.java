@@ -53,7 +53,8 @@ final class TD6Manager implements TDModulesManager {
         final byte[] byteMessage = message.getMessage();
         final Collection<Integer> indexes = new ArrayList<Integer>();
         for (int i = 0; i < byteMessage.length; i++) {
-            if (((byteMessage[i] & 0xFF) == 240) && ((byteMessage[i + 7] & 0xFF) == 96)) {
+            if (((byteMessage[i] & 0xFF) == 240)
+                    && ((byteMessage[i + Td6Info.MSB_ADDRESS_INDEX] & 0xFF) == 65)) {
                 indexes.add(Integer.valueOf(i));
                 i += Td6Info.KIT_SIZE - 20;
             }

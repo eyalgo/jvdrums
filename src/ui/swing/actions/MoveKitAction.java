@@ -44,13 +44,14 @@ import ui.lists.OutputKitsList.Direction;
 public final class MoveKitAction extends BaseAction implements ListSelectionListener {
     final Direction direction;
     final OutputKitsList outputKitsList;
-    private final int disabledIndex;
+    private int disabledIndex;
 
     public MoveKitAction(Direction direction, OutputKitsList outputKitsList, int disabledIndex) {
         this.direction = direction;
         this.outputKitsList = outputKitsList;
         this.disabledIndex = disabledIndex;
         config.get(direction.getName()).read(this);
+        this.outputKitsList.addListSelectionListener(this);
     }
 
     @Override
@@ -63,5 +64,9 @@ public final class MoveKitAction extends BaseAction implements ListSelectionList
         int selectedIndex = ((OutputKitsList) e.getSource()).getSelectedIndex();
         TdKit selectedKit = (TdKit) ((OutputKitsList) e.getSource()).getSelectedValue();
         setEnabled(selectedKit != null && selectedIndex != this.disabledIndex);
+    }
+
+    public void setMaxNumberOfKits(int maxNumberOfKits) {
+        disabledIndex = maxNumberOfKits;
     }
 }

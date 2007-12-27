@@ -30,15 +30,16 @@ package kits.info;
 
 /**
  * @author egolan
- *
  */
-public final class Td12Info implements TdInfo {
+public final class Td12Info extends TdInfo {
+    public static final String NAME = "TD-12";
     public static final int SART_NAME_INDEX = 12;
     public static final int NAME_MAX_LENGTH = 13;
     public static final int NUMBER_OF_SUB_PARTS = 16;
     public final static int MAX_NUMBER_OF_KITS = 50;
+    public static final int MSB_ADDRESS_INDEX = 7;
     public final static int KIT_SIZE = 2243;
-    
+
     @Override
     public int getMaxLength() {
         return NAME_MAX_LENGTH;
@@ -63,4 +64,15 @@ public final class Td12Info implements TdInfo {
     public int getKitSize() {
         return KIT_SIZE;
     }
+
+    @Override
+    public int getMsbAddressIndex() {
+        return MSB_ADDRESS_INDEX;
+    }
+
+    @Override
+    String getNameToDisplay() {
+        return NAME;
+    }
+
 }

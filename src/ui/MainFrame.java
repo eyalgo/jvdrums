@@ -31,12 +31,9 @@ package ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -49,6 +46,7 @@ import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 
+import kits.info.Td12Info;
 import midi.BulkSender;
 import ui.panels.KitPanelInput;
 import ui.panels.KitPanelOutput;
@@ -92,7 +90,7 @@ public final class MainFrame extends JFrame {
         setName("mainframe");
         WindowUtilities.setJavaLookAndFeel();
         JSplitPane jSplitPane1 = new JSplitPane();
-        KitsPanel outputPanel = new KitPanelOutput(this);
+        KitsPanel outputPanel = new KitPanelOutput(this, new Td12Info());
         KitsPanel inputPanel = new KitPanelInput(this, outputPanel);
         JMenuBar jMenuBar1 = new JMenuBar();
         JMenu fileMenu = new JMenu();
@@ -136,16 +134,6 @@ public final class MainFrame extends JFrame {
         jMenuBar1.add(helpMenu);
         setJMenuBar(jMenuBar1);
         
-        JButton conenct = new JButton("Connect");
-        conenct.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
-                
-            }
-            
-        });
-        getContentPane().add(conenct, BorderLayout.NORTH);
         pack();
     }
 

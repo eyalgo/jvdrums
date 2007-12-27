@@ -67,7 +67,7 @@ final class TD12Manager implements TDModulesManager {
         final byte[] byteMessage = message.getMessage();
         final Collection<Integer> indexes = new ArrayList<Integer>();
         for (int i = 0; i < byteMessage.length; i++) {
-            if (((byteMessage[i] & 0xFF) == 240) && ((byteMessage[i + 7] & 0xFF) == 114)) {
+            if (((byteMessage[i] & 0xFF) == 240) && ((byteMessage[i + Td12Info.MSB_ADDRESS_INDEX] & 0xFF) == 114)) {
                 indexes.add(Integer.valueOf(i));
                 i += Td12Info.KIT_SIZE - 20;
             }
