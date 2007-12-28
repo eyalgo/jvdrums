@@ -31,9 +31,13 @@ package ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -47,6 +51,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 
 import kits.info.Td12Info;
+import midi.BulkReciever;
 import midi.BulkSender;
 import ui.panels.KitPanelInput;
 import ui.panels.KitPanelOutput;
@@ -70,13 +75,16 @@ public final class MainFrame extends JFrame {
     private static final long serialVersionUID = -7164597771180443878L;
     private static Configuration config = Configuration.getRoot().get(MainFrame.class);
     private final BulkSender bulkSender;
+    private final BulkReciever bulkReciever;
     private final JTextArea infoText;
     private final StatusBar statusBar;
+    private JButton connect;
 
     public MainFrame() {
         super();
         config.read(this);
         bulkSender = new BulkSender();
+        bulkReciever = new BulkReciever();
         infoText = new MultiLineLabel(10, 70);
         infoText.setBackground(new JTextArea().getBackground());
         statusBar = new StatusBar();
@@ -112,14 +120,31 @@ public final class MainFrame extends JFrame {
         jSplitPane1.setRightComponent(outputPanel);
 
         getContentPane().add(jSplitPane1, BorderLayout.CENTER);
-        
+
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BorderLayout());
         infoPanel.add(new JScrollPane(infoText), BorderLayout.CENTER);
         infoPanel.add(statusBar, BorderLayout.SOUTH);
-        
+
         getContentPane().add(infoPanel, BorderLayout.SOUTH);
-        
+
+        connect = new JButton("Connect");
+        getContentPane().add(connect, BorderLayout.NORTH);
+
+        connect.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    bulkSender.sendRequestId();
+                }
+                catch (InvalidMidiDataException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+
+            }
+
+        });
+
         fileMenu.add(new BrowseAction(this, inputPanel, false));
         fileMenu.add(new SaveAction(this, outputPanel, false));
         fileMenu.addSeparator();
@@ -133,7 +158,7 @@ public final class MainFrame extends JFrame {
         jMenuBar1.add(editMenu);
         jMenuBar1.add(helpMenu);
         setJMenuBar(jMenuBar1);
-        
+
         pack();
     }
 
@@ -150,9 +175,11 @@ public final class MainFrame extends JFrame {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
-    public void setDestinationDevice(final MidiDevice.Info destinationDevice) {
+    public void setDestinationDeviceInformation(final MidiDevice.Info destinationDevice,
+            final MidiDevice.Info sourceDevice, int deviceId) {
         try {
-            bulkSender.setDestinationDevice(destinationDevice);
+            bulkSender.setDestinationDeviceInformation(destinationDevice, deviceId);
+            bulkReciever.setSoureceDevice(sourceDevice);
         }
         catch (MidiUnavailableException e) {
             showErrorDialog("MDestination MIDI Problem", "Problem opening port");
@@ -163,29 +190,29 @@ public final class MainFrame extends JFrame {
         infoText.append(newInfo);
         infoText.append(System.getProperty("line.separator"));
     }
-    
+
     public void operationStart(String message, Color color) {
         setEnabled(false);
         statusBar.setForeground(color);
         statusBar.setText(message);
     }
-    
+
     public void operationFinish() {
         statusBar.setText(" ");
         statusBar.setForeground(new JLabel().getForeground());
         setEnabled(true);
     }
-    
+
     @SuppressWarnings("serial")
     private class StatusBar extends JLabel {
         private StatusBar() {
             super();
-            setBorder (new BevelBorder(BevelBorder.LOWERED));
+            setBorder(new BevelBorder(BevelBorder.LOWERED));
             setMessage(" ");
         }
-        
+
         public void setMessage(String message) {
-            setText(" "+message);        
-        }        
+            setText(" " + message);
+        }
     }
 }

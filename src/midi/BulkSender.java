@@ -28,10 +28,12 @@
 
 package midi;
 
+import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
+import javax.sound.midi.SysexMessage;
 
 import kits.TdKit;
 import kits.VdrumsSysexMessage;
@@ -40,9 +42,21 @@ import kits.VdrumsSysexMessage;
  * @author egolan
  */
 public final class BulkSender {
+//  F0H 7EH, dev, 06H, 01H F7H
+    public final static byte[] ID_REQUEST_BYTES;
+    static {
+        ID_REQUEST_BYTES = new byte[6];
+        ID_REQUEST_BYTES[0] = (byte)240;
+        ID_REQUEST_BYTES[1] = 126;
+        ID_REQUEST_BYTES[2] = 16;
+        ID_REQUEST_BYTES[3] = 6;
+        ID_REQUEST_BYTES[4] = 1;
+        ID_REQUEST_BYTES[5] = (byte)247;
+    }
     MidiDevice.Info midiDeviceInfo = null;
     MidiDevice midiDevice = null;
-    Receiver actReceiver = null;
+    Receiver deviceReceiver = null;
+    int deviceId = 16;
 
     public BulkSender() {}
     
@@ -50,7 +64,7 @@ public final class BulkSender {
         return midiDeviceInfo;
     }
 
-    public void setDestinationDevice(MidiDevice.Info newMidiInfo)
+    public void setDestinationDeviceInformation(MidiDevice.Info newMidiInfo, int deviceId)
             throws MidiUnavailableException {
         if (this.midiDevice != null) {
             this.midiDevice.close();
@@ -61,17 +75,27 @@ public final class BulkSender {
             if (newDestinationDevice != null) {
                 this.midiDevice = newDestinationDevice;
                 this.midiDevice.open();
-                actReceiver = midiDevice.getReceiver();
+                deviceReceiver = midiDevice.getReceiver();
             }
         }
         this.midiDeviceInfo = newMidiInfo;
+        this.deviceId = deviceId;
     }
 
     public void sendKits(final TdKit kit) {
         VdrumsSysexMessage[] parts = kit.getKitSubParts();
         for (VdrumsSysexMessage part : parts) {
             long timestamp = midiDevice.getMicrosecondPosition();
-            actReceiver.send(part, timestamp);
+            deviceReceiver.send(part, timestamp);
         }
+    }
+    
+    public void sendRequestId() throws InvalidMidiDataException {
+        SysexMessage sm = new SysexMessage();
+        byte[] bytes = BulkSender.ID_REQUEST_BYTES;
+        bytes[2] = (byte)deviceId;
+        sm.setMessage(BulkSender.ID_REQUEST_BYTES, BulkSender.ID_REQUEST_BYTES.length);
+        long timestamp = this.midiDevice.getMicrosecondPosition();
+        deviceReceiver.send(sm, timestamp);
     }
 }
