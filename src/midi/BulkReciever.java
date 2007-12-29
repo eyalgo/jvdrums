@@ -33,15 +33,24 @@ import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Transmitter;
 
+import kits.info.TdInfo;
+
+import ui.MainFrame;
+
 /**
  * @author Limor Eyal
  *
  */
 public final class BulkReciever {
-    MidiDevice midiDevice = null;
-    MidiDevice.Info midiDeviceInfo = null;
-    Transmitter deviceTransmitter = null;
-    ExamplePrintReceiver printReceiver = new ExamplePrintReceiver();
+    private MidiDevice midiDevice = null;
+    private MidiDevice.Info midiDeviceInfo = null;
+    private Transmitter deviceTransmitter = null;
+    private DeviceIdentityReceiver idRequestReceivwer;
+//    private KitsReceiver kitsReceiver;
+    public BulkReciever(MainFrame mainFrame) {
+//        kitsReceiver = new KitsReceiver();
+        idRequestReceivwer = new DeviceIdentityReceiver(mainFrame, this);
+    }
     public void setSoureceDevice(MidiDevice.Info newMidiInfo) throws MidiUnavailableException {
         if (this.midiDevice != null) {
             this.midiDevice.close();
@@ -53,10 +62,16 @@ public final class BulkReciever {
                 this.midiDevice = newSourceDevice;
                 this.midiDevice.open();
                 deviceTransmitter = midiDevice.getTransmitter();
-                deviceTransmitter.setReceiver(printReceiver);
+                deviceTransmitter.setReceiver(idRequestReceivwer);
             }
         }
         this.midiDeviceInfo = newMidiInfo;
+    }
+    public void connected(TdInfo tdInfo) {
+        KitsReceiver kitsReceiver = new KitsReceiver();
+        deviceTransmitter.setReceiver(kitsReceiver);
+        kitsReceiver.setTdIdInfo(tdInfo);
+        
     }
 
 }

@@ -28,6 +28,7 @@
 
 package kits.info;
 
+
 public final class Td6Info extends TdInfo {
     public static final String NAME = "TD-6";
     public static final int SART_NAME_INDEX = 10;

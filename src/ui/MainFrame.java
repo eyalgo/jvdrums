@@ -50,7 +50,8 @@ import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 
-import kits.info.Td12Info;
+import kits.info.Td6Info;
+import kits.info.TdInfo;
 import midi.BulkReciever;
 import midi.BulkSender;
 import ui.panels.KitPanelInput;
@@ -79,12 +80,13 @@ public final class MainFrame extends JFrame {
     private final JTextArea infoText;
     private final StatusBar statusBar;
     private JButton connect;
+    KitsPanel outputPanel;
 
     public MainFrame() {
         super();
         config.read(this);
         bulkSender = new BulkSender();
-        bulkReciever = new BulkReciever();
+        bulkReciever = new BulkReciever(this);
         infoText = new MultiLineLabel(10, 70);
         infoText.setBackground(new JTextArea().getBackground());
         statusBar = new StatusBar();
@@ -98,7 +100,7 @@ public final class MainFrame extends JFrame {
         setName("mainframe");
         WindowUtilities.setLiquidLookAndFeel();
         JSplitPane jSplitPane1 = new JSplitPane();
-        KitsPanel outputPanel = new KitPanelOutput(this, new Td12Info());
+        outputPanel = new KitPanelOutput(this, new Td6Info());
         KitsPanel inputPanel = new KitPanelInput(this, outputPanel);
         JMenuBar jMenuBar1 = new JMenuBar();
         JMenu fileMenu = new JMenu();
@@ -214,5 +216,9 @@ public final class MainFrame extends JFrame {
         public void setMessage(String message) {
             setText(" " + message);
         }
+    }
+
+    public void setTdIdInfo(TdInfo tdInfo) {
+        ((KitPanelOutput)outputPanel).setTdInfo(tdInfo);
     }
 }

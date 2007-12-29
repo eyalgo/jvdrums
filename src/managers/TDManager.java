@@ -58,8 +58,8 @@ public final class TDManager {
      * @throws InvalidMidiDataException
      * @throws VdrumException
      */
-    public final static Vector<TdKit> kitsToKits(TdKit[] originalKits) throws InvalidMidiDataException,
-            VdrumException {
+    public final static Vector<TdKit> kitsToKits(TdKit[] originalKits)
+            throws InvalidMidiDataException, VdrumException {
         final Vector<TdKit> returnedKits = new Vector<TdKit>();
         for (int i = 0; i < originalKits.length; i++) {
             if (originalKits[i] != null) {
@@ -89,6 +89,12 @@ public final class TDManager {
         return result;
     }
 
+    public final static TdKit bytesToOneKit(byte[] kitBytes) throws InvalidMidiDataException,
+            VdrumException {
+        TDModulesManager moduleManager = FactoryKits.getTdModuleManager(kitBytes);
+        return moduleManager.getKit(kitBytes);
+    }
+
     /**
      * @param kitBytes
      * @return
@@ -104,9 +110,10 @@ public final class TDManager {
     }
 
     // A method for tests
-    static TdKit[] sysexMessageToKits(SysexMessage message) throws InvalidMidiDataException, VdrumException {
+    static TdKit[] sysexMessageToKits(SysexMessage message) throws InvalidMidiDataException,
+            VdrumException {
         byte[] bytes = message.getMessage();
-        TDModulesManager moduleManager = FactoryKits.getTdModuleManager(bytes );
+        TDModulesManager moduleManager = FactoryKits.getTdModuleManager(bytes);
         return moduleManager.sysexMessageToKits(message);
     }
 }

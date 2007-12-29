@@ -91,6 +91,10 @@ public final class KitPanelOutput extends KitsPanel implements ActionListener {
         JComboBox cb = (JComboBox) e.getSource();
         TdInfo tdInfo = (TdInfo) cb.getSelectedItem();
         increaseIndexMoveAction.setMaxNumberOfKits(tdInfo.getMaxNumberOfKits() - 1);
+        setTdInfo(tdInfo);
+    }
+
+    public void setTdInfo(TdInfo tdInfo) {
         outputKitsList.setTdInfo(tdInfo);
     }
 }

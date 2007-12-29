@@ -28,6 +28,7 @@
 
 package kits.info;
 
+
 /**
  * @author egolan
  */
@@ -74,5 +75,4 @@ public final class Td12Info extends TdInfo {
     String getNameToDisplay() {
         return NAME;
     }
-
 }
