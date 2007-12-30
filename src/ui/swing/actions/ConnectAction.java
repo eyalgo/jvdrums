@@ -32,24 +32,22 @@ import java.awt.event.ActionEvent;
 
 import javax.sound.midi.InvalidMidiDataException;
 
+import midi.MidiHandler;
 import ui.MainFrame;
 import ui.event.ConnectionEvent;
 import ui.event.ConnectionListener;
 
-import midi.BulkReciever;
-import midi.BulkSender;
-
 /**
  * @author egolan
- *
  */
 @SuppressWarnings("serial")
 public final class ConnectAction extends BaseAction implements ConnectionListener {
-    private final BulkSender bulkSender;
+    private final MidiHandler midiHandler;
     private final MainFrame mainFrame;
-    public ConnectAction(MainFrame mainFrame, BulkSender bulkSender, BulkReciever bulkReciever) {
-        this.bulkSender = bulkSender;
-        bulkReciever.addConnectionListener(this);
+
+    public ConnectAction(MainFrame mainFrame, MidiHandler midiHandler) {
+        this.midiHandler = midiHandler;
+        midiHandler.addConnectionListener(this);
         this.mainFrame = mainFrame;
         config.get("connect").read(this);
     }
@@ -57,7 +55,7 @@ public final class ConnectAction extends BaseAction implements ConnectionListene
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            bulkSender.sendRequestId();
+            midiHandler.sendRequestId();
         }
         catch (InvalidMidiDataException e1) {
             mainFrame.showErrorDialog(e1.getMessage(), e1.getMessage());

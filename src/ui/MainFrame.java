@@ -34,7 +34,6 @@ import java.awt.Dimension;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -48,15 +47,13 @@ import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 
 import kits.info.Td6Info;
-import midi.BulkReciever;
-import midi.BulkSender;
+import midi.MidiHandler;
 import ui.event.ConnectionListener;
 import ui.panels.KitPanelInput;
 import ui.panels.KitPanelOutput;
 import ui.swing.MultiLineLabel;
 import ui.swing.actions.AboutAction;
 import ui.swing.actions.BrowseAction;
-import ui.swing.actions.ConnectAction;
 import ui.swing.actions.ExitAction;
 import ui.swing.actions.MidiSourceAction;
 import ui.swing.actions.SaveAction;
@@ -72,19 +69,16 @@ import exceptions.VdrumException;
 public final class MainFrame extends JFrame {
     private static final long serialVersionUID = -7164597771180443878L;
     private static Configuration config = Configuration.getRoot().get(MainFrame.class);
-    private final BulkSender bulkSender;
-    private final BulkReciever bulkReciever;
+    private final MidiHandler midiHandler;
     private final JTextArea infoText;
     private final StatusBar statusBar;
-    private JButton connect;
     KitPanelOutput outputPanel;
     KitPanelInput inputPanel;
 
     public MainFrame() {
         super();
         config.read(this);
-        bulkSender = new BulkSender();
-        bulkReciever = new BulkReciever();
+        midiHandler = new MidiHandler();
         infoText = new MultiLineLabel(10, 70);
         infoText.setBackground(new JTextArea().getBackground());
         statusBar = new StatusBar();
@@ -128,9 +122,6 @@ public final class MainFrame extends JFrame {
 
         getContentPane().add(infoPanel, BorderLayout.SOUTH);
 
-        connect = new JButton(new ConnectAction(this, bulkSender, bulkReciever));
-        getContentPane().add(connect, BorderLayout.NORTH);
-
         fileMenu.add(new BrowseAction(this, inputPanel, false));
         fileMenu.add(new SaveAction(this, outputPanel, false));
         fileMenu.addSeparator();
@@ -148,10 +139,6 @@ public final class MainFrame extends JFrame {
         pack();
     }
 
-    public BulkSender getBulkSender() {
-        return this.bulkSender;
-    }
-
     public void showErrorDialog(VdrumException vdrumException) {
         JOptionPane.showMessageDialog(this, vdrumException.getMessage(), vdrumException
                 .getProblem(), JOptionPane.ERROR_MESSAGE);
@@ -164,8 +151,7 @@ public final class MainFrame extends JFrame {
     public void setDestinationDeviceInformation(final MidiDevice.Info destinationDevice,
             final MidiDevice.Info sourceDevice, int deviceId) {
         try {
-            bulkSender.setDestinationDeviceInformation(destinationDevice, deviceId);
-            bulkReciever.setSoureceDevice(sourceDevice);
+            midiHandler.setSourceAndDestination(sourceDevice, destinationDevice, deviceId);
         }
         catch (MidiUnavailableException e) {
             showErrorDialog("MDestination MIDI Problem", "Problem opening port");
@@ -203,6 +189,10 @@ public final class MainFrame extends JFrame {
     }
 
     public void addConnectionListener(ConnectionListener connectionListener) {
-        bulkReciever.addConnectionListener(connectionListener);
+        midiHandler.addConnectionListener(connectionListener);
+    }
+    
+    public MidiHandler getMidiHandler() {
+        return this.midiHandler;
     }
 }

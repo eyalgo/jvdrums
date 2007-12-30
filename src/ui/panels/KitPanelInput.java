@@ -33,7 +33,7 @@ import ui.MainFrame;
 import ui.lists.InputKitsList;
 import ui.swing.actions.BrowseAction;
 import ui.swing.actions.ClearListAction;
-import ui.swing.actions.LoadFromModuleAction;
+import ui.swing.actions.ConnectAction;
 import ui.swing.actions.MoveRightAction;
 
 /**
@@ -49,9 +49,9 @@ public final class KitPanelInput extends KitsPanel {
         outputPanel.initInputPanelInOutputPanel(this);
         setListInPanel(inputKitsList);
         addToButtonBar(new BrowseAction(getParentFrame(), this));
-        addToButtonBar(new LoadFromModuleAction());
         addToButtonBar(new ClearListAction(inputKitsList));
         addToButtonBar(new MoveRightAction(inputKitsList, outputPanel));
+        addToButtonBar(new ConnectAction(parentFrame, parentFrame.getMidiHandler()));
     }
 
     public void setTdInfo(TdInfo tdInfo) {

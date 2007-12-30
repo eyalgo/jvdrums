@@ -26,25 +26,47 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package ui.swing.actions;
+package midi;
 
-import java.awt.event.ActionEvent;
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiUnavailableException;
+
+import kits.TdKit;
+
+import ui.event.ConnectionListener;
 
 /**
  * @author egolan
- *
  */
-@SuppressWarnings("serial")
-public final class LoadFromModuleAction extends BaseAction {
-    public LoadFromModuleAction() {
-        config.get("loadFromModule").read(this);
-        setEnabled(false);
+public final class MidiHandler {
+    private final BulkReciever bulkReciever;
+    private final BulkSender bulkSender;
+
+    public MidiHandler() {
+        bulkReciever = new BulkReciever();
+        bulkSender = new BulkSender();
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-    // TODO Auto-generated method stub
-
+    public void addConnectionListener(ConnectionListener connectionListener) {
+        bulkReciever.addConnectionListener(connectionListener);
     }
 
+    public void setSourceAndDestination(MidiDevice.Info sourceDevice,
+            MidiDevice.Info destinationDevice, int deviceId) throws MidiUnavailableException {
+        bulkReciever.setSoureceDevice(sourceDevice);
+        bulkSender.setDestinationDeviceInformation(destinationDevice, deviceId);
+    }
+
+    public void sendRequestId() throws InvalidMidiDataException {
+        bulkSender.sendRequestId();
+    }
+
+    public MidiDevice.Info getMidiDeviceInfo() {
+        return bulkSender.getMidiDeviceInfo();
+    }
+
+    public void sendKits(TdKit kit) {
+        bulkSender.sendKits(kit);
+    }
 }

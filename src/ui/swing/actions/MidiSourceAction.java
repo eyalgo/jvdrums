@@ -30,7 +30,7 @@ package ui.swing.actions;
 
 import java.awt.event.ActionEvent;
 
-import midi.BulkSender;
+import midi.MidiHandler;
 import ui.MainFrame;
 import ui.panels.MidiSourcePanel;
 
@@ -40,16 +40,17 @@ import ui.panels.MidiSourcePanel;
 @SuppressWarnings("serial")
 public final class MidiSourceAction extends BaseAction {
     private final MainFrame mainFrame;
-    private final BulkSender bulkSender;
+    private final MidiHandler midiHandler;
 
     public MidiSourceAction(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
-        this.bulkSender = this.mainFrame.getBulkSender();
+        this.midiHandler = this.mainFrame.getMidiHandler();
         config.get("midisource").read(this);
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
-        MidiSourcePanel.showDialog(mainFrame, bulkSender.getMidiDeviceInfo());
+        MidiSourcePanel.showDialog(mainFrame, midiHandler.getMidiDeviceInfo());
     }
 
 }

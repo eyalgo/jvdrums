@@ -39,7 +39,7 @@ import javax.swing.event.ListDataListener;
 
 import kits.TdKit;
 import managers.TDManager;
-import midi.BulkSender;
+import midi.MidiHandler;
 import ui.MainFrame;
 import ui.lists.OutputKitsList;
 import exceptions.VdrumException;
@@ -51,13 +51,13 @@ import exceptions.VdrumException;
 public final class SendToModuleAction extends BaseAction implements ListDataListener {
     private final MainFrame mainFrame;
     private final OutputKitsList outputKitsList;
-    private final BulkSender bulkSender;
+    private final MidiHandler midiHandler;
     private String sendMessage;
 
     //TODO Move all string to the properties file
     public SendToModuleAction(MainFrame mainFrame, OutputKitsList outputKitsList) {
         this.mainFrame = mainFrame;
-        this.bulkSender = this.mainFrame.getBulkSender();
+        this.midiHandler = this.mainFrame.getMidiHandler();
         this.outputKitsList = outputKitsList;
         config.get("sendToModule").read(this);
         this.outputKitsList.getModel().addListDataListener(this);
@@ -74,7 +74,7 @@ public final class SendToModuleAction extends BaseAction implements ListDataList
     }
 
     private void sendToModule(TdKit[] kits) {
-        if (bulkSender.getMidiDeviceInfo() == null) {
+        if (midiHandler.getMidiDeviceInfo() == null) {
             mainFrame.showErrorDialog("Module Output MIDI is not set",
                     "MIDI Detination is not set");
             return;
@@ -101,14 +101,7 @@ public final class SendToModuleAction extends BaseAction implements ListDataList
                 for (final TdKit kit : actualKits) {
                     mainFrame.addInfo("Sending: " + kit.getName() + " to slot number "
                             + kit.getId());
-                    bulkSender.sendKits(kit);
-//                    // TODO Remove this !!!
-//                    try {
-//                        Thread.sleep(4000);
-//                    }
-//                    catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
+                    midiHandler.sendKits(kit);
                 }
                 mainFrame.operationFinish();
             }

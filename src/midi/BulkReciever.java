@@ -40,18 +40,18 @@ import ui.event.ConnectionListener;
  * @author Limor Eyal
  *
  */
-public final class BulkReciever implements ConnectionListener {
+final class BulkReciever implements ConnectionListener {
     private MidiDevice midiDevice = null;
     private MidiDevice.Info midiDeviceInfo = null;
     private Transmitter deviceTransmitter = null;
     private DeviceIdentityReceiver idRequestReceivwer;
     private KitsReceiver kitsReceiver;
-    public BulkReciever() {
+    BulkReciever() {
         kitsReceiver = new KitsReceiver();
         idRequestReceivwer = new DeviceIdentityReceiver();
     }
     
-    public void setSoureceDevice(MidiDevice.Info newMidiInfo) throws MidiUnavailableException {
+    void setSoureceDevice(MidiDevice.Info newMidiInfo) throws MidiUnavailableException {
         if (this.midiDevice != null) {
             this.midiDevice.close();
         }
@@ -82,7 +82,7 @@ public final class BulkReciever implements ConnectionListener {
         }
     }
 
-    public void addConnectionListener(ConnectionListener connectionListener) {
+    void addConnectionListener(ConnectionListener connectionListener) {
         idRequestReceivwer.addConnectionListener(connectionListener);
     }
 }

@@ -41,7 +41,7 @@ import kits.VdrumsSysexMessage;
 /**
  * @author egolan
  */
-public final class BulkSender {
+final class BulkSender {
 //  F0H 7EH, dev, 06H, 01H F7H
     public final static byte[] ID_REQUEST_BYTES;
     static {
@@ -58,13 +58,13 @@ public final class BulkSender {
     Receiver deviceReceiver = null;
     int deviceId = 16;
 
-    public BulkSender() {}
+    BulkSender() {}
     
-    public MidiDevice.Info getMidiDeviceInfo() {
+    MidiDevice.Info getMidiDeviceInfo() {
         return midiDeviceInfo;
     }
 
-    public void setDestinationDeviceInformation(MidiDevice.Info newMidiInfo, int deviceId)
+    void setDestinationDeviceInformation(MidiDevice.Info newMidiInfo, int deviceId)
             throws MidiUnavailableException {
         if (this.midiDevice != null) {
             this.midiDevice.close();
@@ -82,7 +82,7 @@ public final class BulkSender {
         this.deviceId = deviceId;
     }
 
-    public void sendKits(final TdKit kit) {
+    void sendKits(final TdKit kit) {
         VdrumsSysexMessage[] parts = kit.getKitSubParts();
         for (VdrumsSysexMessage part : parts) {
             long timestamp = midiDevice.getMicrosecondPosition();
@@ -90,7 +90,7 @@ public final class BulkSender {
         }
     }
     
-    public void sendRequestId() throws InvalidMidiDataException {
+    void sendRequestId() throws InvalidMidiDataException {
         SysexMessage sm = new SysexMessage();
         byte[] bytes = BulkSender.ID_REQUEST_BYTES;
         bytes[2] = (byte)deviceId;
