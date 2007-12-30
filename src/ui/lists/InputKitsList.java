@@ -51,11 +51,14 @@ public final class InputKitsList extends KitsList {
     private static final long serialVersionUID = -1312290418423601870L;
     private final DefaultListModel myModel;
     private final KitsPanel outputKistPanel;
+    private final TdKitListRenderer inputCelRenderer;
+    private TdInfo tdInfo;
 
     public InputKitsList(KitsPanel inputKitsPanel, KitsPanel outputKistPanel) {
         myModel = new DefaultListModel();
         this.setModel(myModel);
-        this.setCellRenderer(new TdKitListRenderer());
+        inputCelRenderer = new TdKitListRenderer();
+        this.setCellRenderer(inputCelRenderer);
         this.outputKistPanel = outputKistPanel;
         final JPopupMenu popup = new JPopupMenu();
         addMouseListener(new MouseAdapter() {
@@ -93,13 +96,16 @@ public final class InputKitsList extends KitsList {
     }
 
     @SuppressWarnings("serial")
-    private static class TdKitListRenderer extends DefaultListCellRenderer {
+    private class TdKitListRenderer extends DefaultListCellRenderer {
+        
         public Component getListCellRendererComponent(JList list, Object value, int index,
                 boolean isSelected, boolean hasFocus) {
             JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index,
                     isSelected, hasFocus);
             if (value != null && value instanceof TdKit) {
                 TdKit kit = (TdKit) value;
+                label.setEnabled(kit.getTdInfoName().equals(tdInfo.getNameToDisplay()));
+                
                 label.setText(kit.getName());
             }
             // if (index%2 == 0) {
@@ -109,6 +115,10 @@ public final class InputKitsList extends KitsList {
             // }
             return (label);
         }
+        
+//        private void setTdInfo(TdInfo tdInfo) {
+//            this.tdInfo = tdInfo;
+//        }
     }
 
     @Override
@@ -124,7 +134,10 @@ public final class InputKitsList extends KitsList {
     }
 
     void kitPressed(int index) {
-        outputKistPanel.addKit((TdKit) myModel.elementAt(index));
+        TdKit kitPressed = (TdKit) myModel.elementAt(index);
+        if (kitPressed.getTdInfoName().equals(tdInfo.getNameToDisplay())) {
+            outputKistPanel.addKit(kitPressed);
+        }
     }
 
     @Override
@@ -157,7 +170,8 @@ public final class InputKitsList extends KitsList {
     }
 
     public void setTdInfo(TdInfo tdInfo) {
-        // TODO Auto-generated method stub
-        
+        this.tdInfo = tdInfo;
+        revalidate();
+        repaint();
     }
 }

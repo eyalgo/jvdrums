@@ -126,7 +126,8 @@ public final class KitPanelOutput extends KitsPanel {
 
     }
 
-    public void setInputKitsPanel(KitPanelInput inputPanel) {
+    public void initInputPanelInOutputPanel(KitPanelInput inputPanel) {
         modulesChooserCombo.setInputKitsPanel(inputPanel);
+        inputPanel.setTdInfo((TdInfo) modulesChooserCombo.getSelectedItem());
     }
 }

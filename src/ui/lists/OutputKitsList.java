@@ -119,9 +119,11 @@ public final class OutputKitsList extends KitsList implements ConnectionListener
             index = myModel.getFirstIndex();
         }
         for (TdKit kit : kits) {
-            index = myModel.addKit(kit, index);
-            increaseIndex(index);
-            index = getSelectedIndex();
+            if (kit.getTdInfoName().equals(tdInfo.getNameToDisplay())) {
+                index = myModel.addKit(kit, index);
+                increaseIndex(index);
+                index = getSelectedIndex();
+            }
         }
     }
 
