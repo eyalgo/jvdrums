@@ -78,7 +78,7 @@ public final class MainFrame extends JFrame {
     public MainFrame() {
         super();
         config.read(this);
-        midiHandler = new MidiHandler();
+        midiHandler = new MidiHandler(inputPanel);
         infoText = new MultiLineLabel(10, 70);
         infoText.setBackground(new JTextArea().getBackground());
         statusBar = new StatusBar();

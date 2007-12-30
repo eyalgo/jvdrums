@@ -41,17 +41,20 @@ import org.apache.commons.lang.ArrayUtils;
 
 import ui.event.ConnectionEvent;
 import ui.event.ConnectionListener;
+import ui.panels.KitsPanel;
 import exceptions.VdrumException;
 
 /**
  * @author Limor Eyal
  */
 final class KitsReceiver implements Receiver ,ConnectionListener {
-    TdInfo tdInfo;
-    byte[] receivedBytes = null;
+    private TdInfo tdInfo;
+    private byte[] receivedBytes = null;
+    private final KitsPanel inputPanel;
 
-    public KitsReceiver() {
+    public KitsReceiver(KitsPanel inputPanel) {
         receivedBytes = null;
+        this.inputPanel = inputPanel;
     }
 
     @Override
@@ -68,6 +71,7 @@ final class KitsReceiver implements Receiver ,ConnectionListener {
             if (receivedBytes.length == tdInfo.getKitSize()) {
                 try {
                     TdKit kit = TDManager.bytesToOneKit(receivedBytes);
+                    inputPanel.addKit(kit);
                     System.out.println(kit);
                     receivedBytes = null;
                 }

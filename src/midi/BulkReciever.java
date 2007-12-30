@@ -35,6 +35,7 @@ import javax.sound.midi.Transmitter;
 
 import ui.event.ConnectionEvent;
 import ui.event.ConnectionListener;
+import ui.panels.KitsPanel;
 
 /**
  * @author Limor Eyal
@@ -46,8 +47,8 @@ final class BulkReciever implements ConnectionListener {
     private Transmitter deviceTransmitter = null;
     private DeviceIdentityReceiver idRequestReceivwer;
     private KitsReceiver kitsReceiver;
-    BulkReciever() {
-        kitsReceiver = new KitsReceiver();
+    BulkReciever(KitsPanel inputPanel) {
+        kitsReceiver = new KitsReceiver(inputPanel);
         idRequestReceivwer = new DeviceIdentityReceiver();
     }
     

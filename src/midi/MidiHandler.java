@@ -35,6 +35,7 @@ import javax.sound.midi.MidiUnavailableException;
 import kits.TdKit;
 
 import ui.event.ConnectionListener;
+import ui.panels.KitsPanel;
 
 /**
  * @author egolan
@@ -43,8 +44,8 @@ public final class MidiHandler {
     private final BulkReciever bulkReciever;
     private final BulkSender bulkSender;
 
-    public MidiHandler() {
-        bulkReciever = new BulkReciever();
+    public MidiHandler(KitsPanel inputPanel) {
+        bulkReciever = new BulkReciever(inputPanel);
         bulkSender = new BulkSender();
     }
 
