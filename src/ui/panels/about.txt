@@ -1,0 +1,5 @@
+JVDrums - version -
+Copyright (c) 2007 Eyal Golan
+http://jvdrums.sourceforge.com
+The DokuWiki engine is licensed under GNU General Public License Version 3.
+If you use DokuWiki in your company, consider donating a few bucks to me via PayPal ;-).

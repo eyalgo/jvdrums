@@ -42,7 +42,7 @@ public class AboutPanel extends JPanel {
 	 */
 	public AboutPanel() {
 		setLayout(new BorderLayout());
-		add(new JLabel(createIcon()));
+		add(new JLabel(createIcon()), BorderLayout.CENTER);
 	}
 
 	private ImageIcon createIcon() {

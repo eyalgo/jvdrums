@@ -42,6 +42,7 @@ import ui.swing.actions.MoveRightAction;
 public final class KitPanelInput extends KitsPanel {
     private static final long serialVersionUID = 3267475173137048327L;
     private final InputKitsList inputKitsList;
+    private final ConnectAction connectAction;
 
     public KitPanelInput(MainFrame parentFrame, KitPanelOutput outputPanel) {
         super(parentFrame);
@@ -51,10 +52,16 @@ public final class KitPanelInput extends KitsPanel {
         addToButtonBar(new BrowseAction(getParentFrame(), this));
         addToButtonBar(new ClearListAction(inputKitsList));
         addToButtonBar(new MoveRightAction(inputKitsList, outputPanel));
-        addToButtonBar(new ConnectAction(parentFrame, parentFrame.getMidiHandler()));
+        connectAction = new ConnectAction(parentFrame, parentFrame.getMidiHandler());
+        connectAction.setEnabled(false);
+        addToButtonBar(connectAction);
     }
 
     public void setTdInfo(TdInfo tdInfo) {
         inputKitsList.setTdInfo(tdInfo);
+    }
+
+    public void connectAvailable(boolean canConnect) {
+        connectAction.setEnabled(canConnect);
     }
 }

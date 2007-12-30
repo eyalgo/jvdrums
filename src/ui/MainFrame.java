@@ -151,6 +151,11 @@ public final class MainFrame extends JFrame {
     public void setDestinationDeviceInformation(final MidiDevice.Info destinationDevice,
             final MidiDevice.Info sourceDevice, int deviceId) {
         try {
+            if (destinationDevice == null || sourceDevice == null) {
+                inputPanel.connectAvailable(false);
+            } else {
+                inputPanel.connectAvailable(true);
+            }
             midiHandler.setSourceAndDestination(sourceDevice, destinationDevice, deviceId);
         }
         catch (MidiUnavailableException e) {
