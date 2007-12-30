@@ -31,10 +31,7 @@ package ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.JButton;
@@ -59,6 +56,7 @@ import ui.panels.KitPanelOutput;
 import ui.swing.MultiLineLabel;
 import ui.swing.actions.AboutAction;
 import ui.swing.actions.BrowseAction;
+import ui.swing.actions.ConnectAction;
 import ui.swing.actions.ExitAction;
 import ui.swing.actions.MidiSourceAction;
 import ui.swing.actions.SaveAction;
@@ -107,8 +105,8 @@ public final class MainFrame extends JFrame {
         config.get("fileMenu").read(fileMenu);
         JMenu helpMenu = new JMenu();
         config.get("helpMenu").read(helpMenu);
-        JMenu connectionMenu = new JMenu();
-        config.get("connectionMenu").read(connectionMenu);
+        JMenu configurationMenu = new JMenu();
+        config.get("configurationMenu").read(configurationMenu);
         JMenu editMenu = new JMenu();
         config.get("editMenu").read(editMenu);
 
@@ -130,32 +128,19 @@ public final class MainFrame extends JFrame {
 
         getContentPane().add(infoPanel, BorderLayout.SOUTH);
 
-        connect = new JButton("Connect");
+        connect = new JButton(new ConnectAction(this, bulkSender, bulkReciever));
         getContentPane().add(connect, BorderLayout.NORTH);
-
-        connect.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    bulkSender.sendRequestId();
-                }
-                catch (InvalidMidiDataException e1) {
-                    e1.printStackTrace();
-                }
-
-            }
-
-        });
 
         fileMenu.add(new BrowseAction(this, inputPanel, false));
         fileMenu.add(new SaveAction(this, outputPanel, false));
         fileMenu.addSeparator();
         fileMenu.add(new ExitAction());
-        connectionMenu.add(new MidiSourceAction(this));
+        configurationMenu.add(new MidiSourceAction(this));
 
         helpMenu.add(new WebsiteAction());
         helpMenu.add(new AboutAction(this));
         jMenuBar1.add(fileMenu);
-        jMenuBar1.add(connectionMenu);
+        jMenuBar1.add(configurationMenu);
         jMenuBar1.add(editMenu);
         jMenuBar1.add(helpMenu);
         setJMenuBar(jMenuBar1);

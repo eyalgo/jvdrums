@@ -38,6 +38,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import bias.Configuration;
+
 import ui.MainFrame;
 import ui.combobox.DestinationMidiComboBox;
 import ui.combobox.MidiComboBox;
@@ -49,21 +51,20 @@ import ui.swing.StandardDialog;
  */
 @SuppressWarnings("serial")
 public final class MidiSourcePanel extends StandardDialog {
+    private final static int DEFAULT_DEVICE_ID = 16;
+    private static Configuration config = Configuration.getRoot().get(MidiSourcePanel.class);
     MidiDevice.Info selectedDestinationMidiInfo;
     MidiDevice.Info selectedSourceMidiInfo;
-    // TODO add string to properties file
     private final MainFrame mainFrame;
     private JPanel bodyPanel;
-    private JLabel sourceLabel = new JLabel("Source");
     private MidiComboBox sourceCombo = new SourceMidiComboBox();
-    private JLabel destinationLabel = new JLabel("Destination");
     private MidiComboBox destinationCombo = new DestinationMidiComboBox();
-    private JLabel deviceIdLabel = new JLabel("Device ID");
     private JComboBox deviceIdCombo = new JComboBox();
 
     private MidiSourcePanel(MainFrame mainFrame, MidiDevice.Info destinationMidiDevice) {
         super(mainFrame);
         this.mainFrame = mainFrame;
+        config.read(this);
         initDialog();
         if (destinationMidiDevice == null) {
             destinationCombo.setNoneSelected();
@@ -73,7 +74,6 @@ public final class MidiSourcePanel extends StandardDialog {
     }
 
     private void initDialog() {
-        setTitle("MIDI Source");
         bodyPanel = new JPanel();
         bodyPanel.setLayout(new GridBagLayout());
         /*
@@ -84,6 +84,8 @@ public final class MidiSourcePanel extends StandardDialog {
          * int fill, Insets insets, int ipadx, int ipady) {
          */
 
+        JLabel sourceLabel = new JLabel();
+        config.get("sourceLabel").read(sourceLabel);
         bodyPanel.add(sourceLabel,
                 new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
                         GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
@@ -102,6 +104,8 @@ public final class MidiSourcePanel extends StandardDialog {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.insets = new Insets(0, 0, 5, 0);
         gridBagConstraints.anchor = GridBagConstraints.WEST;
+        JLabel destinationLabel = new JLabel();
+        config.get("destinationLabel").read(destinationLabel);
         bodyPanel.add(destinationLabel, gridBagConstraints);
 
         gridBagConstraints = new GridBagConstraints();
@@ -117,6 +121,8 @@ public final class MidiSourcePanel extends StandardDialog {
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new Insets(5, 0, 5, 5);
         gridBagConstraints.anchor = GridBagConstraints.EAST;
+        JLabel deviceIdLabel = new JLabel();
+        config.get("deviceIdLabel").read(deviceIdLabel);
         bodyPanel.add(deviceIdLabel, gridBagConstraints);
 
         gridBagConstraints = new GridBagConstraints();
@@ -130,7 +136,7 @@ public final class MidiSourcePanel extends StandardDialog {
         for (int i = 1; i < 33; i++) {
             deviceIdCombo.addItem(new Integer(i));
         }
-        deviceIdCombo.setSelectedIndex(16);
+        deviceIdCombo.setSelectedIndex(DEFAULT_DEVICE_ID);
 
         destinationCombo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
