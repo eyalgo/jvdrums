@@ -65,7 +65,6 @@ final class BulkReciever implements ConnectionListener {
                 this.midiDevice = newSourceDevice;
                 this.midiDevice.open();
                 deviceTransmitter = midiDevice.getTransmitter();
-                deviceTransmitter.setReceiver(idRequestReceivwer);
             }
         }
     }
@@ -81,7 +80,7 @@ final class BulkReciever implements ConnectionListener {
     @Override
     public void disconnected() {
         if (deviceTransmitter != null) {
-            deviceTransmitter.setReceiver(idRequestReceivwer);            
+            deviceTransmitter.setReceiver(null);            
         }
     }
 
@@ -91,6 +90,14 @@ final class BulkReciever implements ConnectionListener {
     
     void setKitPanelInput(KitPanelInput inputPanel) {
         kitsReceiver.setKitPanelInput(inputPanel);
+    }
+    
+    void sendRequestId() throws MidiUnavailableException {
+        deviceTransmitter.setReceiver(idRequestReceivwer);
+    }
+
+    void disconnect() {
+        idRequestReceivwer.disconnect();
     }
 
 }

@@ -64,7 +64,7 @@ final class KitsReceiver implements Receiver {
         if (midiMessage instanceof SysexMessage) {
             byte[] message = ((SysexMessage) midiMessage).getMessage();
             receivedBytes = ArrayUtils.addAll(receivedBytes, message);
-            System.out.println(receivedBytes.length);
+//            System.out.println(receivedBytes.length);
             if (receivedBytes.length == tdInfo.getKitSize()) {
                 try {
                     final TdKit kit = TDManager.bytesToOneKit(receivedBytes);
@@ -81,9 +81,6 @@ final class KitsReceiver implements Receiver {
                 }
             }
         } else {
-            // System.out.println("Received a MidiEvent: "
-            // + Integer.toHexString(midiMessage.getStatus()) + " Length: "
-            // + midiMessage.getLength() + " at " + timeStamp + "\n");
         }
     }
 

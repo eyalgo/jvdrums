@@ -96,4 +96,14 @@ final class DeviceIdentityReceiver implements Receiver {
         }
     }
 
+    void disconnect() {
+        fireDisconnectEvent();
+    }
+
+    private void fireDisconnectEvent() {
+        for (ConnectionListener connectionListener : connectionListeners) {
+            connectionListener.disconnected();
+        }
+    }
+
 }

@@ -31,6 +31,7 @@ package ui.swing.actions;
 import java.awt.event.ActionEvent;
 
 import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiUnavailableException;
 
 import midi.MidiHandler;
 import ui.MainFrame;
@@ -44,32 +45,43 @@ import ui.event.ConnectionListener;
 public final class ConnectAction extends BaseAction implements ConnectionListener {
     private final MidiHandler midiHandler;
     private final MainFrame mainFrame;
+    private boolean connected;
 
     public ConnectAction(MainFrame mainFrame, MidiHandler midiHandler) {
         this.midiHandler = midiHandler;
         midiHandler.addConnectionListener(this);
         this.mainFrame = mainFrame;
         config.get("connect").read(this);
+        connected = false;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        try {
-            midiHandler.sendRequestId();
-        }
-        catch (InvalidMidiDataException e1) {
-            mainFrame.showErrorDialog(e1.getMessage(), e1.getMessage());
+        if (connected) {
+            midiHandler.disconnect();
+        } else {
+            try {
+                midiHandler.sendRequestId();
+            }
+            catch (InvalidMidiDataException e1) {
+                mainFrame.showErrorDialog(e1.getMessage(), e1.getMessage());
+            }
+            catch (MidiUnavailableException e2) {
+                mainFrame.showErrorDialog(e2.getMessage(), e2.getMessage());
+            }
         }
     }
 
     @Override
     public void connected(ConnectionEvent connectionEvent) {
         config.get("disconnect").read(this);
+        connected = true;
     }
 
     @Override
     public void disconnected() {
         config.get("connect").read(this);
+        connected = false;
     }
 
 }

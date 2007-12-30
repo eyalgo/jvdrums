@@ -101,8 +101,8 @@ public final class MainFrame extends JFrame {
         config.get("helpMenu").read(helpMenu);
         JMenu configurationMenu = new JMenu();
         config.get("configurationMenu").read(configurationMenu);
-        JMenu editMenu = new JMenu();
-        config.get("editMenu").read(editMenu);
+//        JMenu editMenu = new JMenu();
+//        config.get("editMenu").read(editMenu);
 
         jSplitPane1.setResizeWeight(0.5);
         jSplitPane1.setAlignmentX(0.5f);
@@ -132,7 +132,7 @@ public final class MainFrame extends JFrame {
         helpMenu.add(new AboutAction(this));
         jMenuBar1.add(fileMenu);
         jMenuBar1.add(configurationMenu);
-        jMenuBar1.add(editMenu);
+//        jMenuBar1.add(editMenu);
         jMenuBar1.add(helpMenu);
         setJMenuBar(jMenuBar1);
 

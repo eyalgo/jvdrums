@@ -22,3 +22,18 @@ Release 0.7 - Alpha 2 Release:
 **************************************************
 !!! TD-6 options were not tested with a module !!!
 **************************************************
+
+Release 0.8-alpha_1:
+* New look
+* Added device id to the midi source
+* Connect button gets the device info (and type)
+* Receiving kits from a connected device
+
+known bugs:
+- disconnect doesn't work
+- if you stop sending from the module (pressing cancel while sending),
+	then JVDrums does not receive kits anymore and you need to restart it
+- configuration is not saved as well as last browse location
+- some information in the status bar is not displayed yet
+
+* Soon: TD-10 support

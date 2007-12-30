@@ -47,7 +47,7 @@ public final class MidiHandler {
         bulkReciever = new BulkReciever();
         bulkSender = new BulkSender();
     }
-    
+
     public void setKitPanelInput(KitPanelInput inputPanel) {
         bulkReciever.setKitPanelInput(inputPanel);
     }
@@ -62,7 +62,8 @@ public final class MidiHandler {
         bulkSender.setDestinationDeviceInformation(destinationDevice, deviceId);
     }
 
-    public void sendRequestId() throws InvalidMidiDataException {
+    public void sendRequestId() throws InvalidMidiDataException, MidiUnavailableException {
+        bulkReciever.sendRequestId();
         bulkSender.sendRequestId();
     }
 
@@ -72,5 +73,9 @@ public final class MidiHandler {
 
     public void sendKits(TdKit kit) {
         bulkSender.sendKits(kit);
+    }
+
+    public void disconnect() {
+        bulkReciever.disconnect();
     }
 }
