@@ -32,7 +32,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ItemEvent;
-import java.util.List;
 
 import javax.sound.midi.MidiDevice;
 import javax.swing.JComboBox;
@@ -45,8 +44,6 @@ import ui.combobox.MidiComboBox;
 import ui.combobox.SourceMidiComboBox;
 import ui.swing.StandardDialog;
 import bias.Configuration;
-import bias.Store;
-import bias.store.PropertiesStore;
 
 /**
  * @author egolan
@@ -62,18 +59,11 @@ public final class MidiSourcePanel extends StandardDialog {
     private MidiComboBox sourceCombo = new SourceMidiComboBox();
     private MidiComboBox destinationCombo = new DestinationMidiComboBox();
     private JComboBox deviceIdCombo = new JComboBox();
-    PropertiesStore propStore;
 
     private MidiSourcePanel(MainFrame mainFrame, MidiDevice.Info destinationMidiDevice) {
         super(mainFrame);
         this.mainFrame = mainFrame;
         config.read(this);
-        Configuration configuration = Configuration.getRoot();
-        List<Store> stores = configuration.getStores();
-        propStore = (PropertiesStore) stores.get(0);
-        for (Store store : stores) {
-            System.out.println(store);
-        }
         initDialog();
         if (destinationMidiDevice == null) {
             destinationCombo.setNoneSelected();

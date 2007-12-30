@@ -28,6 +28,7 @@
 
 package ui.panels;
 
+import midi.MidiHandler;
 import kits.info.TdInfo;
 import ui.MainFrame;
 import ui.lists.InputKitsList;
@@ -44,10 +45,11 @@ public final class KitPanelInput extends KitsPanel {
     private final InputKitsList inputKitsList;
     private final ConnectAction connectAction;
 
-    public KitPanelInput(MainFrame parentFrame, KitPanelOutput outputPanel) {
+    public KitPanelInput(MainFrame parentFrame, KitPanelOutput outputPanel, MidiHandler midiHandler) {
         super(parentFrame);
         inputKitsList = new InputKitsList(this, outputPanel);
         outputPanel.initInputPanelInOutputPanel(this);
+        midiHandler.setKitPanelInput(this);
         setListInPanel(inputKitsList);
         addToButtonBar(new BrowseAction(getParentFrame(), this));
         addToButtonBar(new ClearListAction(inputKitsList));

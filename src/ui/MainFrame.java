@@ -78,7 +78,7 @@ public final class MainFrame extends JFrame {
     public MainFrame() {
         super();
         config.read(this);
-        midiHandler = new MidiHandler(inputPanel);
+        midiHandler = new MidiHandler();
         infoText = new MultiLineLabel(10, 70);
         infoText.setBackground(new JTextArea().getBackground());
         statusBar = new StatusBar();
@@ -93,7 +93,7 @@ public final class MainFrame extends JFrame {
         WindowUtilities.setLiquidLookAndFeel();
         JSplitPane jSplitPane1 = new JSplitPane();
         outputPanel = new KitPanelOutput(this, new Td6Info());
-        inputPanel = new KitPanelInput(this, outputPanel);
+        inputPanel = new KitPanelInput(this, outputPanel, midiHandler);
         JMenuBar jMenuBar1 = new JMenuBar();
         JMenu fileMenu = new JMenu();
         config.get("fileMenu").read(fileMenu);

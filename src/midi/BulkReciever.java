@@ -35,7 +35,7 @@ import javax.sound.midi.Transmitter;
 
 import ui.event.ConnectionEvent;
 import ui.event.ConnectionListener;
-import ui.panels.KitsPanel;
+import ui.panels.KitPanelInput;
 
 /**
  * @author Limor Eyal
@@ -47,9 +47,10 @@ final class BulkReciever implements ConnectionListener {
     private Transmitter deviceTransmitter = null;
     private DeviceIdentityReceiver idRequestReceivwer;
     private KitsReceiver kitsReceiver;
-    BulkReciever(KitsPanel inputPanel) {
-        kitsReceiver = new KitsReceiver(inputPanel);
+    BulkReciever() {
+        kitsReceiver = new KitsReceiver();
         idRequestReceivwer = new DeviceIdentityReceiver();
+        idRequestReceivwer.addConnectionListener(this);
     }
     
     void setSoureceDevice(MidiDevice.Info newMidiInfo) throws MidiUnavailableException {
@@ -72,7 +73,8 @@ final class BulkReciever implements ConnectionListener {
     @Override
     public void connected(ConnectionEvent connectionEvent) {
         if (deviceTransmitter != null) {
-            deviceTransmitter.setReceiver(kitsReceiver);    
+            deviceTransmitter.setReceiver(kitsReceiver);
+            kitsReceiver.setTdIdInfo(connectionEvent.getTdInfo());
         }
     }
     
@@ -86,4 +88,9 @@ final class BulkReciever implements ConnectionListener {
     void addConnectionListener(ConnectionListener connectionListener) {
         idRequestReceivwer.addConnectionListener(connectionListener);
     }
+    
+    void setKitPanelInput(KitPanelInput inputPanel) {
+        kitsReceiver.setKitPanelInput(inputPanel);
+    }
+
 }

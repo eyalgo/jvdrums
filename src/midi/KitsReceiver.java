@@ -32,6 +32,7 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.SysexMessage;
+import javax.swing.SwingUtilities;
 
 import kits.TdKit;
 import kits.info.TdInfo;
@@ -39,28 +40,23 @@ import managers.TDManager;
 
 import org.apache.commons.lang.ArrayUtils;
 
-import ui.event.ConnectionEvent;
-import ui.event.ConnectionListener;
-import ui.panels.KitsPanel;
+import ui.panels.KitPanelInput;
 import exceptions.VdrumException;
 
 /**
  * @author Limor Eyal
  */
-final class KitsReceiver implements Receiver ,ConnectionListener {
+final class KitsReceiver implements Receiver {
     private TdInfo tdInfo;
     private byte[] receivedBytes = null;
-    private final KitsPanel inputPanel;
+    private KitPanelInput inputPanel;
 
-    public KitsReceiver(KitsPanel inputPanel) {
+    public KitsReceiver() {
         receivedBytes = null;
-        this.inputPanel = inputPanel;
     }
 
     @Override
     public void close() {
-    // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -68,11 +64,11 @@ final class KitsReceiver implements Receiver ,ConnectionListener {
         if (midiMessage instanceof SysexMessage) {
             byte[] message = ((SysexMessage) midiMessage).getMessage();
             receivedBytes = ArrayUtils.addAll(receivedBytes, message);
+            System.out.println(receivedBytes.length);
             if (receivedBytes.length == tdInfo.getKitSize()) {
                 try {
-                    TdKit kit = TDManager.bytesToOneKit(receivedBytes);
-                    inputPanel.addKit(kit);
-                    System.out.println(kit);
+                    final TdKit kit = TDManager.bytesToOneKit(receivedBytes);
+                    addToPanel(kit);
                     receivedBytes = null;
                 }
                 catch (InvalidMidiDataException e) {
@@ -85,26 +81,30 @@ final class KitsReceiver implements Receiver ,ConnectionListener {
                 }
             }
         } else {
-            System.out.println("Received a MidiEvent: "
-                    + Integer.toHexString(midiMessage.getStatus()) + " Length: "
-                    + midiMessage.getLength() + " at " + timeStamp + "\n");
+            // System.out.println("Received a MidiEvent: "
+            // + Integer.toHexString(midiMessage.getStatus()) + " Length: "
+            // + midiMessage.getLength() + " at " + timeStamp + "\n");
         }
     }
 
-    private void setTdIdInfo(TdInfo tdInfo) {
+    private void addToPanel(final TdKit kit) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            inputPanel.addKit(kit);
+        } else {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    inputPanel.addKit(kit);
+                }
+            });
+        }
+    }
+
+    void setTdIdInfo(TdInfo tdInfo) {
         this.tdInfo = tdInfo;
+        System.out.println("Setting TdInfo " + tdInfo + " kit size= " + tdInfo.getKitSize());
     }
 
-    @Override
-    public void connected(ConnectionEvent connectionEvent) {
-        TdInfo newTdInfo = connectionEvent.getTdInfo();
-        setTdIdInfo(newTdInfo);
+    void setKitPanelInput(KitPanelInput inputPanel) {
+        this.inputPanel = inputPanel;
     }
-
-    @Override
-    public void disconnected() {
-        // TODO Auto-generated method stub
-        
-    }
-
 }
