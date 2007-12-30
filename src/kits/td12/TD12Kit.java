@@ -80,4 +80,9 @@ public final class TD12Kit extends TdKit {
         TdKit newTd12Kit = new TD12Kit(newSubParts);
         return newTd12Kit;
     }
+
+    @Override
+    public String getTdInfoName() {
+        return Td12Info.NAME;
+    }
 }

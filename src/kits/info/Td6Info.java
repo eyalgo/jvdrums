@@ -69,7 +69,7 @@ public final class Td6Info extends TdInfo {
     }
 
     @Override
-    String getNameToDisplay() {
+    public String getNameToDisplay() {
         return NAME;
     }
 }

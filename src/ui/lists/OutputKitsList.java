@@ -40,12 +40,14 @@ import javax.swing.JPopupMenu;
 
 import kits.TdKit;
 import kits.info.TdInfo;
+import ui.event.ConnectionEvent;
+import ui.event.ConnectionListener;
 import ui.panels.KitsPanel;
 
 /**
  * @author egolan
  */
-public final class OutputKitsList extends KitsList {
+public final class OutputKitsList extends KitsList implements ConnectionListener {
     public enum Direction {
         DECREASE_INDEX("up"), INCREASE_INDEX("down");
         private final String name;
@@ -185,5 +187,15 @@ public final class OutputKitsList extends KitsList {
         if (selectedRow != -1) {
             myModel.removeSelectedKit(selectedRow);
         }
+    }
+
+    @Override
+    public void connected(ConnectionEvent connectionEvent) {
+        setTdInfo(connectionEvent.getTdInfo());
+    }
+
+    @Override
+    public void disconnected() {
+        // TODO Auto-generated method stub
     }
 }

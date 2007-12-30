@@ -83,4 +83,9 @@ public final class TD6Kit extends TdKit {
             throws InvalidMidiDataException {
         return new TD6SubPart(subPart, newId);
     }
+
+    @Override
+    public String getTdInfoName() {
+        return Td6Info.NAME;
+    }
 }

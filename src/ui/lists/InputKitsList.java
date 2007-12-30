@@ -39,6 +39,7 @@ import javax.swing.JList;
 import javax.swing.JPopupMenu;
 
 import kits.TdKit;
+import kits.info.TdInfo;
 import ui.panels.KitsPanel;
 import ui.swing.actions.BrowseAction;
 import ui.swing.actions.ClearListAction;
@@ -99,7 +100,7 @@ public final class InputKitsList extends KitsList {
                     isSelected, hasFocus);
             if (value != null && value instanceof TdKit) {
                 TdKit kit = (TdKit) value;
-                label.setText(kit.getId() + " " + kit.getName());
+                label.setText(kit.getName());
             }
             // if (index%2 == 0) {
             // label.setBackground(Color.LIGHT_GRAY);
@@ -153,5 +154,10 @@ public final class InputKitsList extends KitsList {
     @Override
     public int numberOfKits() {
         return myModel.getSize();
+    }
+
+    public void setTdInfo(TdInfo tdInfo) {
+        // TODO Auto-generated method stub
+        
     }
 }

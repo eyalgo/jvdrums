@@ -28,8 +28,8 @@
 
 package ui.panels;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Vector;
 
 import javax.swing.JComboBox;
@@ -37,6 +37,8 @@ import javax.swing.JComboBox;
 import kits.info.InfoManager;
 import kits.info.TdInfo;
 import ui.MainFrame;
+import ui.event.ConnectionEvent;
+import ui.event.ConnectionListener;
 import ui.lists.OutputKitsList;
 import ui.lists.OutputKitsList.Direction;
 import ui.swing.actions.ClearListAction;
@@ -48,25 +50,27 @@ import ui.swing.actions.SendToModuleAction;
 /**
  * @author egolan
  */
-public final class KitPanelOutput extends KitsPanel implements ActionListener {
+public final class KitPanelOutput extends KitsPanel {
     private static final long serialVersionUID = -5217989811338648085L;
     private final OutputKitsList outputKitsList;
     private final MoveKitAction increaseIndexMoveAction;
+    private final ModulesChooserCombo modulesChooserCombo;
 
     public KitPanelOutput(MainFrame parentFrame, TdInfo tdInfo) {
         super(parentFrame);
         outputKitsList = new OutputKitsList(this, tdInfo);
+        parentFrame.addConnectionListener(outputKitsList);
         setListInPanel(outputKitsList);
         addToButtonBar(new SaveAction(getParentFrame(), this));
         addToButtonBar(new SendToModuleAction(getParentFrame(), outputKitsList));
         addToButtonBar(new RemoveKitsAction(outputKitsList));
         addToButtonBar(new ClearListAction(outputKitsList));
-        increaseIndexMoveAction = new MoveKitAction(Direction.INCREASE_INDEX, outputKitsList, tdInfo
-                .getMaxNumberOfKits() - 1);
+        increaseIndexMoveAction = new MoveKitAction(Direction.INCREASE_INDEX, outputKitsList,
+                tdInfo.getMaxNumberOfKits() - 1);
         addToButtonBar(increaseIndexMoveAction);
         addToButtonBar(new MoveKitAction(Direction.DECREASE_INDEX, outputKitsList, 0));
-        JComboBox modulesChooserCombo = new ModulesChooserCombo(tdInfo);
-        modulesChooserCombo.addActionListener(this);
+        modulesChooserCombo = new ModulesChooserCombo(tdInfo);
+        parentFrame.addConnectionListener(modulesChooserCombo);
         addToButtonBar(modulesChooserCombo);
     }
 
@@ -75,7 +79,9 @@ public final class KitPanelOutput extends KitsPanel implements ActionListener {
     }
 
     @SuppressWarnings("serial")
-    private static class ModulesChooserCombo extends JComboBox {
+    private class ModulesChooserCombo extends JComboBox implements ConnectionListener {
+        private KitPanelInput inputPanel;
+
         private ModulesChooserCombo(TdInfo defaultTdInfo) {
             Vector<TdInfo> availableModulesInfo = InfoManager.availableModulesInfo();
             for (TdInfo tdInfo : availableModulesInfo) {
@@ -83,18 +89,44 @@ public final class KitPanelOutput extends KitsPanel implements ActionListener {
             }
             setSelectedItem(defaultTdInfo);
             setFocusable(false);
+            addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent evt) {
+                    moduleTypeChanged(evt);
+                }
+
+                private void moduleTypeChanged(ItemEvent evt) {
+                    switch (evt.getStateChange()) {
+                        case ItemEvent.SELECTED:
+                            TdInfo tdInfo = ((TdInfo) getSelectedItem());
+                            increaseIndexMoveAction.setMaxNumberOfKits(tdInfo
+                                    .getMaxNumberOfKits() - 1);
+                            outputKitsList.setTdInfo(tdInfo);
+                            inputPanel.setTdInfo(tdInfo);
+                            break;
+                    }
+
+                }
+            });
         }
+
+        @Override
+        public void connected(ConnectionEvent connectionEvent) {
+            setSelectedItem(connectionEvent.getTdInfo());
+            setEnabled(false);
+        }
+
+        @Override
+        public void disconnected() {
+            setEnabled(true);
+        }
+
+        private void setInputKitsPanel(KitPanelInput inputPanel) {
+            this.inputPanel = inputPanel;
+        }
+
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        JComboBox cb = (JComboBox) e.getSource();
-        TdInfo tdInfo = (TdInfo) cb.getSelectedItem();
-        increaseIndexMoveAction.setMaxNumberOfKits(tdInfo.getMaxNumberOfKits() - 1);
-        setTdInfo(tdInfo);
-    }
-
-    public void setTdInfo(TdInfo tdInfo) {
-        outputKitsList.setTdInfo(tdInfo);
+    public void setInputKitsPanel(KitPanelInput inputPanel) {
+        modulesChooserCombo.setInputKitsPanel(inputPanel);
     }
 }

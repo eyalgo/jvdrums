@@ -28,6 +28,7 @@
 
 package ui.panels;
 
+import kits.info.TdInfo;
 import ui.MainFrame;
 import ui.lists.InputKitsList;
 import ui.swing.actions.BrowseAction;
@@ -42,13 +43,18 @@ public final class KitPanelInput extends KitsPanel {
     private static final long serialVersionUID = 3267475173137048327L;
     private final InputKitsList inputKitsList;
 
-    public KitPanelInput(MainFrame parentFrame, KitsPanel outputPanel) {
+    public KitPanelInput(MainFrame parentFrame, KitPanelOutput outputPanel) {
         super(parentFrame);
         inputKitsList = new InputKitsList(this, outputPanel);
+        outputPanel.setInputKitsPanel(this);
         setListInPanel(inputKitsList);
         addToButtonBar(new BrowseAction(getParentFrame(), this));
         addToButtonBar(new LoadFromModuleAction());
         addToButtonBar(new ClearListAction(inputKitsList));
         addToButtonBar(new MoveRightAction(inputKitsList, outputPanel));
+    }
+
+    public void setTdInfo(TdInfo tdInfo) {
+        inputKitsList.setTdInfo(tdInfo);
     }
 }

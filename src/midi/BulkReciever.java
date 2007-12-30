@@ -33,31 +33,32 @@ import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Transmitter;
 
-import kits.info.TdInfo;
-
-import ui.MainFrame;
+import ui.event.ConnectionEvent;
+import ui.event.ConnectionListener;
 
 /**
  * @author Limor Eyal
  *
  */
-public final class BulkReciever {
+public final class BulkReciever implements ConnectionListener {
     private MidiDevice midiDevice = null;
     private MidiDevice.Info midiDeviceInfo = null;
     private Transmitter deviceTransmitter = null;
     private DeviceIdentityReceiver idRequestReceivwer;
-//    private KitsReceiver kitsReceiver;
-    public BulkReciever(MainFrame mainFrame) {
-//        kitsReceiver = new KitsReceiver();
-        idRequestReceivwer = new DeviceIdentityReceiver(mainFrame, this);
+    private KitsReceiver kitsReceiver;
+    public BulkReciever() {
+        kitsReceiver = new KitsReceiver();
+        idRequestReceivwer = new DeviceIdentityReceiver();
     }
+    
     public void setSoureceDevice(MidiDevice.Info newMidiInfo) throws MidiUnavailableException {
         if (this.midiDevice != null) {
             this.midiDevice.close();
         }
         if (newMidiInfo != null) {
-            System.out.println(newMidiInfo);
-            MidiDevice newSourceDevice = MidiSystem.getMidiDevice(newMidiInfo);
+            this.midiDeviceInfo = newMidiInfo;
+            System.out.println(midiDeviceInfo);
+            MidiDevice newSourceDevice = MidiSystem.getMidiDevice(midiDeviceInfo);
             if (newSourceDevice != null) {
                 this.midiDevice = newSourceDevice;
                 this.midiDevice.open();
@@ -65,13 +66,23 @@ public final class BulkReciever {
                 deviceTransmitter.setReceiver(idRequestReceivwer);
             }
         }
-        this.midiDeviceInfo = newMidiInfo;
     }
-    public void connected(TdInfo tdInfo) {
-        KitsReceiver kitsReceiver = new KitsReceiver();
-        deviceTransmitter.setReceiver(kitsReceiver);
-        kitsReceiver.setTdIdInfo(tdInfo);
-        
+    
+    @Override
+    public void connected(ConnectionEvent connectionEvent) {
+        if (deviceTransmitter != null) {
+            deviceTransmitter.setReceiver(kitsReceiver);    
+        }
+    }
+    
+    @Override
+    public void disconnected() {
+        if (deviceTransmitter != null) {
+            deviceTransmitter.setReceiver(idRequestReceivwer);            
+        }
     }
 
+    public void addConnectionListener(ConnectionListener connectionListener) {
+        idRequestReceivwer.addConnectionListener(connectionListener);
+    }
 }

@@ -51,12 +51,11 @@ import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 
 import kits.info.Td6Info;
-import kits.info.TdInfo;
 import midi.BulkReciever;
 import midi.BulkSender;
+import ui.event.ConnectionListener;
 import ui.panels.KitPanelInput;
 import ui.panels.KitPanelOutput;
-import ui.panels.KitsPanel;
 import ui.swing.MultiLineLabel;
 import ui.swing.actions.AboutAction;
 import ui.swing.actions.BrowseAction;
@@ -80,13 +79,14 @@ public final class MainFrame extends JFrame {
     private final JTextArea infoText;
     private final StatusBar statusBar;
     private JButton connect;
-    KitsPanel outputPanel;
+    KitPanelOutput outputPanel;
+    KitPanelInput inputPanel;
 
     public MainFrame() {
         super();
         config.read(this);
         bulkSender = new BulkSender();
-        bulkReciever = new BulkReciever(this);
+        bulkReciever = new BulkReciever();
         infoText = new MultiLineLabel(10, 70);
         infoText.setBackground(new JTextArea().getBackground());
         statusBar = new StatusBar();
@@ -101,7 +101,7 @@ public final class MainFrame extends JFrame {
         WindowUtilities.setLiquidLookAndFeel();
         JSplitPane jSplitPane1 = new JSplitPane();
         outputPanel = new KitPanelOutput(this, new Td6Info());
-        KitsPanel inputPanel = new KitPanelInput(this, outputPanel);
+        inputPanel = new KitPanelInput(this, outputPanel);
         JMenuBar jMenuBar1 = new JMenuBar();
         JMenu fileMenu = new JMenu();
         config.get("fileMenu").read(fileMenu);
@@ -139,7 +139,6 @@ public final class MainFrame extends JFrame {
                     bulkSender.sendRequestId();
                 }
                 catch (InvalidMidiDataException e1) {
-                    // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
 
@@ -218,7 +217,7 @@ public final class MainFrame extends JFrame {
         }
     }
 
-    public void setTdIdInfo(TdInfo tdInfo) {
-        ((KitPanelOutput)outputPanel).setTdInfo(tdInfo);
+    public void addConnectionListener(ConnectionListener connectionListener) {
+        bulkReciever.addConnectionListener(connectionListener);
     }
 }

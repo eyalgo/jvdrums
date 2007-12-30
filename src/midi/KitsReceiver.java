@@ -28,27 +28,25 @@
 
 package midi;
 
-import java.util.Vector;
-
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.SysexMessage;
 
-import org.apache.commons.lang.ArrayUtils;
-
-import exceptions.VdrumException;
-
-import managers.TDManager;
-import managers.TDModulesManager;
-
 import kits.TdKit;
 import kits.info.TdInfo;
+import managers.TDManager;
+
+import org.apache.commons.lang.ArrayUtils;
+
+import ui.event.ConnectionEvent;
+import ui.event.ConnectionListener;
+import exceptions.VdrumException;
 
 /**
  * @author Limor Eyal
  */
-final class KitsReceiver implements Receiver {
+final class KitsReceiver implements Receiver ,ConnectionListener {
     TdInfo tdInfo;
     byte[] receivedBytes = null;
 
@@ -64,43 +62,11 @@ final class KitsReceiver implements Receiver {
 
     @Override
     public void send(MidiMessage midiMessage, long timeStamp) {
-        // int numberOfSubParts = tdInfo.getNumberOfSubParts();
-
-        // TDModulesManager modulesManager = tdInfo.getModulesManager();
-        // try {
-        // TdKit[] kits = modulesManager.sysexMessageToKits((SysexMessage)midiMessage);
-        // for (TdKit kit : kits) {
-        // System.out.println(kit);
-        // }
-        // }
-        // catch (InvalidMidiDataException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
-        // catch (VdrumException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
-
-        // output.append("Received a MidiEvent:
-        // "+Integer.toHexString(midiMessage.getStatus())+" Length: "+midiMessage.getLength()+"
-        // at "+timeStamp+"\n");
         if (midiMessage instanceof SysexMessage) {
-            // StringBuffer output = new StringBuffer();
-            // output.append(" SysexMessage: " + (midiMessage.getStatus() - 256));
             byte[] message = ((SysexMessage) midiMessage).getMessage();
-            // for (int x = 0; x < message.length; x++) {
-
-            // for (int x=0;x<message.length;x++) output.append("
-            // "+Integer.toHexString(message[x]));
-
-            // System.out.println(output.toString());
             receivedBytes = ArrayUtils.addAll(receivedBytes, message);
-            // System.out.println("receivedBytes length=" + receivedBytes.length);
             if (receivedBytes.length == tdInfo.getKitSize()) {
-
                 try {
-                    // System.out.println("BOOM");
                     TdKit kit = TDManager.bytesToOneKit(receivedBytes);
                     System.out.println(kit);
                     receivedBytes = null;
@@ -113,43 +79,28 @@ final class KitsReceiver implements Receiver {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-
             }
-            // if (receivedBytes.length == tdInfo.getKitSize()) {
-            // try {
-            // TdKit[] kits = TDManager.bytesToKits(receivedBytes);
-            //                        
-            // output.append(kits[0]);
-            // // for (TdKit kit : kits) {
-            // // output.append(kit);
-            // //
-            // // }
-            // System.out.println(output.toString());
-            // }
-            // catch (InvalidMidiDataException e) {
-            // // TODO Auto-generated catch block
-            // e.printStackTrace();
-            // }
-            // catch (VdrumException e) {
-            // // TODO Auto-generated catch block
-            // e.printStackTrace();
-            // }
-            //                    
-            // receivedBytes = null;
-            // }
-            // output.append(" " + Integer.toHexString(data[x]));
-            // }
-            // System.out.println(output.toString());
         } else {
             System.out.println("Received a MidiEvent: "
                     + Integer.toHexString(midiMessage.getStatus()) + " Length: "
                     + midiMessage.getLength() + " at " + timeStamp + "\n");
         }
-
     }
 
-    public void setTdIdInfo(TdInfo tdInfo) {
+    private void setTdIdInfo(TdInfo tdInfo) {
         this.tdInfo = tdInfo;
+    }
+
+    @Override
+    public void connected(ConnectionEvent connectionEvent) {
+        TdInfo newTdInfo = connectionEvent.getTdInfo();
+        setTdIdInfo(newTdInfo);
+    }
+
+    @Override
+    public void disconnected() {
+        // TODO Auto-generated method stub
+        
     }
 
 }

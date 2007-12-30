@@ -26,31 +26,15 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package kits.info;
+package ui.event;
 
 
 /**
  * @author egolan
  *
  */
-public abstract class TdInfo {
-    public abstract int getStartNameIndex();
-    public abstract int getMaxLength();
-    public abstract int getNumberOfSubParts();
-    public abstract int getMaxNumberOfKits();
-    public abstract int getKitSize();
-    public abstract int getMsbAddressIndex();
-    public abstract String getNameToDisplay();
-    @Override
-    public final boolean equals(Object obj) {
-        return getNameToDisplay().equals(((TdInfo)obj).getNameToDisplay());
-    }
-    @Override
-    public final int hashCode() {
-        return getNameToDisplay().hashCode();
-    }
-    @Override
-    public final String toString() {
-        return getNameToDisplay();
-    }
+public interface ConnectionListener {
+    public void connected(ConnectionEvent connectionEvent);
+    public void disconnected();
+
 }

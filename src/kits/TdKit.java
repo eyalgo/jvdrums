@@ -131,4 +131,5 @@ public abstract class TdKit {
             throws InvalidMidiDataException;
 
     protected abstract TdKit getNewKit(TdSubPart[] newSubParts);
+    public abstract String getTdInfoName();
 }

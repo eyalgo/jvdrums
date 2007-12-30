@@ -28,30 +28,33 @@
 
 package midi;
 
+import java.util.Vector;
+
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.SysexMessage;
 
-import ui.MainFrame;
-
-import exceptions.NotRolandException;
-import exceptions.UnsupportedModuleException;
-import exceptions.VdrumException;
-
 import kits.info.Td12Info;
 import kits.info.Td6Info;
 import kits.info.TdInfo;
+import ui.event.ConnectionEvent;
+import ui.event.ConnectionListener;
+import exceptions.NotRolandException;
+import exceptions.UnsupportedModuleException;
+import exceptions.VdrumException;
 
 /**
  * @author Limor Eyal
  *
  */
 final class DeviceIdentityReceiver implements Receiver {
-    MainFrame mainFrame;
-    BulkReciever reciever;
-    DeviceIdentityReceiver(MainFrame mainFrame, BulkReciever reciever) {
-        this.mainFrame = mainFrame;
-        this.reciever = reciever;
+    private final Vector<ConnectionListener> connectionListeners;
+    DeviceIdentityReceiver() {
+        connectionListeners = new Vector<ConnectionListener>();
+    }
+    
+    void addConnectionListener(ConnectionListener connectionListener) {
+        connectionListeners.add(connectionListener);
     }
 
     @Override
@@ -63,15 +66,20 @@ final class DeviceIdentityReceiver implements Receiver {
         if (midiMessage instanceof SysexMessage) {
             try {
                 TdInfo tdInfo = getTdInfoByMessage(midiMessage);
-                mainFrame.setTdIdInfo(tdInfo);
-                reciever.connected(tdInfo);
+                fireConnectionEvent(tdInfo);
             }
             catch (VdrumException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
 
+    }
+
+    private void fireConnectionEvent(TdInfo tdInfo) {
+        ConnectionEvent connEvent = new ConnectionEvent(tdInfo);
+        for (ConnectionListener connectionListener : connectionListeners) {
+            connectionListener.connected(connEvent);
+        }
     }
 
     private TdInfo getTdInfoByMessage(MidiMessage midiMessage) throws VdrumException {
