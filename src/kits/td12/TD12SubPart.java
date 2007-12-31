@@ -54,7 +54,7 @@ public final class TD12SubPart extends TdSubPart {
         createData(kitRawData, from, to);
     }
 
-    TD12SubPart(final TdSubPart origtRawData, final int kitId, int msbAddressIndex)
+    public TD12SubPart(final TdSubPart origtRawData, final int kitId, int msbAddressIndex)
             throws InvalidMidiDataException {
         super(ID_ADDRESS_INDEX, msbAddressIndex);
         copyConstructor(origtRawData, kitId);

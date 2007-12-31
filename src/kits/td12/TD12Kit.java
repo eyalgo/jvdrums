@@ -45,9 +45,6 @@ public final class TD12Kit extends TdKit {
     }
 
     public TD12Kit(byte[] rawData) throws InvalidMidiDataException, VdrumException {
-        // super(Td12Info.NUMBER_OF_SUB_PARTS, Td12Info.NAME_MAX_LENGTH,
-        // Td12Info.SART_NAME_INDEX,
-        // Td12Info.MAX_NUMBER_OF_KITS);
         super(new Td12Info());
         if (rawData.length != tdInfo.getKitSize()) {
             throw new BadMessageLengthException(rawData.length);
@@ -60,33 +57,13 @@ public final class TD12Kit extends TdKit {
         id = setImutableId();
     }
 
-    private TD12Kit(TdSubPart[] subParts) {
-        super(/*
-                 * Td12Info.NUMBER_OF_SUB_PARTS, Td12Info.NAME_MAX_LENGTH,
-                 * Td12Info.SART_NAME_INDEX, Td12Info.MAX_NUMBER_OF_KITS,
-                 */new Td12Info(), subParts);
+    public TD12Kit(TdSubPart[] subParts) {
+        super(new Td12Info(), subParts);
         id = setImutableId();
     }
 
     @Override
     public int getId() {
         return this.id;
-    }
-
-    @Override
-    protected TdSubPart getNewSubPart(TdSubPart subPart, Integer newId)
-            throws InvalidMidiDataException {
-        return new TD12SubPart(subPart, newId, tdInfo.getMsbAddressIndex());
-    }
-
-    @Override
-    protected TdKit getNewKit(TdSubPart[] newSubParts) {
-        TdKit newTd12Kit = new TD12Kit(newSubParts);
-        return newTd12Kit;
-    }
-
-    @Override
-    public String getTdInfoName() {
-        return tdInfo.getNameToDisplay();
     }
 }

@@ -43,9 +43,11 @@ import exceptions.VdrumException;
 public final class TD6Kit extends TdKit {
     private final int id;
 
+    public TD6Kit(SysexMessage sysexMessage) throws InvalidMidiDataException, VdrumException {
+        this(sysexMessage.getMessage());
+    }
+
     public TD6Kit(byte[] rawData) throws InvalidMidiDataException, VdrumException {
-        // super(Td6Info.NUMBER_OF_SUB_PARTS, Td6Info.NAME_MAX_LENGTH, Td6Info.SART_NAME_INDEX,
-        // Td6Info.MAX_NUMBER_OF_KITS);
         super(new Td6Info());
         if (rawData.length != tdInfo.getKitSize()) {
             throw new BadMessageLengthException(rawData.length);
@@ -58,37 +60,13 @@ public final class TD6Kit extends TdKit {
         id = setImutableId();
     }
 
-    private TD6Kit(TdSubPart[] subParts) {
-        super(/*
-                 * Td6Info.NUMBER_OF_SUB_PARTS, Td6Info.NAME_MAX_LENGTH,
-                 * Td6Info.SART_NAME_INDEX, Td6Info.MAX_NUMBER_OF_KITS
-                 */new Td6Info(), subParts);
+    public TD6Kit(TdSubPart[] subParts) {
+        super(new Td6Info(), subParts);
         id = setImutableId();
-    }
-
-    public TD6Kit(SysexMessage sysexMessage) throws InvalidMidiDataException, VdrumException {
-        this(sysexMessage.getMessage());
     }
 
     @Override
     public int getId() {
         return this.id;
-    }
-
-    @Override
-    protected TdKit getNewKit(TdSubPart[] newSubParts) {
-        TdKit newTd6Kit = new TD6Kit(newSubParts);
-        return newTd6Kit;
-    }
-
-    @Override
-    protected TdSubPart getNewSubPart(TdSubPart subPart, Integer newId)
-            throws InvalidMidiDataException {
-        return new TD6SubPart(subPart, newId, tdInfo.getMsbAddressIndex());
-    }
-
-    @Override
-    public String getTdInfoName() {
-        return tdInfo.getNameToDisplay();
     }
 }

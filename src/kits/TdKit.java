@@ -10,26 +10,13 @@ import org.apache.commons.lang.StringUtils;
 
 public abstract class TdKit {
     protected final TdInfo tdInfo; 
-//    private final int numberOfSubParts;
-//    private final int nameMaxLength;
-//    private final int starNameIndex;
-//    private final int maxNumberOfKits;
     protected TdSubPart[] subParts;
 
     protected TdKit(TdInfo tdInfo) {
         this.tdInfo = tdInfo;
     }
-//    protected TdKit(int numberOfSubParts, int nameMaxLength, int starNameIndex,
-//            int maxNumberOfKits) {
-//        this.numberOfSubParts = numberOfSubParts;
-//        this.nameMaxLength = nameMaxLength;
-//        this.starNameIndex = starNameIndex;
-//        this.maxNumberOfKits = maxNumberOfKits;
-//    }
 
-    public TdKit(/*int numberOfSubParts, int nameMaxLength, int starNameIndex,
-            int maxNumberOfKits,*/ TdInfo tdInfo, TdSubPart[] subParts) {
-//        this(numberOfSubParts, nameMaxLength, starNameIndex, maxNumberOfKits);
+    public TdKit(TdInfo tdInfo, TdSubPart[] subParts) {
         this(tdInfo);
         this.subParts = subParts;
     }
@@ -41,7 +28,7 @@ public abstract class TdKit {
         
         final TdSubPart[] newSubParts = new TdSubPart[tdInfo.getNumberOfSubParts()];
         for (int i = 0; i < newSubParts.length; i++) {
-            newSubParts[i] = getNewSubPart(subParts[i], newId);
+            newSubParts[i] = tdInfo.getNewSubPart(subParts[i], newId);
         }
         final TdKit newKit = getNewKit(newSubParts);
         return newKit;
@@ -134,9 +121,14 @@ public abstract class TdKit {
 
     public abstract int getId();
 
-    protected abstract TdSubPart getNewSubPart(TdSubPart part, Integer newId)
-            throws InvalidMidiDataException;
+//    protected abstract TdSubPart getNewSubPart(TdSubPart part, Integer newId)
+//            throws InvalidMidiDataException;
 
-    protected abstract TdKit getNewKit(TdSubPart[] newSubParts);
-    public abstract String getTdInfoName();
+    protected final TdKit getNewKit(TdSubPart[] newSubParts) {
+        return tdInfo.getNewKit(newSubParts);
+    }
+
+    public final String getTdInfoName() {
+        return tdInfo.getNameToDisplay();
+    }
 }

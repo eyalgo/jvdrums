@@ -31,6 +31,7 @@ package kits.info;
 import javax.sound.midi.InvalidMidiDataException;
 
 import kits.TdKit;
+import kits.TdSubPart;
 import exceptions.VdrumException;
 
 /**
@@ -120,4 +121,9 @@ public abstract class TdInfo {
 
     public abstract TdKit getKit(byte[] kitBytes) throws InvalidMidiDataException,
             VdrumException;
+
+    public abstract TdKit getNewKit(TdSubPart[] newSubParts);
+
+    public abstract TdSubPart getNewSubPart(TdSubPart subPart, Integer newId)
+            throws InvalidMidiDataException;
 }

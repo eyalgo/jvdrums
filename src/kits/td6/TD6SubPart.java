@@ -69,7 +69,7 @@ public final class TD6SubPart extends TdSubPart {
      * @param origtRawData
      * @throws InvalidMidiDataException
      */
-    TD6SubPart(final TdSubPart origtRawData, final int kitId, int msbAddressIndex)
+    public TD6SubPart(final TdSubPart origtRawData, final int kitId, int msbAddressIndex)
             throws InvalidMidiDataException {
         super(ID_ADDRESS_INDEX, msbAddressIndex);
         copyConstructor(origtRawData, kitId);
