@@ -119,10 +119,14 @@ public abstract class TdInfo {
         return getNameToDisplay();
     }
 
-    public abstract TdKit getKit(byte[] kitBytes) throws InvalidMidiDataException,
-            VdrumException;
+    public final TdKit getKit(byte[] kitBytes) throws InvalidMidiDataException,
+            VdrumException {
+        return new TdKit(this, kitBytes);
+    }
 
-    public abstract TdKit getNewKit(TdSubPart[] newSubParts);
+    public final TdKit getNewKit(TdSubPart[] newSubParts) {
+        return new TdKit(this, newSubParts);
+    }
 
     public final TdSubPart getNewSubPart(TdSubPart subPart, Integer newId)
             throws InvalidMidiDataException {

@@ -28,11 +28,6 @@
 
 package kits.info;
 
-import javax.sound.midi.InvalidMidiDataException;
-
-import kits.TdKit;
-import kits.TdSubPart;
-import exceptions.VdrumException;
 
 /**
  * @author egolan
@@ -51,15 +46,5 @@ public final class Td12Info extends TdInfo {
         super(NAME, START_NAME_INDEX, NAME_MAX_LENGTH, NUMBER_OF_SUB_PARTS,
                 MAX_NUMBER_OF_KITS, MSB_ADDRESS_INDEX, MSB_ADDRESS_VALUE, KIT_SIZE,
                 MSB_ADDRESS_INDEX + 1, MSB_ADDRESS_INDEX + 2);
-    }
-
-    @Override
-    public TdKit getKit(byte[] kitBytes) throws InvalidMidiDataException, VdrumException {
-        return new TdKit(this, kitBytes);
-    }
-
-    @Override
-    public TdKit getNewKit(TdSubPart[] newSubParts) {
-        return new TdKit(this, newSubParts);
     }
 }
