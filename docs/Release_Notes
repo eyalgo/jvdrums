@@ -37,3 +37,7 @@ known bugs:
 - some information in the status bar is not displayed yet
 
 * Soon: TD-10 support
+
+* disconnect button works
+* resending (after stopping) works
+* statusbar shows information while receiving message

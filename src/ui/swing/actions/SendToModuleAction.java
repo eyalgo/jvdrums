@@ -97,7 +97,7 @@ public final class SendToModuleAction extends BaseAction implements ListDataList
         Thread worker = new Thread() {
             @Override
             public void run() {
-                mainFrame.operationStart(sendMessage, Color.RED);
+                mainFrame.putTextInStatusBar(sendMessage, Color.RED);
                 for (final TdKit kit : actualKits) {
                     mainFrame.addInfo("Sending: " + kit.getName() + " to slot number "
                             + kit.getId());
@@ -135,5 +135,4 @@ public final class SendToModuleAction extends BaseAction implements ListDataList
     public void intervalRemoved(ListDataEvent e) {
     // Unimplemented
     }
-
 }

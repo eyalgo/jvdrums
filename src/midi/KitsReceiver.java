@@ -28,6 +28,8 @@
 
 package midi;
 
+import java.awt.Color;
+
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
@@ -40,38 +42,61 @@ import managers.TDManager;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import ui.MainFrame;
 import ui.panels.KitPanelInput;
+import bias.Configuration;
 import exceptions.VdrumException;
 
 /**
  * @author Limor Eyal
  */
 final class KitsReceiver implements Receiver {
+    private static Configuration config = Configuration.getRoot().get(KitsReceiver.class);
     private TdInfo tdInfo;
     private byte[] receivedBytes = null;
     private KitPanelInput inputPanel;
+    private final MainFrame mainFrame;
+    private String receivingMessage;
+    private String kitReceivedMessage;
 
-    public KitsReceiver() {
+    KitsReceiver(MainFrame mainFrame) {
         receivedBytes = null;
+        this.mainFrame = mainFrame;
+        config.read(this);
     }
 
     @Override
-    public void close() {
-    }
+    public void close() {}
 
     @Override
     public void send(MidiMessage midiMessage, long timeStamp) {
         if (midiMessage instanceof SysexMessage) {
             byte[] message = ((SysexMessage) midiMessage).getMessage();
-//            if (message[tdInfo.getSubPartIndex()] == 0) {
-//                receivedBytes = null;
-//            }
+            boolean isFirstPart = ((message[tdInfo.getSubPartIndex()] & 0xFF) == 0);
+            boolean isLastPart = ((message[tdInfo.getSubPartIndex()] & 0xFF) == tdInfo
+                    .getNumberOfSubParts() - 1);
+            Color color = Color.GREEN;
+            if (isLastPart) {
+                color = Color.BLUE;
+            }
+            // if (isFirstPart) {
+            // receivedBytes = null;
+            // }
+            StringBuilder strBuilder = new StringBuilder();
+            if (isLastPart) {
+
+            } else {
+                strBuilder.append(receivingMessage).append(" ");
+                strBuilder.append(message[tdInfo.getSubPartIndex()] & 0xFF + 1);
+                mainFrame.putTextInStatusBar(strBuilder.toString(), color);
+            }
             receivedBytes = ArrayUtils.addAll(receivedBytes, message);
-            
-//            System.out.println(receivedBytes.length);
+
             if (receivedBytes.length == tdInfo.getKitSize()) {
                 try {
                     final TdKit kit = TDManager.bytesToOneKit(receivedBytes);
+                    strBuilder.append(kitReceivedMessage).append(" ").append(kit.getName());
+                    mainFrame.putTextInStatusBar(strBuilder.toString(), color);
                     addToPanel(kit);
                     receivedBytes = null;
                 }
@@ -102,7 +127,6 @@ final class KitsReceiver implements Receiver {
 
     void setTdIdInfo(TdInfo tdInfo) {
         this.tdInfo = tdInfo;
-        System.out.println("Setting TdInfo " + tdInfo + " kit size= " + tdInfo.getKitSize());
     }
 
     void setKitPanelInput(KitPanelInput inputPanel) {

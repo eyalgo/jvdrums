@@ -33,6 +33,7 @@ import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Transmitter;
 
+import ui.MainFrame;
 import ui.event.ConnectionEvent;
 import ui.event.ConnectionListener;
 import ui.panels.KitPanelInput;
@@ -47,8 +48,8 @@ final class BulkReciever implements ConnectionListener {
     private Transmitter deviceTransmitter = null;
     private DeviceIdentityReceiver idRequestReceivwer;
     private KitsReceiver kitsReceiver;
-    BulkReciever() {
-        kitsReceiver = new KitsReceiver();
+    BulkReciever(MainFrame mainFrame) {
+        kitsReceiver = new KitsReceiver(mainFrame);
         idRequestReceivwer = new DeviceIdentityReceiver();
         idRequestReceivwer.addConnectionListener(this);
     }

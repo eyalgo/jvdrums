@@ -48,6 +48,7 @@ import javax.swing.border.BevelBorder;
 
 import kits.info.Td6Info;
 import midi.MidiHandler;
+import ui.event.ConnectionEvent;
 import ui.event.ConnectionListener;
 import ui.panels.KitPanelInput;
 import ui.panels.KitPanelOutput;
@@ -66,7 +67,7 @@ import exceptions.VdrumException;
 /**
  * @author Eyal Golan
  */
-public final class MainFrame extends JFrame {
+public final class MainFrame extends JFrame implements ConnectionListener {
     private static final long serialVersionUID = -7164597771180443878L;
     private static Configuration config = Configuration.getRoot().get(MainFrame.class);
     private final MidiHandler midiHandler;
@@ -78,7 +79,8 @@ public final class MainFrame extends JFrame {
     public MainFrame() {
         super();
         config.read(this);
-        midiHandler = new MidiHandler();
+        midiHandler = new MidiHandler(this);
+        midiHandler.addConnectionListener(this);
         infoText = new MultiLineLabel(10, 70);
         infoText.setBackground(new JTextArea().getBackground());
         statusBar = new StatusBar();
@@ -101,8 +103,6 @@ public final class MainFrame extends JFrame {
         config.get("helpMenu").read(helpMenu);
         JMenu configurationMenu = new JMenu();
         config.get("configurationMenu").read(configurationMenu);
-//        JMenu editMenu = new JMenu();
-//        config.get("editMenu").read(editMenu);
 
         jSplitPane1.setResizeWeight(0.5);
         jSplitPane1.setAlignmentX(0.5f);
@@ -132,7 +132,6 @@ public final class MainFrame extends JFrame {
         helpMenu.add(new AboutAction(this));
         jMenuBar1.add(fileMenu);
         jMenuBar1.add(configurationMenu);
-//        jMenuBar1.add(editMenu);
         jMenuBar1.add(helpMenu);
         setJMenuBar(jMenuBar1);
 
@@ -168,7 +167,7 @@ public final class MainFrame extends JFrame {
         infoText.append(System.getProperty("line.separator"));
     }
 
-    public void operationStart(String message, Color color) {
+    public void putTextInStatusBar(String message, Color color) {
         setEnabled(false);
         statusBar.setForeground(color);
         statusBar.setText(message);
@@ -188,7 +187,7 @@ public final class MainFrame extends JFrame {
             setMessage(" ");
         }
 
-        public void setMessage(String message) {
+        private void setMessage(String message) {
             setText(" " + message);
         }
     }
@@ -196,8 +195,14 @@ public final class MainFrame extends JFrame {
     public void addConnectionListener(ConnectionListener connectionListener) {
         midiHandler.addConnectionListener(connectionListener);
     }
-    
+
     public MidiHandler getMidiHandler() {
         return this.midiHandler;
     }
+
+    public void connected(ConnectionEvent connectionEvent) {
+        putTextInStatusBar(connectionEvent.getTdInfo().getNameToDisplay(), Color.DARK_GRAY);
+    }
+
+    public void disconnected() {}
 }
