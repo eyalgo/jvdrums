@@ -111,7 +111,7 @@ public final class TestTD10Manager {
 
     public void checkMessageFor50Kits() throws URISyntaxException, IOException,
             InvalidMidiDataException, VdrumException {
-        final SysexMessage message = getMessageFromFile("td10.syx");
+        final SysexMessage message = getMessageFromFile("td10_no15.syx");
         TdKit[] kitsFromManager = TDManager.sysexMessageToKits(message);
         if (kitsFromManager.length != 50) {
             Assert.fail("Got " + kitsFromManager.length + " instead of 50");

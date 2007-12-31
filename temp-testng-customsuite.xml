@@ -1,21 +1,8 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="JVDrums by groups">
-  <test verbose="2" name="G:kits6,manager6,exception12,manager12,kits12" annotations="JDK">
-    <groups>
-      <run>
-        <include name="kits6"/>
-        <include name="manager6"/>
-        <include name="exception12"/>
-        <include name="manager12"/>
-        <include name="kits12"/>
-      </run>
-    </groups>
+<suite name="JVDrums">
+  <test verbose="2" name="utils.TestVDrumsUtils" annotations="JDK">
     <classes>
-      <class name="managers.TestTD12Manager"/>
-      <class name="kits.td12.TestErrorsKit12"/>
-      <class name="kits.td6.TestKit6"/>
-      <class name="managers.TestTD6Manager"/>
-      <class name="kits.td12.TestKit12"/>
+      <class name="utils.TestVDrumsUtils"/>
     </classes>
   </test>
 </suite>

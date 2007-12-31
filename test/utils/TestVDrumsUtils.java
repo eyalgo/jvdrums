@@ -26,7 +26,22 @@ public class TestVDrumsUtils {
         catch (IOException e) {
             Assert.fail(e.getMessage());
         }
+    }
 
+    @Test(groups = { "functest", "checkintest" })
+    public void checkCalculateChecksumTd10904() throws URISyntaxException {
+        final File file = UtilsForTests.getFile("td10_grt_28.syx");
+        try {
+            final byte[] fileBytes = FileUtils.readFileToByteArray(file);
+            final int calculatedChecksum = calculateChecksum(Arrays.copyOfRange(fileBytes,
+                    770, 902));
+            final int actChecksum = fileBytes[902];
+            Assert.assertTrue(calculatedChecksum == actChecksum, "calculatedChecksum="
+                    + calculatedChecksum + " actChecksum=" + actChecksum);
+        }
+        catch (IOException e) {
+            Assert.fail(e.getMessage());
+        }
     }
 
     @Test(groups = { "functest", "checkintest" })
