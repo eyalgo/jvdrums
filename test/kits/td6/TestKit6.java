@@ -36,6 +36,7 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
 
 import kits.TdKit;
+import kits.info.Td6Info;
 
 import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
@@ -58,7 +59,7 @@ public final class TestKit6 {
             VdrumException {
         final File file1 = UtilsForTests.getFile("td6Saz97.syx");
         byte[] kitBytes1 = FileUtils.readFileToByteArray(file1);
-        kitSaz97 = new TD6Kit(kitBytes1);
+        kitSaz97 = new TdKit(new Td6Info(), kitBytes1);
         kit1SysexMessage = new SysexMessage();
         kit1SysexMessage.setMessage(kitBytes1, kitBytes1.length);
     }
@@ -67,12 +68,12 @@ public final class TestKit6 {
             InvalidMidiDataException, VdrumException {
         final File file1 = UtilsForTests.getFile("td6Saz97.syx");
         byte[] kitBytes1 = FileUtils.readFileToByteArray(file1);
-        TdKit kitRaw = new TD6Kit(kitBytes1);
+        TdKit kitRaw = new TdKit(new Td6Info(), kitBytes1);
 
         SysexMessage message = new SysexMessage();
         message.setMessage(kitBytes1, kitBytes1.length);
 
-        TdKit kitMessage = new TD6Kit(message);
+        TdKit kitMessage = new TdKit(new Td6Info(), message);
         Assert.assertEquals(kitMessage, kitRaw);
 
         Assert.assertTrue(kitRaw.getId() == 97, "TD6Kit-Raw 97 with id " + kitRaw.getId());
@@ -124,7 +125,7 @@ public final class TestKit6 {
         TdKit kitSaz6 = kitSaz97.setNewId(6);
         File fileSaz6 = UtilsForTests.getFile("td6Saz6.syx");
         byte[] saz6Bytes = FileUtils.readFileToByteArray(fileSaz6);
-        TdKit fileKitSaz6 = new TD6Kit(saz6Bytes);
+        TdKit fileKitSaz6 = new TdKit(new Td6Info(), saz6Bytes);
         Assert.assertEquals(kitSaz6, fileKitSaz6);
         Assert.assertTrue(kitSaz6.hashCode() == fileKitSaz6.hashCode(),
                 "kitMaple4.hashCode=" + kitSaz6.hashCode() + " fileKitMaple4.hashCode="

@@ -14,18 +14,26 @@ import org.apache.commons.lang.StringUtils;
 import exceptions.BadChecksumException;
 import exceptions.BadMessageLengthException;
 import exceptions.NotRolandException;
+import exceptions.VdrumException;
 
-public abstract class TdKit {
-    protected final TdInfo tdInfo; 
+public final class TdKit {
+    protected final TdInfo tdInfo;
     protected TdSubPart[] subParts;
+    private final int id;
 
-    protected TdKit(TdInfo tdInfo, byte[] rawData) throws BadMessageLengthException, BadChecksumException, NotRolandException, InvalidMidiDataException {
+    public TdKit(TdInfo tdInfo, SysexMessage sysexMessage) throws InvalidMidiDataException,
+            VdrumException {
+        this(tdInfo, sysexMessage.getMessage());
+    }
+
+    public TdKit(TdInfo tdInfo, byte[] rawData) throws BadMessageLengthException,
+            BadChecksumException, NotRolandException, InvalidMidiDataException {
         this.tdInfo = tdInfo;
         if (rawData.length != tdInfo.getKitSize()) {
             throw new BadMessageLengthException(rawData.length);
         }
         subParts = new TdSubPart[tdInfo.getNumberOfSubParts()];
-        
+
         final List<Integer> indexes = new ArrayList<Integer>();
         for (int i = 0; i < rawData.length; i++) {
             if ((rawData[i] & 0xFF) == 240) {
@@ -39,28 +47,30 @@ public abstract class TdKit {
                 if (i == (subParts.length - 1)) {
                     to = rawData.length;
                 } else {
-                   to =  indexes.get(i+1);
+                    to = indexes.get(i + 1);
                 }
                 final byte[] partRawData = ArrayUtils.subarray(rawData, from, to);
                 subParts[i] = new TdSubPart(partRawData, tdInfo);
             }
-            
+
         }
         catch (RuntimeException e) {
             throw new InvalidMidiDataException();
         }
+        id = setImutableId();
     }
 
     public TdKit(TdInfo tdInfo, TdSubPart[] subParts) {
         this.tdInfo = tdInfo;
         this.subParts = subParts;
+        id = setImutableId();
     }
 
     public final TdKit setNewId(Integer newId) throws InvalidMidiDataException {
         if (newId < 1 || newId > tdInfo.getMaxNumberOfKits()) {
             throw new IllegalArgumentException(" id " + newId);
         }
-        
+
         final TdSubPart[] newSubParts = new TdSubPart[tdInfo.getNumberOfSubParts()];
         for (int i = 0; i < newSubParts.length; i++) {
             newSubParts[i] = tdInfo.getNewSubPart(subParts[i], newId);
@@ -154,10 +164,9 @@ public abstract class TdKit {
         return name;
     }
 
-    public abstract int getId();
-
-//    protected abstract TdSubPart getNewSubPart(TdSubPart part, Integer newId)
-//            throws InvalidMidiDataException;
+    public int getId() {
+        return this.id;
+    }
 
     protected final TdKit getNewKit(TdSubPart[] newSubParts) {
         return tdInfo.getNewKit(newSubParts);

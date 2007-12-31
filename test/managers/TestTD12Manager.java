@@ -38,7 +38,7 @@ import javax.sound.midi.SysexMessage;
 
 import kits.TdKit;
 import kits.VdrumsSysexMessage;
-import kits.td12.TD12Kit;
+import kits.info.Td12Info;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -72,7 +72,7 @@ public final class TestTD12Manager {
     public void checkChangeId25To32() throws URISyntaxException, IOException,
             InvalidMidiDataException, VdrumException {
         final SysexMessage message = getMessageFromFile("Bubbles25.syx");
-        TdKit kitFromMessage = new TD12Kit(message);
+        TdKit kitFromMessage = new TdKit(new Td12Info(),message);
         TdKit[] kits = new TdKit[50];
         for (int i = 0; i < 50; i++) {
             kits[i] = null;
@@ -81,7 +81,7 @@ public final class TestTD12Manager {
 
         SysexMessage messageFromManager = TDManager.kitsToSysexMessage(kits);
 
-        TdKit newKitFromManager = new TD12Kit(messageFromManager);
+        TdKit newKitFromManager = new TdKit(new Td12Info(),messageFromManager);
         Assert.assertTrue(newKitFromManager.getId() == 32);
         Assert.assertTrue(kitFromMessage.getId() == 25);
     }
@@ -161,7 +161,7 @@ public final class TestTD12Manager {
         }
         final File file25 = UtilsForTests.getFile("Bubbles25.syx");
         byte[] kitBytes25 = FileUtils.readFileToByteArray(file25);
-        TdKit kit25 = new TD12Kit(kitBytes25);
+        TdKit kit25 = new TdKit(new Td12Info(),kitBytes25);
         Assert.assertEquals(kitsFromManager[24], kit25);
     }
 
@@ -179,7 +179,7 @@ public final class TestTD12Manager {
         }
         final File file25 = UtilsForTests.getFile("Bubbles25.syx");
         byte[] kitBytes25 = FileUtils.readFileToByteArray(file25);
-        TdKit kit25 = new TD12Kit(kitBytes25);
+        TdKit kit25 = new TdKit(new Td12Info(),kitBytes25);
         Assert.assertEquals(kitsFromManager[24], kit25);
     }
 

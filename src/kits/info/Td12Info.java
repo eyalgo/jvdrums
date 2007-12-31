@@ -32,7 +32,6 @@ import javax.sound.midi.InvalidMidiDataException;
 
 import kits.TdKit;
 import kits.TdSubPart;
-import kits.td12.TD12Kit;
 import exceptions.VdrumException;
 
 /**
@@ -56,11 +55,11 @@ public final class Td12Info extends TdInfo {
 
     @Override
     public TdKit getKit(byte[] kitBytes) throws InvalidMidiDataException, VdrumException {
-        return new TD12Kit(kitBytes);
+        return new TdKit(this, kitBytes);
     }
 
     @Override
     public TdKit getNewKit(TdSubPart[] newSubParts) {
-        return new TD12Kit(newSubParts);
+        return new TdKit(this, newSubParts);
     }
 }
