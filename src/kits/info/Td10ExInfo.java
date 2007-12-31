@@ -28,21 +28,21 @@
 
 package kits.info;
 
-
 /**
  * @author egolan
+ *
  */
-public final class Td10Info extends TdInfo {
-    private static final String NAME = "TD-10";
-    private static final int START_NAME_INDEX = 12;
-    private static final int NAME_MAX_LENGTH = 13;
-    private static final int NUMBER_OF_SUB_PARTS = 16;
+public final class Td10ExInfo extends TdInfo {
+    private static final String NAME = "TD-10 EX";
+    private static final int START_NAME_INDEX = 10;
+    private static final int NAME_MAX_LENGTH = 8;
+    private static final int NUMBER_OF_SUB_PARTS = 13;
     private final static int MAX_NUMBER_OF_KITS = 50;
-    private static final int MSB_ADDRESS_INDEX = 7;
-    private static final int MSB_ADDRESS_VALUE = 999;
-    private final static int KIT_SIZE = 2243;
+    private static final int MSB_ADDRESS_INDEX = 6;
+    private static final int MSB_ADDRESS_VALUE = 65;
+    private final static int KIT_SIZE = 906;
 
-    public Td10Info() {
+    public Td10ExInfo() {
         super(NAME, START_NAME_INDEX, NAME_MAX_LENGTH, NUMBER_OF_SUB_PARTS,
                 MAX_NUMBER_OF_KITS, MSB_ADDRESS_INDEX, MSB_ADDRESS_VALUE, KIT_SIZE,
                 MSB_ADDRESS_INDEX + 1, MSB_ADDRESS_INDEX + 2);
