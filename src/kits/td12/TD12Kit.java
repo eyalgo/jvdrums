@@ -45,22 +45,26 @@ public final class TD12Kit extends TdKit {
     }
 
     public TD12Kit(byte[] rawData) throws InvalidMidiDataException, VdrumException {
-        super(Td12Info.NUMBER_OF_SUB_PARTS, Td12Info.NAME_MAX_LENGTH, Td12Info.SART_NAME_INDEX,
-                Td12Info.MAX_NUMBER_OF_KITS);
-        if (rawData.length != Td12Info.KIT_SIZE) {
+        // super(Td12Info.NUMBER_OF_SUB_PARTS, Td12Info.NAME_MAX_LENGTH,
+        // Td12Info.SART_NAME_INDEX,
+        // Td12Info.MAX_NUMBER_OF_KITS);
+        super(new Td12Info());
+        if (rawData.length != tdInfo.getKitSize()) {
             throw new BadMessageLengthException(rawData.length);
         }
-        subParts = new TdSubPart[Td12Info.NUMBER_OF_SUB_PARTS];
+        subParts = new TdSubPart[tdInfo.getNumberOfSubParts()];
         for (int i = 0; i < subParts.length; i++) {
-            boolean lastPart = (i == (Td12Info.NUMBER_OF_SUB_PARTS - 1));
-            subParts[i] = new TD12SubPart(rawData, i, lastPart);
+            boolean lastPart = (i == (tdInfo.getNumberOfSubParts() - 1));
+            subParts[i] = new TD12SubPart(rawData, i, lastPart, tdInfo.getMsbAddressIndex());
         }
         id = setImutableId();
     }
 
     private TD12Kit(TdSubPart[] subParts) {
-        super(Td12Info.NUMBER_OF_SUB_PARTS, Td12Info.NAME_MAX_LENGTH, Td12Info.SART_NAME_INDEX,
-                Td12Info.MAX_NUMBER_OF_KITS, subParts);
+        super(/*
+                 * Td12Info.NUMBER_OF_SUB_PARTS, Td12Info.NAME_MAX_LENGTH,
+                 * Td12Info.SART_NAME_INDEX, Td12Info.MAX_NUMBER_OF_KITS,
+                 */new Td12Info(), subParts);
         id = setImutableId();
     }
 
@@ -72,7 +76,7 @@ public final class TD12Kit extends TdKit {
     @Override
     protected TdSubPart getNewSubPart(TdSubPart subPart, Integer newId)
             throws InvalidMidiDataException {
-        return new TD12SubPart(subPart, newId);
+        return new TD12SubPart(subPart, newId, tdInfo.getMsbAddressIndex());
     }
 
     @Override
@@ -83,6 +87,6 @@ public final class TD12Kit extends TdKit {
 
     @Override
     public String getTdInfoName() {
-        return Td12Info.NAME;
+        return tdInfo.getNameToDisplay();
     }
 }

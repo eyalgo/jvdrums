@@ -34,6 +34,9 @@ import java.net.URISyntaxException;
 
 import javax.sound.midi.InvalidMidiDataException;
 
+import kits.info.Td12Info;
+import kits.info.Td6Info;
+
 import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -58,7 +61,7 @@ public final class TestFactoryKits {
     public void checkKitTd12() throws URISyntaxException, IOException, InvalidMidiDataException, VdrumException {
         byte[] kitBytes = getFileBytes("airtime20.syx");
         TDModulesManager kit = FactoryKits.getTdModuleManager(kitBytes);
-        Assert.assertTrue(kit instanceof TD12Manager);
+        Assert.assertTrue(kit.getTdInfo() instanceof Td12Info);
     }
     
     @Test(expectedExceptions = UnsupportedModuleException.class)
@@ -76,6 +79,6 @@ public final class TestFactoryKits {
     public void checkKitTd6() throws URISyntaxException, IOException, InvalidMidiDataException, VdrumException {
         byte[] kitBytes = getFileBytes("td6.syx");
         TDModulesManager kit = FactoryKits.getTdModuleManager(kitBytes);
-        Assert.assertTrue(kit instanceof TD6Manager);
+        Assert.assertTrue(kit.getTdInfo() instanceof Td6Info);
     }
 }

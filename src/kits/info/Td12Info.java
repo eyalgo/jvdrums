@@ -28,61 +28,33 @@
 
 package kits.info;
 
+import javax.sound.midi.InvalidMidiDataException;
+
+import kits.TdKit;
+import kits.td12.TD12Kit;
+import exceptions.VdrumException;
 
 /**
  * @author egolan
  */
 public final class Td12Info extends TdInfo {
-    public static final String NAME = "TD-12";
-    public static final int SART_NAME_INDEX = 12;
-    public static final int NAME_MAX_LENGTH = 13;
-    public static final int NUMBER_OF_SUB_PARTS = 16;
-    public final static int MAX_NUMBER_OF_KITS = 50;
-    public static final int MSB_ADDRESS_INDEX = 7;
-    public final static int KIT_SIZE = 2243;
+    private static final String NAME = "TD-12";
+    private static final int START_NAME_INDEX = 12;
+    private static final int NAME_MAX_LENGTH = 13;
+    private static final int NUMBER_OF_SUB_PARTS = 16;
+    private static final int MAX_NUMBER_OF_KITS = 50;
+    private static final int MSB_ADDRESS_INDEX = 7;
+    private static final int MSB_ADDRESS_VALUE = 114;
+    private static final int KIT_SIZE = 2243;
 
-    @Override
-    public int getMaxLength() {
-        return NAME_MAX_LENGTH;
+    public Td12Info() {
+        super(NAME, START_NAME_INDEX, NAME_MAX_LENGTH, NUMBER_OF_SUB_PARTS,
+                MAX_NUMBER_OF_KITS, MSB_ADDRESS_INDEX, MSB_ADDRESS_VALUE, KIT_SIZE,
+                MSB_ADDRESS_INDEX + 1, MSB_ADDRESS_INDEX + 2);
     }
 
     @Override
-    public int getNumberOfSubParts() {
-        return NUMBER_OF_SUB_PARTS;
-    }
-
-    @Override
-    public int getStartNameIndex() {
-        return SART_NAME_INDEX;
-    }
-
-    @Override
-    public int getMaxNumberOfKits() {
-        return MAX_NUMBER_OF_KITS;
-    }
-
-    @Override
-    public int getKitSize() {
-        return KIT_SIZE;
-    }
-
-    @Override
-    public int getMsbAddressIndex() {
-        return MSB_ADDRESS_INDEX;
-    }
-
-    @Override
-    public String getNameToDisplay() {
-        return NAME;
-    }
-
-    @Override
-    public int getKitIdIndex() {
-        return MSB_ADDRESS_INDEX+1;
-    }
-
-    @Override
-    public int getSubPartIndex() {
-        return MSB_ADDRESS_INDEX+2;
+    public TdKit getKit(byte[] kitBytes) throws InvalidMidiDataException, VdrumException {
+        return new TD12Kit(kitBytes);
     }
 }

@@ -31,7 +31,6 @@ package kits.td6;
 import javax.sound.midi.InvalidMidiDataException;
 
 import kits.TdSubPart;
-import kits.info.Td6Info;
 import exceptions.VdrumException;
 
 /**
@@ -42,9 +41,9 @@ public final class TD6SubPart extends TdSubPart {
     private static final int SIZE_FIRST_SUB_PART = 37;
     public static final int ID_ADDRESS_INDEX = 7;
 
-    public TD6SubPart(final byte[] kitRawData, final int location, final boolean firstPart)
-            throws InvalidMidiDataException, VdrumException {
-        super(ID_ADDRESS_INDEX, Td6Info.MSB_ADDRESS_INDEX);
+    public TD6SubPart(final byte[] kitRawData, final int location, final boolean firstPart,
+            int msbAddressIndex) throws InvalidMidiDataException, VdrumException {
+        super(ID_ADDRESS_INDEX, msbAddressIndex);
         int size;
         if (firstPart) {
             size = SIZE_FIRST_SUB_PART;
@@ -70,8 +69,9 @@ public final class TD6SubPart extends TdSubPart {
      * @param origtRawData
      * @throws InvalidMidiDataException
      */
-    TD6SubPart(final TdSubPart origtRawData, final int kitId) throws InvalidMidiDataException {
-        super(ID_ADDRESS_INDEX, Td6Info.MSB_ADDRESS_INDEX);
+    TD6SubPart(final TdSubPart origtRawData, final int kitId, int msbAddressIndex)
+            throws InvalidMidiDataException {
+        super(ID_ADDRESS_INDEX, msbAddressIndex);
         copyConstructor(origtRawData, kitId);
     }
 }

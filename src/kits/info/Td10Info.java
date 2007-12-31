@@ -26,57 +26,35 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package managers;
-
-import java.util.ArrayList;
-import java.util.Collection;
+package kits.info;
 
 import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.SysexMessage;
 
 import kits.TdKit;
-import kits.info.Td6Info;
-import kits.td6.TD6Kit;
-
-import org.apache.commons.lang.ArrayUtils;
-
 import exceptions.VdrumException;
 
 /**
  * @author egolan
  */
-final class TD6Manager implements TDModulesManager {
+public final class Td10Info extends TdInfo {
+    private static final String NAME = "TD-10";
+    private static final int START_NAME_INDEX = 12;
+    private static final int NAME_MAX_LENGTH = 13;
+    private static final int NUMBER_OF_SUB_PARTS = 16;
+    private final static int MAX_NUMBER_OF_KITS = 50;
+    private static final int MSB_ADDRESS_INDEX = 7;
+    private static final int MSB_ADDRESS_VALUE = 999;
+    private final static int KIT_SIZE = 2243;
 
-    @Override
-    public TdKit[] sysexMessageToKits(SysexMessage message) throws InvalidMidiDataException,
-            VdrumException {
-        final byte[] byteMessage = message.getMessage();
-        final Collection<Integer> indexes = new ArrayList<Integer>();
-        for (int i = 0; i < byteMessage.length; i++) {
-            if (((byteMessage[i] & 0xFF) == 240)
-                    && ((byteMessage[i + Td6Info.MSB_ADDRESS_INDEX] & 0xFF) == 65)) {
-                indexes.add(Integer.valueOf(i));
-                i += Td6Info.KIT_SIZE - 20;
-            }
-        }
-        final TdKit[] tdKits;
-        tdKits = new TdKit[Td6Info.MAX_NUMBER_OF_KITS];
-        for (int i = 0; i < tdKits.length; i++) {
-            tdKits[i] = null;
-        }
-        for (Integer index : indexes) {
-            final int finishKitsMessage = index + Td6Info.KIT_SIZE;
-            final byte[] kitBytes = ArrayUtils.subarray(byteMessage, index, finishKitsMessage);
-            final TdKit tempKit = getKit(kitBytes);
-            final int kitId = tempKit.getId();
-            tdKits[kitId - 1] = tempKit;
-        }
-        return tdKits;
+    public Td10Info() {
+        super(NAME, START_NAME_INDEX, NAME_MAX_LENGTH, NUMBER_OF_SUB_PARTS,
+                MAX_NUMBER_OF_KITS, MSB_ADDRESS_INDEX, MSB_ADDRESS_VALUE, KIT_SIZE,
+                MSB_ADDRESS_INDEX + 1, MSB_ADDRESS_INDEX + 2);
     }
 
     @Override
     public TdKit getKit(byte[] kitBytes) throws InvalidMidiDataException, VdrumException {
-        return new TD6Kit(kitBytes);
+        // TODO Auto-generated method stub
+        return null;
     }
-
 }

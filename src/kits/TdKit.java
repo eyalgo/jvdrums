@@ -3,36 +3,43 @@ package kits;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
 
+import kits.info.TdInfo;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 public abstract class TdKit {
-    private final int numberOfSubParts;
-    private final int nameMaxLength;
-    private final int starNameIndex;
-    private final int maxNumberOfKits;
+    protected final TdInfo tdInfo; 
+//    private final int numberOfSubParts;
+//    private final int nameMaxLength;
+//    private final int starNameIndex;
+//    private final int maxNumberOfKits;
     protected TdSubPart[] subParts;
 
-    protected TdKit(int numberOfSubParts, int nameMaxLength, int starNameIndex,
-            int maxNumberOfKits) {
-        this.numberOfSubParts = numberOfSubParts;
-        this.nameMaxLength = nameMaxLength;
-        this.starNameIndex = starNameIndex;
-        this.maxNumberOfKits = maxNumberOfKits;
+    protected TdKit(TdInfo tdInfo) {
+        this.tdInfo = tdInfo;
     }
+//    protected TdKit(int numberOfSubParts, int nameMaxLength, int starNameIndex,
+//            int maxNumberOfKits) {
+//        this.numberOfSubParts = numberOfSubParts;
+//        this.nameMaxLength = nameMaxLength;
+//        this.starNameIndex = starNameIndex;
+//        this.maxNumberOfKits = maxNumberOfKits;
+//    }
 
-    public TdKit(int numberOfSubParts, int nameMaxLength, int starNameIndex,
-            int maxNumberOfKits, TdSubPart[] subParts) {
-        this(numberOfSubParts, nameMaxLength, starNameIndex, maxNumberOfKits);
+    public TdKit(/*int numberOfSubParts, int nameMaxLength, int starNameIndex,
+            int maxNumberOfKits,*/ TdInfo tdInfo, TdSubPart[] subParts) {
+//        this(numberOfSubParts, nameMaxLength, starNameIndex, maxNumberOfKits);
+        this(tdInfo);
         this.subParts = subParts;
     }
 
     public final TdKit setNewId(Integer newId) throws InvalidMidiDataException {
-        if (newId < 1 || newId > maxNumberOfKits) {
+        if (newId < 1 || newId > tdInfo.getMaxNumberOfKits()) {
             throw new IllegalArgumentException(" id " + newId);
         }
         
-        final TdSubPart[] newSubParts = new TdSubPart[numberOfSubParts];
+        final TdSubPart[] newSubParts = new TdSubPart[tdInfo.getNumberOfSubParts()];
         for (int i = 0; i < newSubParts.length; i++) {
             newSubParts[i] = getNewSubPart(subParts[i], newId);
         }
@@ -42,7 +49,7 @@ public abstract class TdKit {
 
     public final SysexMessage getMessage() throws InvalidMidiDataException {
         byte[] data = null;
-        for (int i = 0; i < this.numberOfSubParts; i++) {
+        for (int i = 0; i < tdInfo.getNumberOfSubParts(); i++) {
             data = ArrayUtils.addAll(data, subParts[i].getMessage());
         }
         final SysexMessage result = new VdrumsSysexMessage();
@@ -114,9 +121,9 @@ public abstract class TdKit {
 
     public final String getName() {
         final byte[] partOneData = subParts[0].getMessage();
-        final byte[] rawName = new byte[nameMaxLength];
-        for (int i = 0; i < nameMaxLength; i++) {
-            rawName[i] = partOneData[i + starNameIndex];
+        final byte[] rawName = new byte[tdInfo.getMaxLengthName()];
+        for (int i = 0; i < tdInfo.getMaxLengthName(); i++) {
+            rawName[i] = partOneData[i + tdInfo.getStartNameIndex()];
         }
         String temp = new String(rawName);
         final char nothing = 0x00;

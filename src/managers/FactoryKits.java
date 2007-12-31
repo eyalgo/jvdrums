@@ -28,6 +28,8 @@
 
 package managers;
 
+import kits.info.Td12Info;
+import kits.info.Td6Info;
 import exceptions.BadMessageLengthException;
 import exceptions.UnsupportedModuleException;
 
@@ -44,10 +46,10 @@ final class FactoryKits {
         try {
             if (((kitBytes[3] & 0xFF) == 0) && ((kitBytes[4] & 0xFF) == 0)
                     && ((kitBytes[5] & 0xFF) == 9)) {
-                return new TD12Manager();
+                return new TDModulesManager(new Td12Info());
             }
              if (((kitBytes[3] & 0xFF) == 0) && ((kitBytes[4] & 0xFF) == 63)) {
-                return new TD6Manager();
+                return new TDModulesManager(new Td6Info());
             }
             throw new UnsupportedModuleException();
         }

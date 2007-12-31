@@ -44,22 +44,25 @@ public final class TD6Kit extends TdKit {
     private final int id;
 
     public TD6Kit(byte[] rawData) throws InvalidMidiDataException, VdrumException {
-        super(Td6Info.NUMBER_OF_SUB_PARTS, Td6Info.NAME_MAX_LENGTH, Td6Info.SART_NAME_INDEX,
-                Td6Info.MAX_NUMBER_OF_KITS);
-        if (rawData.length != Td6Info.KIT_SIZE) {
+        // super(Td6Info.NUMBER_OF_SUB_PARTS, Td6Info.NAME_MAX_LENGTH, Td6Info.SART_NAME_INDEX,
+        // Td6Info.MAX_NUMBER_OF_KITS);
+        super(new Td6Info());
+        if (rawData.length != tdInfo.getKitSize()) {
             throw new BadMessageLengthException(rawData.length);
         }
-        subParts = new TdSubPart[Td6Info.NUMBER_OF_SUB_PARTS];
+        subParts = new TdSubPart[tdInfo.getNumberOfSubParts()];
         for (int i = 0; i < subParts.length; i++) {
             boolean firstPart = (i == 0);
-            subParts[i] = new TD6SubPart(rawData, i, firstPart);
+            subParts[i] = new TD6SubPart(rawData, i, firstPart, tdInfo.getMsbAddressIndex());
         }
         id = setImutableId();
     }
 
     private TD6Kit(TdSubPart[] subParts) {
-        super(Td6Info.NUMBER_OF_SUB_PARTS, Td6Info.NAME_MAX_LENGTH, Td6Info.SART_NAME_INDEX,
-                Td6Info.MAX_NUMBER_OF_KITS, subParts);
+        super(/*
+                 * Td6Info.NUMBER_OF_SUB_PARTS, Td6Info.NAME_MAX_LENGTH,
+                 * Td6Info.SART_NAME_INDEX, Td6Info.MAX_NUMBER_OF_KITS
+                 */new Td6Info(), subParts);
         id = setImutableId();
     }
 
@@ -81,11 +84,11 @@ public final class TD6Kit extends TdKit {
     @Override
     protected TdSubPart getNewSubPart(TdSubPart subPart, Integer newId)
             throws InvalidMidiDataException {
-        return new TD6SubPart(subPart, newId);
+        return new TD6SubPart(subPart, newId, tdInfo.getMsbAddressIndex());
     }
 
     @Override
     public String getTdInfoName() {
-        return Td6Info.NAME;
+        return tdInfo.getNameToDisplay();
     }
 }

@@ -28,17 +28,58 @@
 
 package managers;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import kits.TdKit;
+import kits.info.TdInfo;
 import exceptions.VdrumException;
 
 /**
  * @author egolan
  */
-public interface TDModulesManager {
-    public TdKit[] sysexMessageToKits(SysexMessage message) throws InvalidMidiDataException,
-            VdrumException;
-    public TdKit getKit(final byte[] kitBytes) throws InvalidMidiDataException, VdrumException;
+public final class TDModulesManager {
+    private final TdInfo tdInfo;
+    TDModulesManager(TdInfo tdInfo) {
+        this.tdInfo = tdInfo;
+    }
+    public final TdKit[] sysexMessageToKits(SysexMessage message) throws InvalidMidiDataException,
+            VdrumException {
+        final byte[] byteMessage = message.getMessage();
+        final Collection<Integer> indexes = new ArrayList<Integer>();
+        for (int i = 0; i < byteMessage.length; i++) {
+            if (((byteMessage[i] & 0xFF) == 240)
+                    && ((byteMessage[i + tdInfo.getMsbAddressIndex()] & 0xFF) == tdInfo
+                            .getMsbAddressValue())) {
+                indexes.add(Integer.valueOf(i));
+                i += tdInfo.getKitSize() - 20;
+            }
+        }
+        final TdKit[] tdKits;
+        tdKits = new TdKit[tdInfo.getMaxNumberOfKits()];
+        for (int i = 0; i < tdKits.length; i++) {
+            tdKits[i] = null;
+        }
+        for (Integer index : indexes) {
+            final int finishKitsMessage = index + tdInfo.getKitSize();
+            final byte[] kitBytes = ArrayUtils.subarray(byteMessage, index, finishKitsMessage);
+            final TdKit tempKit = getKit(kitBytes);
+            final int kitId = tempKit.getId();
+            tdKits[kitId - 1] = tempKit;
+        }
+        return tdKits;
+    }
+
+    public final TdKit getKit(final byte[] kitBytes) throws InvalidMidiDataException, VdrumException {
+        return tdInfo.getKit(kitBytes);
+    }
+    
+    final TdInfo getTdInfo() {
+        return this.tdInfo;
+    }
 }

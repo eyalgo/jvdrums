@@ -31,7 +31,6 @@ package kits.td12;
 import javax.sound.midi.InvalidMidiDataException;
 
 import kits.TdSubPart;
-import kits.info.Td12Info;
 import exceptions.VdrumException;
 
 public final class TD12SubPart extends TdSubPart {
@@ -41,9 +40,9 @@ public final class TD12SubPart extends TdSubPart {
     /** The F part (16th) is smaller and has only 128 bytes */
     private static final int SIZE_LAST_SUB_PART = 128;
 
-    TD12SubPart(byte[] kitRawData, final int location, boolean isLastPart)
+    TD12SubPart(byte[] kitRawData, final int location, boolean isLastPart, int msbAddressIndex)
             throws InvalidMidiDataException, VdrumException {
-        super(ID_ADDRESS_INDEX, Td12Info.MSB_ADDRESS_INDEX);
+        super(ID_ADDRESS_INDEX, msbAddressIndex);
         int size;
         if (isLastPart) {
             size = SIZE_LAST_SUB_PART;
@@ -55,9 +54,9 @@ public final class TD12SubPart extends TdSubPart {
         createData(kitRawData, from, to);
     }
 
-    TD12SubPart(final TdSubPart origtRawData, final int kitId)
+    TD12SubPart(final TdSubPart origtRawData, final int kitId, int msbAddressIndex)
             throws InvalidMidiDataException {
-        super(ID_ADDRESS_INDEX, Td12Info.MSB_ADDRESS_INDEX);
+        super(ID_ADDRESS_INDEX, msbAddressIndex);
         copyConstructor(origtRawData, kitId);
     }
 }
