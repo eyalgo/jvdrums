@@ -41,6 +41,8 @@ public abstract class TdInfo {
     public abstract int getKitSize();
     public abstract int getMsbAddressIndex();
     public abstract String getNameToDisplay();
+    public abstract int getKitIdIndex();
+    public abstract int getSubPartIndex();
     @Override
     public final boolean equals(Object obj) {
         return getNameToDisplay().equals(((TdInfo)obj).getNameToDisplay());

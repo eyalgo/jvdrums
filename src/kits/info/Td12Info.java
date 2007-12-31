@@ -75,4 +75,14 @@ public final class Td12Info extends TdInfo {
     public String getNameToDisplay() {
         return NAME;
     }
+
+    @Override
+    public int getKitIdIndex() {
+        return MSB_ADDRESS_INDEX+1;
+    }
+
+    @Override
+    public int getSubPartIndex() {
+        return MSB_ADDRESS_INDEX+2;
+    }
 }

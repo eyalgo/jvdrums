@@ -63,7 +63,11 @@ final class KitsReceiver implements Receiver {
     public void send(MidiMessage midiMessage, long timeStamp) {
         if (midiMessage instanceof SysexMessage) {
             byte[] message = ((SysexMessage) midiMessage).getMessage();
+//            if (message[tdInfo.getSubPartIndex()] == 0) {
+//                receivedBytes = null;
+//            }
             receivedBytes = ArrayUtils.addAll(receivedBytes, message);
+            
 //            System.out.println(receivedBytes.length);
             if (receivedBytes.length == tdInfo.getKitSize()) {
                 try {
