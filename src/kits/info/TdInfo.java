@@ -124,6 +124,8 @@ public abstract class TdInfo {
 
     public abstract TdKit getNewKit(TdSubPart[] newSubParts);
 
-    public abstract TdSubPart getNewSubPart(TdSubPart subPart, Integer newId)
-            throws InvalidMidiDataException;
+    public final TdSubPart getNewSubPart(TdSubPart subPart, Integer newId)
+            throws InvalidMidiDataException {
+        return new TdSubPart(subPart, newId, this);
+    }
 }

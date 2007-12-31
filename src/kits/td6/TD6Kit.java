@@ -28,12 +28,18 @@
 
 package kits.td6;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
 
 import kits.TdKit;
 import kits.TdSubPart;
 import kits.info.Td6Info;
+
+import org.apache.commons.lang.ArrayUtils;
+
 import exceptions.BadMessageLengthException;
 import exceptions.VdrumException;
 
@@ -48,15 +54,35 @@ public final class TD6Kit extends TdKit {
     }
 
     public TD6Kit(byte[] rawData) throws InvalidMidiDataException, VdrumException {
-        super(new Td6Info());
-        if (rawData.length != tdInfo.getKitSize()) {
-            throw new BadMessageLengthException(rawData.length);
-        }
-        subParts = new TdSubPart[tdInfo.getNumberOfSubParts()];
-        for (int i = 0; i < subParts.length; i++) {
-            boolean firstPart = (i == 0);
-            subParts[i] = new TD6SubPart(rawData, i, firstPart, tdInfo.getMsbAddressIndex());
-        }
+        super(new Td6Info(), rawData);
+//        if (rawData.length != tdInfo.getKitSize()) {
+//            throw new BadMessageLengthException(rawData.length);
+//        }
+//        subParts = new TdSubPart[tdInfo.getNumberOfSubParts()];
+//        
+//        final List<Integer> indexes = new ArrayList<Integer>();
+//        for (int i = 0; i < rawData.length; i++) {
+//            if ((rawData[i] & 0xFF) == 240) {
+//                indexes.add(i);
+//            }
+//        }
+//        try {
+//            for (int i = 0; i < subParts.length; i++) {
+//                int from = indexes.get(i);
+//                int to;
+//                if (i == (subParts.length - 1)) {
+//                    to = rawData.length;
+//                } else {
+//                   to =  indexes.get(i+1);
+//                }
+//                final byte[] partRawData = ArrayUtils.subarray(rawData, from, to);
+//                subParts[i] = new TdSubPart(partRawData, tdInfo);
+//            }
+//            
+//        }
+//        catch (RuntimeException e) {
+//            throw new InvalidMidiDataException();
+//        }
         id = setImutableId();
     }
 

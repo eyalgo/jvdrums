@@ -33,7 +33,6 @@ import javax.sound.midi.InvalidMidiDataException;
 import kits.TdKit;
 import kits.TdSubPart;
 import kits.td6.TD6Kit;
-import kits.td6.TD6SubPart;
 import exceptions.VdrumException;
 
 public final class Td6Info extends TdInfo {
@@ -60,10 +59,5 @@ public final class Td6Info extends TdInfo {
     @Override
     public TdKit getNewKit(TdSubPart[] newSubParts) {
         return new TD6Kit(newSubParts);
-    }
-
-    @Override
-    public TdSubPart getNewSubPart(TdSubPart subPart, Integer newId) throws InvalidMidiDataException {
-        return new TD6SubPart(subPart, newId, getMsbAddressIndex());
     }
 }

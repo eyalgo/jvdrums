@@ -1,5 +1,8 @@
 package kits;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
 
@@ -8,16 +11,48 @@ import kits.info.TdInfo;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
+import exceptions.BadChecksumException;
+import exceptions.BadMessageLengthException;
+import exceptions.NotRolandException;
+
 public abstract class TdKit {
     protected final TdInfo tdInfo; 
     protected TdSubPart[] subParts;
 
-    protected TdKit(TdInfo tdInfo) {
+    protected TdKit(TdInfo tdInfo, byte[] rawData) throws BadMessageLengthException, BadChecksumException, NotRolandException, InvalidMidiDataException {
         this.tdInfo = tdInfo;
+        if (rawData.length != tdInfo.getKitSize()) {
+            throw new BadMessageLengthException(rawData.length);
+        }
+        subParts = new TdSubPart[tdInfo.getNumberOfSubParts()];
+        
+        final List<Integer> indexes = new ArrayList<Integer>();
+        for (int i = 0; i < rawData.length; i++) {
+            if ((rawData[i] & 0xFF) == 240) {
+                indexes.add(i);
+            }
+        }
+        try {
+            for (int i = 0; i < subParts.length; i++) {
+                int from = indexes.get(i);
+                int to;
+                if (i == (subParts.length - 1)) {
+                    to = rawData.length;
+                } else {
+                   to =  indexes.get(i+1);
+                }
+                final byte[] partRawData = ArrayUtils.subarray(rawData, from, to);
+                subParts[i] = new TdSubPart(partRawData, tdInfo);
+            }
+            
+        }
+        catch (RuntimeException e) {
+            throw new InvalidMidiDataException();
+        }
     }
 
     public TdKit(TdInfo tdInfo, TdSubPart[] subParts) {
-        this(tdInfo);
+        this.tdInfo = tdInfo;
         this.subParts = subParts;
     }
 

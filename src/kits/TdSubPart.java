@@ -30,6 +30,8 @@ package kits;
 
 import javax.sound.midi.InvalidMidiDataException;
 
+import kits.info.TdInfo;
+
 import org.apache.commons.lang.ArrayUtils;
 
 import exceptions.BadChecksumException;
@@ -38,19 +40,29 @@ import exceptions.NotRolandException;
 /**
  * @author egolan
  */
-public abstract class TdSubPart extends VdrumsSysexMessage {
+public final class TdSubPart extends VdrumsSysexMessage {
     private final static int ROLAND_ID = 65; // 0x41
-    protected static final int ROLAND_ID_INDEX = 1;
-    private final int idAddressIndex;
-    private final int msbAddressIndex;
+    private static final int ROLAND_ID_INDEX = 1;
+    private final TdInfo tdInfo;
 
-    protected TdSubPart(int idAddressIndex, int msbAddressIndex) {
-        this.idAddressIndex = idAddressIndex;
-        this.msbAddressIndex = msbAddressIndex;
+    private TdSubPart(TdInfo tdInfo) {
+        this.tdInfo = tdInfo;
     }
-    
+
+    public TdSubPart(byte[] partRawData, TdInfo tdInfo) throws BadChecksumException,
+            NotRolandException, InvalidMidiDataException {
+        this(tdInfo);
+        createData(partRawData);
+    }
+
+    public TdSubPart(final TdSubPart origtRawData, final int kitId, TdInfo tdInfo)
+            throws InvalidMidiDataException {
+        this(tdInfo);
+        copyConstructor(origtRawData, kitId);
+    }
+
     public final int getId() {
-        final int msbAddress = getMessage()[idAddressIndex];
+        final int msbAddress = getMessage()[tdInfo.getKitIdIndex()];
         return msbAddress + 1;
     }
 
@@ -65,8 +77,8 @@ public abstract class TdSubPart extends VdrumsSysexMessage {
     }
 
     /**
-     * Copy Constructor. Gets the message from the original SysexMessage. The
-     * getMessage() creates a copy of the data, so it won't be changed.
+     * Copy Constructor. Gets the message from the original SysexMessage. The getMessage()
+     * creates a copy of the data, so it won't be changed.
      * 
      * @param origtRawData
      * @throws InvalidMidiDataException
@@ -75,21 +87,21 @@ public abstract class TdSubPart extends VdrumsSysexMessage {
             throws InvalidMidiDataException {
         final byte[] partRawData = origtRawData.getMessage();
         final Integer dataId = kitId - 1;
-        partRawData[idAddressIndex] = dataId.byteValue();
+        partRawData[tdInfo.getKitIdIndex()] = dataId.byteValue();
         int checksumIndex = partRawData.length - 2;
-        final int checksum = calculateChecksum(ArrayUtils.subarray(partRawData,
-                msbAddressIndex, checksumIndex));
+        final int checksum = calculateChecksum(ArrayUtils.subarray(partRawData, tdInfo
+                .getMsbAddressIndex(), checksumIndex));
         partRawData[checksumIndex] = Integer.valueOf(checksum).byteValue();
         this.setMessage(partRawData, partRawData.length);
     }
 
-    protected final void createData(byte[] kitRawData, int from, int to) throws InvalidMidiDataException, BadChecksumException, NotRolandException {
-        final byte[] partRawData = ArrayUtils.subarray(kitRawData, from, to);
+    protected final void createData(byte[] partRawData) throws InvalidMidiDataException,
+            BadChecksumException, NotRolandException {
         int checksumIndex = partRawData.length - 2;
         this.setMessage(partRawData, partRawData.length);
         int inputCheckSum = this.getMessage()[checksumIndex];
-        final int checksum = calculateChecksum(ArrayUtils.subarray(this
-                .getMessage(), msbAddressIndex, checksumIndex));
+        final int checksum = calculateChecksum(ArrayUtils.subarray(this.getMessage(), tdInfo
+                .getMsbAddressIndex(), checksumIndex));
         if (inputCheckSum != checksum) {
             throw new BadChecksumException(inputCheckSum, checksum);
         }
@@ -97,11 +109,17 @@ public abstract class TdSubPart extends VdrumsSysexMessage {
             throw new NotRolandException(this.getMessage()[ROLAND_ID_INDEX]);
         }
     }
-    
-    private int calculateChecksum(final byte[] data){
+
+    protected final void createData(byte[] kitRawData, int from, int to)
+            throws InvalidMidiDataException, BadChecksumException, NotRolandException {
+        final byte[] partRawData = ArrayUtils.subarray(kitRawData, from, to);
+        this.createData(partRawData);
+    }
+
+    private int calculateChecksum(final byte[] data) {
         int sum = 0;
-        for (int i=0;i<data.length;i++){
-            int currentInt = (int)data[i]& 0xFF;
+        for (int i = 0; i < data.length; i++) {
+            int currentInt = (int) data[i] & 0xFF;
             sum += currentInt;
         }
         final int reminder = sum % 128;
@@ -111,5 +129,4 @@ public abstract class TdSubPart extends VdrumsSysexMessage {
         final int checksum = 128 - reminder;
         return checksum;
     }
-
 }

@@ -28,8 +28,13 @@
 
 package kits.td12;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
+
+import org.apache.commons.lang.ArrayUtils;
 
 import kits.TdKit;
 import kits.TdSubPart;
@@ -45,15 +50,35 @@ public final class TD12Kit extends TdKit {
     }
 
     public TD12Kit(byte[] rawData) throws InvalidMidiDataException, VdrumException {
-        super(new Td12Info());
-        if (rawData.length != tdInfo.getKitSize()) {
-            throw new BadMessageLengthException(rawData.length);
-        }
-        subParts = new TdSubPart[tdInfo.getNumberOfSubParts()];
-        for (int i = 0; i < subParts.length; i++) {
-            boolean lastPart = (i == (tdInfo.getNumberOfSubParts() - 1));
-            subParts[i] = new TD12SubPart(rawData, i, lastPart, tdInfo.getMsbAddressIndex());
-        }
+        super(new Td12Info(), rawData);
+//        if (rawData.length != tdInfo.getKitSize()) {
+//            throw new BadMessageLengthException(rawData.length);
+//        }
+//        subParts = new TdSubPart[tdInfo.getNumberOfSubParts()];
+//        
+//        final List<Integer> indexes = new ArrayList<Integer>();
+//        for (int i = 0; i < rawData.length; i++) {
+//            if ((rawData[i] & 0xFF) == 240) {
+//                indexes.add(i);
+//            }
+//        }
+//        try {
+//            for (int i = 0; i < subParts.length; i++) {
+//                int from = indexes.get(i);
+//                int to;
+//                if (i == (subParts.length - 1)) {
+//                    to = rawData.length;
+//                } else {
+//                   to =  indexes.get(i+1);
+//                }
+//                final byte[] partRawData = ArrayUtils.subarray(rawData, from, to);
+//                subParts[i] = new TdSubPart(partRawData, tdInfo);
+//            }
+//            
+//        }
+//        catch (RuntimeException e) {
+//            throw new InvalidMidiDataException();
+//        }
         id = setImutableId();
     }
 

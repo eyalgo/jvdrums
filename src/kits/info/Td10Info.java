@@ -64,10 +64,4 @@ public final class Td10Info extends TdInfo {
         // TODO Auto-generated method stub
         return null;
     }
-
-    @Override
-    public TdSubPart getNewSubPart(TdSubPart subPart, Integer newId) throws InvalidMidiDataException {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }
