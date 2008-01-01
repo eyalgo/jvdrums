@@ -97,14 +97,14 @@ public final class TdSubPart extends VdrumsSysexMessage {
 
     protected final void createData(byte[] partRawData) throws InvalidMidiDataException,
             BadChecksumException, NotRolandException {
-        int checksumIndex = partRawData.length - 2;
+//        int checksumIndex = partRawData.length - 2;
         this.setMessage(partRawData, partRawData.length);
-        int inputCheckSum = this.getMessage()[checksumIndex];
-        final int checksum = calculateChecksum(ArrayUtils.subarray(this.getMessage(), tdInfo
-                .getMsbAddressIndex(), checksumIndex));
-        if (inputCheckSum != checksum) {
-            throw new BadChecksumException(inputCheckSum, checksum);
-        }
+//        int inputCheckSum = this.getMessage()[checksumIndex];
+//        final int checksum = calculateChecksum(ArrayUtils.subarray(this.getMessage(), tdInfo
+//                .getMsbAddressIndex(), checksumIndex));
+//        if (inputCheckSum != checksum && !(tdInfo.getNameToDisplay().equals("TD-10 EXP"))) {
+//            throw new BadChecksumException(inputCheckSum, checksum);
+//        }
         if (this.getMessage()[ROLAND_ID_INDEX] != ROLAND_ID) {
             throw new NotRolandException(this.getMessage()[ROLAND_ID_INDEX]);
         }

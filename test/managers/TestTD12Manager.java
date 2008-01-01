@@ -50,7 +50,7 @@ import exceptions.BadChecksumException;
 import exceptions.NotRolandException;
 import exceptions.VdrumException;
 
-@Test(groups = { "manager12" }, dependsOnGroups = { "kits12", "exception12" })
+@Test(groups = { "manager12" }, dependsOnGroups = { "kits12" })
 public final class TestTD12Manager {
 
     private byte[] getBytesFromFile(final String fileName) throws IOException,
@@ -237,13 +237,13 @@ public final class TestTD12Manager {
         TDManager.bytesToKits(getBytesFromFile("maple3NotRoland.syx"));
     }
 
-    @Test(expectedExceptions = BadChecksumException.class)
+    @Test(expectedExceptions = BadChecksumException.class , dependsOnGroups = { "exception12" })
     public void checkMessageBadChecksum() throws URISyntaxException, IOException,
             InvalidMidiDataException, VdrumException {
         TDManager.sysexMessageToKits(getMessageFromFile("maple3BadChecksum.syx"));
     }
 
-    @Test(expectedExceptions = BadChecksumException.class)
+    @Test(expectedExceptions = BadChecksumException.class, dependsOnGroups = { "exception12" })
     public void checkBytesBadChecksum() throws URISyntaxException, IOException,
             InvalidMidiDataException, VdrumException {
         TDManager.bytesToKits(getBytesFromFile("maple3BadChecksum.syx"));

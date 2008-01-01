@@ -29,9 +29,9 @@ public final class TdKit {
     public TdKit(TdInfo tdInfo, byte[] rawData) throws BadMessageLengthException,
             BadChecksumException, NotRolandException, InvalidMidiDataException {
         this.tdInfo = tdInfo;
-        if (rawData.length != tdInfo.getKitSize()) {
-            throw new BadMessageLengthException(rawData.length);
-        }
+//        if (rawData.length != tdInfo.getKitSize()&& !(tdInfo.getNameToDisplay().equals("TD-10 EXP"))) {
+//            throw new BadMessageLengthException(rawData.length);
+//        }
         subParts = new TdSubPart[tdInfo.getNumberOfSubParts()];
 
         final List<Integer> indexes = new ArrayList<Integer>();
