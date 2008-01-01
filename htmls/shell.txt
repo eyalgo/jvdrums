@@ -1,0 +1,4 @@
+Project shell server: shell.sourceforge.net
+Path to group directory: /home/groups/j/jv/jvdrums
+Path to htdocs directory: /home/groups/j/jv/jvdrums/htdocs
+Path to CGI script directory: /home/groups/j/jv/jvdrums/cgi-bin 
