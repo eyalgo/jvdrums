@@ -38,6 +38,7 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.SysexMessage;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import kits.TdKit;
@@ -54,24 +55,34 @@ import exceptions.VdrumException;
 /**
  * @author Limor Eyal
  */
-final class KitsReceiver implements Receiver, ActionListener {
+final class KitsReceiver implements Receiver {
     private static Configuration config = Configuration.getRoot().get(KitsReceiver.class);
+    private final static int EXPIRE_TIME = 2500;
     private TdInfo tdInfo;
     private byte[] receivedBytes = null;
     private KitPanelInput inputPanel;
     private final MainFrame mainFrame;
     private String receivingMessage;
-    private String kitReceivedMessage;
+    private String finishedReceivingMessage;
     private final List<TdKit> receivedKits;
-    Timer timer;
+    private final Timer timer;
+    private boolean messageSent;
+    private final ActionListener timerActionListener;
 
     KitsReceiver(MainFrame mainFrame) {
         receivedBytes = null;
         this.mainFrame = mainFrame;
         receivedKits = new ArrayList<TdKit>();
-        timer = new Timer(2500, this);
+        timerActionListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                timerExpired();
+            }
+        };
+        timer = new Timer(EXPIRE_TIME, timerActionListener);
         timer.setRepeats(false);
         timer.setCoalesce(true);
+        messageSent = false;
         config.read(this);
     }
 
@@ -85,21 +96,20 @@ final class KitsReceiver implements Receiver, ActionListener {
             boolean isFirstPart = ((message[tdInfo.getSubPartIndex()] & 0xFF) == 0);
             boolean isLastPart = ((message[tdInfo.getSubPartIndex()] & 0xFF) == tdInfo
                     .getNumberOfSubParts() - 1);
-            Color color = Color.GREEN;
-
-            if (isLastPart) {
-                color = Color.BLUE;
-            }
             if (isFirstPart) {
                 timer.restart();
                 receivedBytes = null;
+                if (!messageSent) {
+                    messageSent = true;
+                    setMessage(receivingMessage, Color.GREEN);
+                }
             }
             receivedBytes = ArrayUtils.addAll(receivedBytes, message);
-            StringBuilder strBuilder = new StringBuilder();
             if (isLastPart) {
                 try {
                     final TdKit kit = TDManager.bytesToOneKit(receivedBytes);
-                    strBuilder.append(kitReceivedMessage).append(" ").append(kit.getName());
+                    // strBuilder.append(finishedReceivingMessage).append("
+                    // ").append(kit.getName());
                     // addToPanel(kit, strBuilder.toString());
                     // System.out.println(kit + " " + timeStamp );// total 1526000 micro
                     // mainFrame.putTextInStatusBar(strBuilder.toString(), color);
@@ -116,67 +126,21 @@ final class KitsReceiver implements Receiver, ActionListener {
                     // I need to inform somehow the user.
                     e.printStackTrace();
                 }
-            } else {
-                strBuilder.append(receivingMessage).append(" ");
-                int partIndex = message[tdInfo.getSubPartIndex()] & 0xFF;
-                partIndex++;
-                strBuilder.append(partIndex);
-                strBuilder.append(" ").append(timeStamp);
-                setMessage(strBuilder.toString(), color);
-                // mainFrame.putTextInStatusBar(strBuilder.toString(), color);
             }
-            // receivedBytes = ArrayUtils.addAll(receivedBytes, message);
-            // System.out.println(receivedBytes.length);
-            // if (receivedBytes.length == tdInfo.getKitSize()) {
-            // try {
-            // final TdKit kit = TDManager.bytesToOneKit(receivedBytes);
-            // strBuilder.append(kitReceivedMessage).append(" ").append(kit.getName());
-            // // mainFrame.putTextInStatusBar(strBuilder.toString(), color);
-            // addToPanel(kit, strBuilder.toString());
-            // receivedBytes = null;
-            // }
-            // catch (InvalidMidiDataException e) {
-            // // TODO Auto-generated catch block
-            // e.printStackTrace();
-            // }
-            // catch (VdrumException e) {
-            // // TODO Auto-generated catch block
-            // e.printStackTrace();
-            // }
-            // }
-        } else {
-            // System.out.println("Received a MidiEvent:
-            // "+Integer.toHexString(midiMessage.getStatus())+" Length:
-            // "+midiMessage.getLength());
         }
     }
 
     private void setMessage(final String message, final Color color) {
-//        System.out.println(message);
-        // if (SwingUtilities.isEventDispatchThread()) {
-        // mainFrame.putTextInStatusBar(message, color);
-        // } else {
-        // SwingUtilities.invokeLater(new Runnable() {
-        // public void run() {
-        // mainFrame.putTextInStatusBar(message, color);
-        // }
-        // });
-        // }
+        if (SwingUtilities.isEventDispatchThread()) {
+            mainFrame.putTextInStatusBar(message, color);
+        } else {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    mainFrame.putTextInStatusBar(message, color);
+                }
+            });
+        }
     }
-
-    // private void addToPanel(final TdKit kit, final String message) {
-    // if (SwingUtilities.isEventDispatchThread()) {
-    // setMessage(message, Color.BLUE);
-    // // inputPanel.addKit(kit);
-    // } else {
-    // SwingUtilities.invokeLater(new Runnable() {
-    // public void run() {
-    // setMessage(message, Color.BLUE);
-    // // inputPanel.addKit(kit);
-    // }
-    // });
-    // }
-    // }
 
     void setTdIdInfo(TdInfo tdInfo) {
         this.tdInfo = tdInfo;
@@ -187,13 +151,20 @@ final class KitsReceiver implements Receiver, ActionListener {
         this.inputPanel = inputPanel;
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
+    /**
+     * Happens when the timer expires
+     * 
+     * @param e
+     *            ActionEvent
+     */
+    private void timerExpired() {
         timer.stop();
         inputPanel.addKits(receivedKits);
         for (TdKit kit : receivedKits) {
             System.out.println(kit);
         }
+        messageSent = false;
+        setMessage(finishedReceivingMessage, Color.BLUE);
         receivedKits.clear();
     }
 }

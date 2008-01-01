@@ -28,7 +28,7 @@
 
 package managers;
 
-import kits.info.Td10ExInfo;
+import kits.info.Td10ExpInfo;
 import kits.info.Td12Info;
 import kits.info.Td6Info;
 import exceptions.BadMessageLengthException;
@@ -56,7 +56,7 @@ final class FactoryKits {
 //                return new TDModulesManager(new Td10Info());
 //            }
             if (((kitBytes[3] & 0xFF) == 0) && ((kitBytes[4] & 0xFF) == 45)) {
-                return new TDModulesManager(new Td10ExInfo());
+                return new TDModulesManager(new Td10ExpInfo());
             }
             throw new UnsupportedModuleException();
         }

@@ -37,7 +37,7 @@ import javax.sound.midi.SysexMessage;
 
 import kits.TdKit;
 import kits.VdrumsSysexMessage;
-import kits.info.Td10ExInfo;
+import kits.info.Td10ExpInfo;
 
 import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
@@ -69,7 +69,7 @@ public final class TestTD10Manager {
     public void checkChangeId97To32() throws URISyntaxException, IOException,
             InvalidMidiDataException, VdrumException {
         final SysexMessage message = getMessageFromFile("td10_7_tr808.syx");
-        TdKit kitFromMessage = new TdKit(new Td10ExInfo(), message);
+        TdKit kitFromMessage = new TdKit(new Td10ExpInfo(), message);
         TdKit[] kits = new TdKit[50];
         for (int i = 0; i < 50; i++) {
             kits[i] = null;
@@ -78,7 +78,7 @@ public final class TestTD10Manager {
 
         SysexMessage messageFromManager = TDManager.kitsToSysexMessage(kits);
 
-        TdKit newKitFromManager = new TdKit(new Td10ExInfo(), messageFromManager);
+        TdKit newKitFromManager = new TdKit(new Td10ExpInfo(), messageFromManager);
         Assert.assertTrue(newKitFromManager.getId() == 32);
         Assert.assertTrue(kitFromMessage.getId() == 7);
     }
@@ -105,7 +105,7 @@ public final class TestTD10Manager {
         }
         final File file6 = UtilsForTests.getFile("td10_6_tr808.syx");
         byte[] kitBytes6 = FileUtils.readFileToByteArray(file6);
-        TdKit kit6 = new TdKit(new Td10ExInfo(), kitBytes6);
+        TdKit kit6 = new TdKit(new Td10ExpInfo(), kitBytes6);
         Assert.assertEquals(kitsFromManager[5], kit6);
     }
 

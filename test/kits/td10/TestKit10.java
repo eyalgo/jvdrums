@@ -36,7 +36,7 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
 
 import kits.TdKit;
-import kits.info.Td10ExInfo;
+import kits.info.Td10ExpInfo;
 
 import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
@@ -60,12 +60,12 @@ public final class TestKit10 {
             InvalidMidiDataException, VdrumException {
         final File file1 = UtilsForTests.getFile("td10_7_tr808.syx");
         byte[] kitBytes1 = FileUtils.readFileToByteArray(file1);
-        TdKit kitRaw = new TdKit(new Td10ExInfo(), kitBytes1);
+        TdKit kitRaw = new TdKit(new Td10ExpInfo(), kitBytes1);
 
         SysexMessage message = new SysexMessage();
         message.setMessage(kitBytes1, kitBytes1.length);
 
-        TdKit kitMessage = new TdKit(new Td10ExInfo(), message);
+        TdKit kitMessage = new TdKit(new Td10ExpInfo(), message);
         Assert.assertEquals(kitMessage, kitRaw);
 
         Assert.assertTrue(kitRaw.getId() == 7, "TD10Kit-Raw 7 with id " + kitRaw.getId());
@@ -77,7 +77,7 @@ public final class TestKit10 {
             InvalidMidiDataException, VdrumException {
         final File file1 = UtilsForTests.getFile("td10_7_tr808.syx");
         byte[] kitBytes1 = FileUtils.readFileToByteArray(file1);
-        TdKit kit = new TdKit(new Td10ExInfo(), kitBytes1);
+        TdKit kit = new TdKit(new Td10ExpInfo(), kitBytes1);
         Assert.assertEquals("Mr.TR808", kit.getName(), "kitRaw should be Mr.TR808");
     }
 
@@ -86,7 +86,7 @@ public final class TestKit10 {
         try {
             final File file1 = UtilsForTests.getFile("td10_7_tr808.syx");
             byte[] kitBytes1 = FileUtils.readFileToByteArray(file1);
-            TdKit kit = new TdKit(new Td10ExInfo(), kitBytes1);
+            TdKit kit = new TdKit(new Td10ExpInfo(), kitBytes1);
             TdKit kit32 = kit.setNewId(32);
             Assert.assertTrue(kit32.getId() == 32, "TD10Kit 32 with id 32");
             Assert.assertTrue(kit.getId() == 7,
@@ -104,7 +104,7 @@ public final class TestKit10 {
             InvalidMidiDataException {
         final File file1 = UtilsForTests.getFile("td10_7_tr808.syx");
         byte[] kitBytes1 = FileUtils.readFileToByteArray(file1);
-        TdKit kit = new TdKit(new Td10ExInfo(), kitBytes1);
+        TdKit kit = new TdKit(new Td10ExpInfo(), kitBytes1);
         try {
             kit.setNewId(51);
         }
@@ -117,11 +117,11 @@ public final class TestKit10 {
             URISyntaxException, VdrumException {
         final File file1 = UtilsForTests.getFile("td10_7_tr808.syx");
         byte[] kitBytes1 = FileUtils.readFileToByteArray(file1);
-        TdKit kit = new TdKit(new Td10ExInfo(), kitBytes1);
+        TdKit kit = new TdKit(new Td10ExpInfo(), kitBytes1);
         TdKit kitSaz6 = kit.setNewId(6);
         File fileSaz6 = UtilsForTests.getFile("td10_6_tr808.syx");
         byte[] saz6Bytes = FileUtils.readFileToByteArray(fileSaz6);
-        TdKit fileKitSaz6 = new TdKit(new Td10ExInfo(), saz6Bytes);
+        TdKit fileKitSaz6 = new TdKit(new Td10ExpInfo(), saz6Bytes);
         Assert.assertEquals(kitSaz6, fileKitSaz6);
         Assert.assertTrue(kitSaz6.hashCode() == fileKitSaz6.hashCode(), "td10_7_tr808.hashCode="
                 + kitSaz6.hashCode() + " td10_7_tr808.hashCode=" + fileKitSaz6.hashCode());

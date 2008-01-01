@@ -45,21 +45,20 @@ import exceptions.VdrumException;
 
 /**
  * @author Limor Eyal
- *
  */
 final class DeviceIdentityReceiver implements Receiver {
     private final Vector<ConnectionListener> connectionListeners;
+
     DeviceIdentityReceiver() {
         connectionListeners = new Vector<ConnectionListener>();
     }
-    
+
     void addConnectionListener(ConnectionListener connectionListener) {
         connectionListeners.add(connectionListener);
     }
 
     @Override
-    public void close() {
-    }
+    public void close() {}
 
     @Override
     public void send(MidiMessage midiMessage, long timeStamp) {
@@ -84,12 +83,14 @@ final class DeviceIdentityReceiver implements Receiver {
 
     private TdInfo getTdInfoByMessage(MidiMessage midiMessage) throws VdrumException {
         byte[] message = midiMessage.getMessage();
-        if ((message[5]& 0xFF) != 65) {
+        if ((message[5] & 0xFF) != 65) {
             throw new NotRolandException(message[5]);
         }
-        if ((message[6]& 0xFF) == 9) {
+        if ((message[6] & 0xFF) == 9) {
             return new Td12Info();
-        } else if ((message[6]& 0xFF) == 63) {
+        } else if ((message[6] & 0xFF) == 63) {
+            return new Td6Info();
+        } else if ((message[6] & 0xFF) == 45) {
             return new Td6Info();
         } else {
             throw new UnsupportedModuleException();

@@ -42,8 +42,7 @@ public final class InfoManager {
     public static Vector<TdInfo> availableModulesInfo() {
         Vector<TdInfo> result = new Vector<TdInfo>();
         result.add(new Td6Info());
-//        result.add(new Td10Info());
-        result.add(new Td10ExInfo());
+        result.add(new Td10ExpInfo());
         result.add(new Td12Info());
         return result;
     }
