@@ -31,6 +31,7 @@ package ui.lists;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -128,6 +129,12 @@ public final class InputKitsList extends KitsList {
 
     @Override
     public void addKits(TdKit[] kits) {
+        for (TdKit kit : kits) {
+            addKit(kit);
+        }
+    }
+
+    public void addKits(List<TdKit> kits) {
         for (TdKit kit : kits) {
             addKit(kit);
         }

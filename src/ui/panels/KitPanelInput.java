@@ -28,7 +28,10 @@
 
 package ui.panels;
 
+import java.util.List;
+
 import midi.MidiHandler;
+import kits.TdKit;
 import kits.info.TdInfo;
 import ui.MainFrame;
 import ui.lists.InputKitsList;
@@ -65,5 +68,9 @@ public final class KitPanelInput extends KitsPanel {
 
     public void connectAvailable(boolean canConnect) {
         connectAction.setEnabled(canConnect);
+    }
+
+    public void addKits(List<TdKit> kits) {
+        inputKitsList.addKits(kits);
     }
 }
