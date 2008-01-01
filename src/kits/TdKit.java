@@ -75,7 +75,7 @@ public final class TdKit {
         for (int i = 0; i < newSubParts.length; i++) {
             newSubParts[i] = tdInfo.getNewSubPart(subParts[i], newId);
         }
-        final TdKit newKit = getNewKit(newSubParts);
+        final TdKit newKit = tdInfo.getNewKit(newSubParts);
         return newKit;
     }
 
@@ -90,7 +90,7 @@ public final class TdKit {
         return result;
     }
 
-    protected final int setImutableId() {
+    private final int setImutableId() {
         int result = 0;
         for (int i = 0; i < subParts.length; i++) {
             result += this.subParts[i].getId();
@@ -168,11 +168,7 @@ public final class TdKit {
         return this.id;
     }
 
-    protected final TdKit getNewKit(TdSubPart[] newSubParts) {
-        return tdInfo.getNewKit(newSubParts);
-    }
-
-    public final String getTdInfoName() {
+    public final String getModuleDisplayName() {
         return tdInfo.getNameToDisplay();
     }
 }

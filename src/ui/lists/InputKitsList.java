@@ -105,7 +105,7 @@ public final class InputKitsList extends KitsList {
                     isSelected, hasFocus);
             if (value != null && value instanceof TdKit) {
                 TdKit kit = (TdKit) value;
-                label.setEnabled(kit.getTdInfoName().equals(tdInfo.getNameToDisplay()));
+                label.setEnabled(kit.getModuleDisplayName().equals(tdInfo.getNameToDisplay()));
                 
                 label.setText(kit.getName());
             }
@@ -142,7 +142,7 @@ public final class InputKitsList extends KitsList {
 
     void kitPressed(int index) {
         TdKit kitPressed = (TdKit) myModel.elementAt(index);
-        if (kitPressed.getTdInfoName().equals(tdInfo.getNameToDisplay())) {
+        if (kitPressed.getModuleDisplayName().equals(tdInfo.getNameToDisplay())) {
             outputKistPanel.addKit(kitPressed);
         }
     }

@@ -79,8 +79,14 @@ public class AboutPanel extends JPanel {
 		dialog.setBody(aboutPanel);
 		dialog.setResizable(false);
 		dialog.setBounds(null);
-        dialog.setTitle("About JVDrums");
 		dialog.setVisible(true);
 		dialog.dispose();
 	}
+    
+    public static void main(String[] args) {
+        JFrame fame = new JFrame("about test");
+        showInDialog(fame);
+        System.exit(0);
+    }
+    
 }
