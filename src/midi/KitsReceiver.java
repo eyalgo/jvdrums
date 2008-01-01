@@ -117,7 +117,6 @@ final class KitsReceiver implements Receiver {
                     receivedBytes = null;
                 }
                 catch (InvalidMidiDataException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 catch (VdrumException e) {
@@ -160,9 +159,6 @@ final class KitsReceiver implements Receiver {
     private void timerExpired() {
         timer.stop();
         inputPanel.addKits(receivedKits);
-        for (TdKit kit : receivedKits) {
-            System.out.println(kit);
-        }
         messageSent = false;
         setMessage(finishedReceivingMessage, Color.BLUE);
         receivedKits.clear();

@@ -1,0 +1,11 @@
+installation
+unzip, java, double click / command line
+
+midi configuration
+
+receiving from device
+connecting
+
+creating kits bank
+moving to the right list
+saving
