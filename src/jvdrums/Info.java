@@ -18,6 +18,7 @@
  */
 package jvdrums;
 
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import bias.Configuration;
@@ -37,6 +38,8 @@ public class Info {
 
     public void log() {
         StringBuffer buffer = new StringBuffer();
+        
+        Vector<String> prefs = UserPreferences.getInstance().showPrefs();
 
         buffer.append("JVDrums -" + version + "-");
         appendProperty(buffer, "os.arch");
@@ -53,6 +56,10 @@ public class Info {
         appendProperty(buffer, "user.country");
         appendProperty(buffer, "user.language");
         appendProperty(buffer, "user.name");
+        buffer.append(System.getProperty("line.separator"));
+        for (String pref : prefs) {
+            buffer.append(pref).append(System.getProperty("line.separator"));
+        }
 
         logger.info(buffer.toString());
     }

@@ -28,56 +28,70 @@
 
 package jvdrums;
 
-import java.awt.EventQueue;
-
-import ui.MainFrame;
-import bias.Configuration;
-import bias.store.PropertiesStore;
-import bias.store.ResourceBundlesStore;
+import java.util.Vector;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 /**
  * @author egolan
  */
-public final class JVDrumsApp {
-    private static Configuration config = Configuration.getRoot().get(JVDrumsApp.class);
+public final class UserPreferences {
+    private Preferences userPrefs;
+    private static UserPreferences instance;
 
-    public static void main(String args[]) {
-        /* Collection<Option> options = */initConfiguration();
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Info().log();
-                createAndShowGui();
-            }
-        });
+    private UserPreferences() {
+        userPrefs = Preferences.userNodeForPackage(UserPreferences.class);
+    }
+
+    public static UserPreferences getInstance() {
+        if (instance == null) {
+            instance = new UserPreferences();
+        }
+
+        return instance;
     }
     
-    private static void createAndShowGui() {
-        final MainFrame mainFrame = new MainFrame();
-        config.read(mainFrame);
-        try {
-            mainFrame.initFrame();
-            mainFrame.setVisible(true);
-        }
-        catch (Error e) {
-            e.printStackTrace();
-            mainFrame.showErrorDialog(e.getLocalizedMessage(), "Fatal Error");
-            System.exit(-1);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            mainFrame.showErrorDialog(e.getLocalizedMessage(), "Fatal Exception");
-            System.exit(-2);
-        }
+    public void putInt(String key, int value) {
+        userPrefs.putInt(key, value);
+    }
+    
+    public int getInt(String key, int def) {
+        return userPrefs.getInt(key, def);
     }
 
-    /**
-     * Initialize the configuration.
-     * 
-     * @return the command line options of the configuration
-     */
-    private static void initConfiguration() {
-        Configuration configuration = Configuration.getRoot();
-        configuration.addStore(new PropertiesStore(JVDrumsApp.class, "app.properties"));
-        configuration.addStore(new ResourceBundlesStore("jvdrums"));
+    public void put(String key, String value) {
+        userPrefs.put(key, value);
+    }
+
+    public String get(String key, String def) {
+        return userPrefs.get(key, def);
+    }
+
+    public Vector<String> showPrefs() {
+        Vector<String> v = new Vector<String>();
+        try {
+            String keys[] = userPrefs.keys();
+            for (String key : keys) {
+                v.add(key + " " + userPrefs.get(key, ""));
+            }
+        }
+        catch (BackingStoreException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return v;
+    }
+
+    private void clearPreferences() {
+        try {
+            userPrefs.clear();
+        }
+        catch (BackingStoreException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void main (String[] args) {
+        getInstance().clearPreferences();
     }
 }

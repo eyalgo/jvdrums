@@ -35,6 +35,8 @@ import java.io.IOException;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.swing.JFileChooser;
 
+import jvdrums.UserPreferences;
+
 import ui.MainFrame;
 import ui.swing.SyxFileChooser;
 import bias.Configuration;
@@ -47,11 +49,13 @@ public abstract class FileAction extends BaseAction {
     private static Configuration configuration = Configuration.getRoot().get(FileAction.class);
     private final MainFrame mainFrame;
     String buttonStr = "";
+    String name = ""; 
     
     protected FileAction(MainFrame mainFrame, String name, boolean withIcon) {
         super();
         this.mainFrame = mainFrame;
         configuration.get(name).read(this);
+        this.name = name;
         if (!withIcon) {
             setSmallIcon(null);
         }
@@ -60,11 +64,14 @@ public abstract class FileAction extends BaseAction {
     @Override
     public final void actionPerformed(ActionEvent e) {
         final JFileChooser fc = new SyxFileChooser();
+        fc.setSelectedFile(new File( UserPreferences.getInstance().get(name, "")));
         int option = fc.showDialog(mainFrame, buttonStr);
         if (JFileChooser.APPROVE_OPTION == option) {
             final File file = fc.getSelectedFile();
             try {
                 handleAction(file);
+                UserPreferences.getInstance().put(name, file.getAbsolutePath());
+                
             }
             catch (IOException e1) {
                 mainFrame.showErrorDialog(e1.getMessage(), e1.getMessage());

@@ -43,3 +43,8 @@ Release 1.0 alpha-1
 * resending (after stopping) works
 * statusbar shows information while receiving message
 * supporting TD-10EXP
+
+
+
+* Keeping last browse and save last locations
+* Keeping MIDI configuration

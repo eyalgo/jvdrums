@@ -12,6 +12,14 @@ import javax.swing.UIManager;
  */
 
 public class WindowUtilities {
+    public static void setLookAndFeel(String lookAndFeel) {
+        try {
+            UIManager.setLookAndFeel(lookAndFeel);
+        }
+        catch (Exception e) {
+            System.out.println("Error setting native LAF: " + e);
+        }
+    }
 
     /**
      * Tell system to use native look and feel, as in previous releases. Metal (Java) LAF is

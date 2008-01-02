@@ -38,6 +38,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import jvdrums.UserPreferences;
 import ui.MainFrame;
 import ui.combobox.DestinationMidiComboBox;
 import ui.combobox.MidiComboBox;
@@ -60,16 +61,11 @@ public final class MidiSourcePanel extends StandardDialog {
     private MidiComboBox destinationCombo = new DestinationMidiComboBox();
     private JComboBox deviceIdCombo = new JComboBox();
 
-    private MidiSourcePanel(MainFrame mainFrame, MidiDevice.Info destinationMidiDevice) {
+    private MidiSourcePanel(MainFrame mainFrame) {
         super(mainFrame);
         this.mainFrame = mainFrame;
         config.read(this);
         initDialog();
-        if (destinationMidiDevice == null) {
-            destinationCombo.setNoneSelected();
-        } else {
-            destinationCombo.setSelectedItem(destinationMidiDevice);
-        }
     }
 
     private void initDialog() {
@@ -155,6 +151,18 @@ public final class MidiSourcePanel extends StandardDialog {
         addOKAction();
         addCancelAction();
         setBody(bodyPanel);
+
+        initSelected();
+    }
+
+    private void initSelected() {
+        destinationCombo.setSelectedItem(UserPreferences.getInstance().get("destinationCombo",
+                "None"));
+        sourceCombo.setSelectedItem(UserPreferences.getInstance().get("sourceCombo", "None"));
+
+        deviceIdCombo.setSelectedIndex(UserPreferences.getInstance().getInt("deviceIdCombo",
+                DEFAULT_DEVICE_ID));
+
     }
 
     private void destinationItemStateChanged(ItemEvent evt) {
@@ -191,14 +199,19 @@ public final class MidiSourcePanel extends StandardDialog {
 
     @Override
     public void onOK() {
+        UserPreferences.getInstance().put("sourceCombo",
+                sourceCombo.getSelectedItem().toString());
+        UserPreferences.getInstance().put("destinationCombo",
+                destinationCombo.getSelectedItem().toString());
+        UserPreferences.getInstance()
+                .putInt("deviceIdCombo", deviceIdCombo.getSelectedIndex());
         mainFrame.setDestinationDeviceInformation(selectedDestinationMidiInfo,
                 selectedSourceMidiInfo, deviceIdCombo.getSelectedIndex());
         super.onOK();
     }
 
     public static void showDialog(MainFrame mainFrame, MidiDevice.Info destinationMidiInfo) {
-        final MidiSourcePanel midiSourcePanel = new MidiSourcePanel(mainFrame,
-                destinationMidiInfo);
+        final MidiSourcePanel midiSourcePanel = new MidiSourcePanel(mainFrame);
         midiSourcePanel.setVisible(true);
         midiSourcePanel.dispose();
     }

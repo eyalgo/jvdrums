@@ -61,5 +61,17 @@ public abstract class MidiComboBox extends JComboBox {
         }
     }
 
+    public void setSelectedItem(String itemByString) {
+        int selected = 0;
+        final int numOfItems = this.getItemCount();
+        for (int i=0;i<numOfItems;i++) {
+            if (getItemAt(i).toString().equals(itemByString)) {
+                selected = i;
+                break;
+            }
+        }
+        super.setSelectedIndex(selected);
+    }
+
     protected abstract boolean shouldAddItem(MidiDevice md);
 }

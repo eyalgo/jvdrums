@@ -26,58 +26,56 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package jvdrums;
+package ui.swing.actions;
 
-import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+
+import javax.swing.LookAndFeel;
+import javax.swing.SwingUtilities;
+
+import jvdrums.UserPreferences;
 
 import ui.MainFrame;
-import bias.Configuration;
-import bias.store.PropertiesStore;
-import bias.store.ResourceBundlesStore;
+import ui.utils.WindowUtilities;
 
 /**
  * @author egolan
  */
-public final class JVDrumsApp {
-    private static Configuration config = Configuration.getRoot().get(JVDrumsApp.class);
+@SuppressWarnings("serial")
+public final class LookAndFeelAction extends BaseAction {
+    private final String lookAndFeel;
+    private final MainFrame mainFrame;
 
-    public static void main(String args[]) {
-        /* Collection<Option> options = */initConfiguration();
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Info().log();
-                createAndShowGui();
-            }
-        });
-    }
-    
-    private static void createAndShowGui() {
-        final MainFrame mainFrame = new MainFrame();
-        config.read(mainFrame);
+    public LookAndFeelAction(MainFrame mainFrame, String lookAndFeel) {
+        this.lookAndFeel = lookAndFeel;
+        this.mainFrame = mainFrame;
         try {
-            mainFrame.initFrame();
-            mainFrame.setVisible(true);
+            Class lnfClass = Class.forName(lookAndFeel);
+            LookAndFeel lookAndFeelClass = (LookAndFeel) lnfClass.newInstance();
+            setName(lookAndFeelClass.getName());
+            setShortDescription(lookAndFeelClass.getDescription());
         }
-        catch (Error e) {
+        catch (ClassNotFoundException e) {
             e.printStackTrace();
-            mainFrame.showErrorDialog(e.getLocalizedMessage(), "Fatal Error");
-            System.exit(-1);
         }
-        catch (Exception e) {
+        catch (InstantiationException e) {
             e.printStackTrace();
-            mainFrame.showErrorDialog(e.getLocalizedMessage(), "Fatal Exception");
-            System.exit(-2);
+        }
+        catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
     }
 
-    /**
-     * Initialize the configuration.
-     * 
-     * @return the command line options of the configuration
-     */
-    private static void initConfiguration() {
-        Configuration configuration = Configuration.getRoot();
-        configuration.addStore(new PropertiesStore(JVDrumsApp.class, "app.properties"));
-        configuration.addStore(new ResourceBundlesStore("jvdrums"));
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Runnable runnable = new Runnable() {
+            public void run() {
+                WindowUtilities.setLookAndFeel(lookAndFeel);
+                SwingUtilities.updateComponentTreeUI(mainFrame);
+                mainFrame.pack();
+                UserPreferences.getInstance().put("lookAndFeel", lookAndFeel);
+            }
+        };
+        SwingUtilities.invokeLater(runnable);
     }
 }

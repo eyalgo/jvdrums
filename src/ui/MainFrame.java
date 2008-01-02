@@ -68,12 +68,6 @@ import exceptions.VdrumException;
  * @author Eyal Golan
  */
 public final class MainFrame extends JFrame implements ConnectionListener {
-    @Override
-    public void setEnabled(boolean b) {
-        // TODO Auto-generated method stub
-        super.setEnabled(b);
-    }
-
     private static final long serialVersionUID = -7164597771180443878L;
     private static Configuration config = Configuration.getRoot().get(MainFrame.class);
     private final MidiHandler midiHandler;
@@ -88,14 +82,14 @@ public final class MainFrame extends JFrame implements ConnectionListener {
         midiHandler = new MidiHandler(this);
         midiHandler.addConnectionListener(this);
         infoText = new MultiLineLabel(10, 70);
-        infoText.setBackground(new JTextArea().getBackground());
+         infoText.setBackground(new JTextArea().getBackground());
         statusBar = new StatusBar();
     }
 
     public void initFrame() {
         this.setLayout(new BorderLayout());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        //TODO when exiting - close all resources !!!
+        // TODO when exiting - close all resources !!!
         addWindowListener(new ExitListener());
         setMinimumSize(new Dimension(800, 700));
         setName("mainframe");
@@ -175,7 +169,6 @@ public final class MainFrame extends JFrame implements ConnectionListener {
     }
 
     public void putTextInStatusBar(String message, Color color) {
-//        setEnabled(false);
         statusBar.setForeground(color);
         statusBar.setText(message);
     }
@@ -183,7 +176,6 @@ public final class MainFrame extends JFrame implements ConnectionListener {
     public void operationFinish() {
         statusBar.setText(" ");
         statusBar.setForeground(new JLabel().getForeground());
-//        setEnabled(true);
     }
 
     @SuppressWarnings("serial")

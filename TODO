@@ -1,8 +1,10 @@
 Logger
-Configuration saving
-Selection of look and feel
+Configuration saving: file locations
+	Selection of look and feel - not implemented
 Better about panel
 Icon fot the application
 Full menu
 Right click on lists
-COSM editing for TD-12
+Validations: clear lists, save on existing file, downloading to device
+
+COSM editing for TD-12 - Release 2.0
