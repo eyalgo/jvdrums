@@ -28,28 +28,40 @@
 
 package jvdrums;
 
+import java.net.URL;
+
+import javax.xml.parsers.FactoryConfigurationError;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.xml.DOMConfigurator;
+
 /**
  * @author egolan
- *
  */
-public final class Logger {
-    private static Logger instance;
-
-    private Logger () {
-        instance = new Logger();
-    }
-    
-    public static Logger getInstance() {
-        if (instance == null) {
-            instance = new Logger();
+public final class JVDrumsLogger {
+    private final static Logger logger= Logger.getLogger(JVDrumsLogger.class);
+    static {
+        try {
+            URL url4j = JVDrumsLogger.class.getResource("log4j.xml");
+            DOMConfigurator.configure(url4j);
         }
-        return instance;
+        catch (FactoryConfigurationError e) {
+            e.printStackTrace();
+        }
     }
+
+    private JVDrumsLogger() {
+    }
+
+    public static Logger getLogger() {
+        return logger;
+    }
+
     /**
      * @param args
      */
     public static void main(String[] args) {
-    // TODO Auto-generated method stub
+        JVDrumsLogger.getLogger().info("bla !!!");
 
     }
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+        
+  <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d [%t] (%F:%L) %p - %m%n"/>
+    </layout>
+  </appender>
+  
+	<appender name="OrigFileAppender" class="org.apache.log4j.RollingFileAppender">
+		<param name="Threshold" value="DEBUG"/>
+        <param name="File" value="jvdrumsLog.log" />
+        <param name="MaxFileSize" value="5000KB"/>
+        <param name="MaxBackupIndex" value="30"/>
+        <layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%t] (%F:%L) %-5p %c{3} %x - %m%n"/>
+        </layout>	    
+	</appender>
+
+	<appender name="FileAppender" class="org.apache.log4j.RollingFileAppender">
+		<param name="Threshold" value="DEBUG"/>
+        <param name="File" value="jvdrumsLog.log" />
+        <param name="MaxFileSize" value="5000KB"/>
+        <param name="MaxBackupIndex" value="30"/>
+        <layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%t] (%F:%L) %p - %m%n"/>
+        </layout>	    
+	</appender>
+
+  <root>
+    <priority value ="debug" />
+    <appender-ref ref="FileAppender"/>
+    <appender-ref ref="ConsoleAppender"/>
+  </root>
+
+</log4j:configuration> 

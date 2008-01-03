@@ -19,13 +19,11 @@
 package jvdrums;
 
 import java.util.Vector;
-import java.util.logging.Logger;
 
 import bias.Configuration;
 
 public class Info {
     private static Configuration config = Configuration.getRoot().get(Info.class);
-    private static Logger logger = Logger.getLogger(Info.class.getName());
     private String version = "";
 
     public Info() {
@@ -37,37 +35,31 @@ public class Info {
     }
 
     public void log() {
-        StringBuffer buffer = new StringBuffer();
-        
+        JVDrumsLogger.getLogger().info("JVDrums Started");
+        JVDrumsLogger.getLogger().info("JVDrums -" + version + "-");
+        JVDrumsLogger.getLogger().info(appendProperty("os.arch"));
+        JVDrumsLogger.getLogger().info(appendProperty("os.name"));
+        JVDrumsLogger.getLogger().info(appendProperty("os.version"));
+        JVDrumsLogger.getLogger().info(appendProperty("java.home"));
+        JVDrumsLogger.getLogger().info(appendProperty("java.version"));
+        JVDrumsLogger.getLogger().info(appendProperty("java.runtime.name"));
+        JVDrumsLogger.getLogger().info(appendProperty("java.runtime.version"));
+        JVDrumsLogger.getLogger().info(appendProperty("user.dir"));
+        JVDrumsLogger.getLogger().info(appendProperty("user.home"));
+        JVDrumsLogger.getLogger().info(appendProperty("user.country"));
+        JVDrumsLogger.getLogger().info(appendProperty("user.language"));
+        JVDrumsLogger.getLogger().info(appendProperty("user.name"));
         Vector<String> prefs = UserPreferences.getInstance().showPrefs();
-
-        buffer.append("JVDrums -" + version + "-");
-        appendProperty(buffer, "os.arch");
-        appendProperty(buffer, "os.name");
-        appendProperty(buffer, "os.version");
-
-        appendProperty(buffer, "java.home");
-        appendProperty(buffer, "java.version");
-        appendProperty(buffer, "java.runtime.name");
-        appendProperty(buffer, "java.runtime.version");
-
-        appendProperty(buffer, "user.dir");
-        appendProperty(buffer, "user.home");
-        appendProperty(buffer, "user.country");
-        appendProperty(buffer, "user.language");
-        appendProperty(buffer, "user.name");
-        buffer.append(System.getProperty("line.separator"));
         for (String pref : prefs) {
-            buffer.append(pref).append(System.getProperty("line.separator"));
+            JVDrumsLogger.getLogger().info("UserPreferences: " + pref);
         }
-
-        logger.info(buffer.toString());
     }
 
-    private void appendProperty(StringBuffer buffer, String key) {
-        buffer.append("\n");
+    private String appendProperty(String key) {
+        StringBuffer buffer = new StringBuffer();
         buffer.append(key);
         buffer.append(" = ");
         buffer.append(System.getProperty(key));
+        return buffer.toString();
     }
 }

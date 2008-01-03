@@ -61,7 +61,7 @@
 		<delete dir="${test-resources-dist}" />
 	</target>
 
-	<target name="prepare">
+	<target name="prepare" depends="clean">
 		<echo>Creating ${dir.build}, ${dir.dist}, ${dir.test.result}, ${test-resources-dist} directories</echo>
 		<tstamp>
 			<format property="TODAY" pattern="d-MM-yyyy" />
@@ -93,7 +93,9 @@
 		<copy todir="${dir.build}/ui/utils/images">
 			<fileset dir="${dir.src}/ui/utils/images" includes="**/*.png" />
 		</copy>
-
+		<copy todir="${dir.build}/jvdrums">
+			<fileset dir="${dir.src}/jvdrums" includes="**/*.xml" />
+		</copy>
 		<filter token="jvdrums.version" value="${jvdrums.version}" />
 		<copy todir="./${dir.build}" filtering="true">
 			<fileset dir="./${dir.src}">
@@ -118,19 +120,17 @@
 
 	<target name="jar-test" depends="test" description="jar application">
 		<jar destfile="${dist-jar-file}" manifest="${manifest-file}" update="true">
-			<fileset dir="${dir.build}" includes="**/*.class **/*.png **/*.properties" excludes="**/*Test*.class **/*.syx **/*.bat" />
-			<fileset dir = "${build-lib-path}"/>
+			<fileset dir="${dir.build}" includes="**/*.class **/*.png **/*.properties **/*.xml" excludes="**/*Test*.class **/*.syx **/*.bat" />
 		</jar>
 	</target>
 
 	<target name="jar" depends="copy" description="jar application">
 		<jar destfile="${dist-jar-file}" manifest="${manifest-file}" update="true">
-			<fileset dir="${dir.build}" includes="**/*.class **/*.png **/*.properties" excludes="**/*Test*.class **/*.syx **/*.bat" />
-			<fileset dir = "${build-lib-path}"/>
+			<fileset dir="${dir.build}" includes="**/*.class **/*.png **/*.properties **/*.xml" excludes="**/*Test*.class **/*.syx **/*.bat" />
 		</jar>
 	</target>
 	
-	<target name="dist" description="Set up the distribution" depends="clean, jar-test">
+	<target name="dist" description="Set up the distribution" depends="jar-test">
 		<copy todir="${dir.dist}/${dir.docs}">
 			<fileset dir="${dir.docs}" />
 		</copy>
