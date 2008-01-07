@@ -93,7 +93,7 @@ public final class MainFrame extends JFrame implements ConnectionListener {
         addWindowListener(new ExitListener());
         setMinimumSize(new Dimension(800, 700));
         setName("mainframe");
-        WindowUtilities.setLiquidLookAndFeel();
+        WindowUtilities.setNativeLookAndFeel();
         JSplitPane jSplitPane1 = new JSplitPane();
         outputPanel = new KitPanelOutput(this, new Td6Info());
         inputPanel = new KitPanelInput(this, outputPanel, midiHandler);
@@ -137,6 +137,8 @@ public final class MainFrame extends JFrame implements ConnectionListener {
         setJMenuBar(jMenuBar1);
 
         pack();
+        this.validate();
+        this.repaint();
     }
 
     public void showErrorDialog(VdrumException vdrumException) {
