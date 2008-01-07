@@ -45,7 +45,8 @@ Release 1.0 alpha-1
 * supporting TD-10EXP
 
 
-
+Release 1.0 alpha-2
 * Keeping last browse and save last locations
 * Keeping MIDI configuration
-* Added logger
+* Added (basic) logger
+* Changed view to be as system
