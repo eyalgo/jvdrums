@@ -47,7 +47,7 @@ import exceptions.VdrumException;
  */
 public abstract class FileAction extends BaseAction {
     private static Configuration configuration = Configuration.getRoot().get(FileAction.class);
-    private final MainFrame mainFrame;
+    final MainFrame mainFrame;
     String buttonStr = "";
     String name = ""; 
     
@@ -69,9 +69,10 @@ public abstract class FileAction extends BaseAction {
         if (JFileChooser.APPROVE_OPTION == option) {
             final File file = fc.getSelectedFile();
             try {
-                handleAction(file);
-                UserPreferences.getInstance().put(name, file.getAbsolutePath());
-                
+                boolean result = handleAction(file);
+                if (result) {
+                    UserPreferences.getInstance().put(name, file.getAbsolutePath());    
+                }
             }
             catch (IOException e1) {
                 mainFrame.showErrorDialog(e1.getMessage(), e1.getMessage());
@@ -94,6 +95,6 @@ public abstract class FileAction extends BaseAction {
         }
     }
 
-    protected abstract void handleAction(File file) throws IOException,
+    protected abstract boolean handleAction(File file) throws IOException,
             InvalidMidiDataException, VdrumException;
 }

@@ -33,6 +33,7 @@ import java.io.IOException;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
@@ -42,6 +43,8 @@ import managers.TDManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
+import bias.Configuration;
+
 import ui.MainFrame;
 import ui.panels.KitsPanel;
 
@@ -50,28 +53,44 @@ import ui.panels.KitsPanel;
  */
 @SuppressWarnings("serial")
 public final class SaveAction extends FileAction implements ListDataListener {
+    private static Configuration configuration = Configuration.getRoot().get(SaveAction.class);
     private final KitsPanel kitsPanel;
-    
+    private String overwriteMessage = "";
+    private String overwriteTitle = "";
+
     public SaveAction(MainFrame mainFrame, KitsPanel kitsPanel) {
         this(mainFrame, kitsPanel, true);
     }
 
     public SaveAction(MainFrame mainFrame, KitsPanel kitsPanel, boolean withIcon) {
         super(mainFrame, "save", withIcon);
+        configuration.read(this);
         this.kitsPanel = kitsPanel;
         this.kitsPanel.addListDataListener(this);
         setEnabledByKits();
     }
 
     @Override
-    protected void handleAction(File file) throws InvalidMidiDataException, IOException {
+    protected boolean handleAction(File file) throws InvalidMidiDataException, IOException {
         final TdKit[] kitsInList = kitsPanel.getKits();
         if (!FilenameUtils.isExtension(file.getName(), "syx")) {
             String name = file.getAbsolutePath() + ".syx";
             file = new File(name);
         }
-        final SysexMessage messageFromManager = TDManager.kitsToSysexMessage(kitsInList);
-        FileUtils.writeByteArrayToFile(file, messageFromManager.getMessage());
+        boolean doSave = true;
+        if (file.exists()) {
+            int response = JOptionPane
+                    .showConfirmDialog(mainFrame, overwriteMessage, overwriteTitle,
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (response == JOptionPane.CANCEL_OPTION) {
+                doSave = false;
+            }
+        }
+        if (doSave) {
+            final SysexMessage messageFromManager = TDManager.kitsToSysexMessage(kitsInList);
+            FileUtils.writeByteArrayToFile(file, messageFromManager.getMessage());
+        }
+        return doSave;
     }
 
     @Override

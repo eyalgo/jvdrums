@@ -63,7 +63,7 @@ public final class BrowseAction extends FileAction {
     }
 
     @Override
-    protected void handleAction(final File file) throws IOException, InvalidMidiDataException,
+    protected boolean handleAction(final File file) throws IOException, InvalidMidiDataException,
             VdrumException {
         byte[] bytes = FileUtils.readFileToByteArray(file);
         TdKit[] kits = TDManager.bytesToKits(bytes);
@@ -72,5 +72,6 @@ public final class BrowseAction extends FileAction {
                 kitsPanel.addKit(kit);
             }
         }
+        return true;
     }
 }

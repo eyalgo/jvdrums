@@ -57,7 +57,7 @@ public abstract class BaseActionVerify extends BaseAction {
     @Override
     public final void actionPerformed(ActionEvent e) {
         int result = JOptionPane.showConfirmDialog(mainFrame, confirmMessage(),
-                confirmTitle(), JOptionPane.OK_CANCEL_OPTION);
+                confirmTitle(), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (result == JOptionPane.OK_OPTION) {
             verifyOk();
         }
