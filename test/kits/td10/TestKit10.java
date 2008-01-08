@@ -43,9 +43,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import resources.UtilsForTests;
-import exceptions.BadChecksumException;
-import exceptions.BadMessageLengthException;
-import exceptions.NotRolandException;
 import exceptions.VdrumException;
 
 /**
@@ -82,7 +79,7 @@ public final class TestKit10 {
     }
 
     public void checkNewId() throws URISyntaxException, IOException,
-            BadMessageLengthException, BadChecksumException, NotRolandException {
+            VdrumException {
         try {
             final File file1 = UtilsForTests.getFile("td10_7_tr808.syx");
             byte[] kitBytes1 = FileUtils.readFileToByteArray(file1);
@@ -100,8 +97,7 @@ public final class TestKit10 {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void checkBadId100() throws URISyntaxException, IOException,
-            BadMessageLengthException, BadChecksumException, NotRolandException,
-            InvalidMidiDataException {
+            InvalidMidiDataException, VdrumException {
         final File file1 = UtilsForTests.getFile("td10_7_tr808.syx");
         byte[] kitBytes1 = FileUtils.readFileToByteArray(file1);
         TdKit kit = new TdKit(new Td10ExpInfo(), kitBytes1);

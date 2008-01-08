@@ -30,12 +30,14 @@ package kits;
 
 import javax.sound.midi.InvalidMidiDataException;
 
+import jvdrums.JVDrumsLogger;
+
 import kits.info.TdInfo;
 
 import org.apache.commons.lang.ArrayUtils;
 
-import exceptions.BadChecksumException;
 import exceptions.NotRolandException;
+import exceptions.VdrumException;
 
 /**
  * @author egolan
@@ -49,8 +51,8 @@ public final class TdSubPart extends VdrumsSysexMessage {
         this.tdInfo = tdInfo;
     }
 
-    public TdSubPart(byte[] partRawData, TdInfo tdInfo) throws BadChecksumException,
-            NotRolandException, InvalidMidiDataException {
+    public TdSubPart(byte[] partRawData, TdInfo tdInfo) throws InvalidMidiDataException,
+            VdrumException {
         this(tdInfo);
         createData(partRawData);
     }
@@ -96,25 +98,28 @@ public final class TdSubPart extends VdrumsSysexMessage {
     }
 
     private final void createData(byte[] partRawData) throws InvalidMidiDataException,
-            BadChecksumException, NotRolandException {
-//        int checksumIndex = partRawData.length - 2;
+            VdrumException {
+        int checksumIndex = partRawData.length - 2;
         this.setMessage(partRawData, partRawData.length);
-//        int inputCheckSum = this.getMessage()[checksumIndex];
-//        final int checksum = calculateChecksum(ArrayUtils.subarray(this.getMessage(), tdInfo
-//                .getMsbAddressIndex(), checksumIndex));
-//        if (inputCheckSum != checksum && !(tdInfo.getNameToDisplay().equals("TD-10 EXP"))) {
-//            throw new BadChecksumException(inputCheckSum, checksum);
-//        }
+        int inputCheckSum = this.getMessage()[checksumIndex];
+        final int checksum = calculateChecksum(ArrayUtils.subarray(this.getMessage(), tdInfo
+                .getMsbAddressIndex(), checksumIndex));
+        if (inputCheckSum != checksum) {
+            JVDrumsLogger.getLogger().error(
+                    "Checksum problem calculated: " + checksum + " message checksum: "
+                            + inputCheckSum);
+            // throw new BadChecksumException(inputCheckSum, checksum);
+        }
         if (this.getMessage()[ROLAND_ID_INDEX] != ROLAND_ID) {
             throw new NotRolandException(this.getMessage()[ROLAND_ID_INDEX]);
         }
     }
 
-//    protected final void createData(byte[] kitRawData, int from, int to)
-//            throws InvalidMidiDataException, BadChecksumException, NotRolandException {
-//        final byte[] partRawData = ArrayUtils.subarray(kitRawData, from, to);
-//        this.createData(partRawData);
-//    }
+    // protected final void createData(byte[] kitRawData, int from, int to)
+    // throws InvalidMidiDataException, BadChecksumException, NotRolandException {
+    // final byte[] partRawData = ArrayUtils.subarray(kitRawData, from, to);
+    // this.createData(partRawData);
+    // }
 
     private int calculateChecksum(final byte[] data) {
         int sum = 0;

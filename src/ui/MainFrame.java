@@ -45,11 +45,14 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import kits.info.Td6Info;
 import midi.MidiHandler;
 import ui.event.ConnectionEvent;
 import ui.event.ConnectionListener;
+import ui.lists.InputKitsList;
 import ui.panels.KitPanelInput;
 import ui.panels.KitPanelOutput;
 import ui.swing.MultiLineLabel;
@@ -67,7 +70,7 @@ import exceptions.VdrumException;
 /**
  * @author Eyal Golan
  */
-public final class MainFrame extends JFrame implements ConnectionListener {
+public final class MainFrame extends JFrame implements ConnectionListener, ListSelectionListener {
     private static final long serialVersionUID = -7164597771180443878L;
     private static Configuration config = Configuration.getRoot().get(MainFrame.class);
     private final MidiHandler midiHandler;
@@ -137,7 +140,6 @@ public final class MainFrame extends JFrame implements ConnectionListener {
         setJMenuBar(jMenuBar1);
 
         pack();
-        this.validate();
         this.repaint();
     }
 
@@ -201,9 +203,17 @@ public final class MainFrame extends JFrame implements ConnectionListener {
         return this.midiHandler;
     }
 
+    @Override
     public void connected(ConnectionEvent connectionEvent) {
         putTextInStatusBar(connectionEvent.getTdInfo().getNameToDisplay(), Color.DARK_GRAY);
     }
 
+    @Override
     public void disconnected() {}
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        int numOfSelected = ((InputKitsList)e.getSource()).numberOfSelectedKits();
+        putTextInStatusBar("Selected kits: " + numOfSelected, Color.BLACK);
+    }
 }

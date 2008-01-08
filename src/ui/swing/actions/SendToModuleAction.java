@@ -29,7 +29,6 @@
 package ui.swing.actions;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
 import java.util.Vector;
 
 import javax.sound.midi.InvalidMidiDataException;
@@ -48,7 +47,7 @@ import exceptions.VdrumException;
  * @author egolan
  */
 @SuppressWarnings("serial")
-public final class SendToModuleAction extends BaseAction implements ListDataListener {
+public final class SendToModuleAction extends BaseActionVerify implements ListDataListener {
     private final MainFrame mainFrame;
     private final OutputKitsList outputKitsList;
     private final MidiHandler midiHandler;
@@ -56,15 +55,16 @@ public final class SendToModuleAction extends BaseAction implements ListDataList
 
     //TODO Move all string to the properties file
     public SendToModuleAction(MainFrame mainFrame, OutputKitsList outputKitsList) {
+        super(mainFrame, "sendToModule");
         this.mainFrame = mainFrame;
         this.midiHandler = this.mainFrame.getMidiHandler();
         this.outputKitsList = outputKitsList;
-        config.get("sendToModule").read(this);
         this.outputKitsList.getModel().addListDataListener(this);
         setEnabledByKits();
     }
 
-    public void actionPerformed(ActionEvent e) {
+    @Override
+    public void verifyOk() {
         final TdKit[] kitsInList = outputKitsList.getKits();
         if (outputKitsList.numberOfKits() < 1) {
             mainFrame.showErrorDialog("There aren't any kits in the list.", "No kits problem");
@@ -114,7 +114,7 @@ public final class SendToModuleAction extends BaseAction implements ListDataList
             return;
         }
 
-        throw new RuntimeException("only the event " + "thread should invoke this method");
+        throw new RuntimeException("only the event thread should invoke this method");
     }
 
     @Override

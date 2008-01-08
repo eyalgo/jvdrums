@@ -64,7 +64,7 @@ public final class KitPanelOutput extends KitsPanel {
         addToButtonBar(new SaveAction(getParentFrame(), this));
         addToButtonBar(new SendToModuleAction(getParentFrame(), outputKitsList));
         addToButtonBar(new RemoveKitsAction(outputKitsList));
-        addToButtonBar(new ClearListAction(outputKitsList));
+        addToButtonBar(new ClearListAction(parentFrame, outputKitsList));
         increaseIndexMoveAction = new MoveKitAction(Direction.INCREASE_INDEX, outputKitsList,
                 tdInfo.getMaxNumberOfKits() - 1);
         addToButtonBar(increaseIndexMoveAction);
@@ -104,7 +104,6 @@ public final class KitPanelOutput extends KitsPanel {
                             inputPanel.setTdInfo(tdInfo);
                             break;
                     }
-
                 }
             });
         }

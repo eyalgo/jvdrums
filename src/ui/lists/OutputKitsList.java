@@ -139,6 +139,7 @@ public final class OutputKitsList extends KitsList implements ConnectionListener
 
     @SuppressWarnings("serial")
     private static class TdKitListRenderer extends DefaultListCellRenderer {
+        @Override
         public Component getListCellRendererComponent(JList list, Object value, int index,
                 boolean isSelected, boolean hasFocus) {
             JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index,
@@ -150,11 +151,6 @@ public final class OutputKitsList extends KitsList implements ConnectionListener
                 TdKit kit = (TdKit) value;
                 label.setText(index + 1 + " -> " + kit.getName());
             }
-            // if (index % 2 == 0) {
-            // label.setBackground(Color.MAGENTA);
-            // } else {
-            // label.setBackground(Color.WHITE);
-            // }
             return (label);
         }
     }
@@ -198,6 +194,5 @@ public final class OutputKitsList extends KitsList implements ConnectionListener
 
     @Override
     public void disconnected() {
-        // TODO Auto-generated method stub
     }
 }

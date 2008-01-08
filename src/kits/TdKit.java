@@ -6,14 +6,13 @@ import java.util.List;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
 
+import jvdrums.JVDrumsLogger;
+
 import kits.info.TdInfo;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
-import exceptions.BadChecksumException;
-import exceptions.BadMessageLengthException;
-import exceptions.NotRolandException;
 import exceptions.VdrumException;
 
 public final class TdKit {
@@ -26,12 +25,12 @@ public final class TdKit {
         this(tdInfo, sysexMessage.getMessage());
     }
 
-    public TdKit(TdInfo tdInfo, byte[] rawData) throws BadMessageLengthException,
-            BadChecksumException, NotRolandException, InvalidMidiDataException {
+    public TdKit(TdInfo tdInfo, byte[] rawData) throws VdrumException, InvalidMidiDataException {
         this.tdInfo = tdInfo;
-//        if (rawData.length != tdInfo.getKitSize()&& !(tdInfo.getNameToDisplay().equals("TD-10 EXP"))) {
+        if (rawData.length != tdInfo.getKitSize()) {
+            JVDrumsLogger.getLogger().error("Got bad message length " + rawData.length);
 //            throw new BadMessageLengthException(rawData.length);
-//        }
+        }
         subParts = new TdSubPart[tdInfo.getNumberOfSubParts()];
 
         final List<Integer> indexes = new ArrayList<Integer>();

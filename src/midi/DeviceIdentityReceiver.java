@@ -34,13 +34,10 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.SysexMessage;
 
-import kits.info.Td12Info;
-import kits.info.Td6Info;
 import kits.info.TdInfo;
+import managers.FactoryKits;
 import ui.event.ConnectionEvent;
 import ui.event.ConnectionListener;
-import exceptions.NotRolandException;
-import exceptions.UnsupportedModuleException;
 import exceptions.VdrumException;
 
 /**
@@ -64,7 +61,7 @@ final class DeviceIdentityReceiver implements Receiver {
     public void send(MidiMessage midiMessage, long timeStamp) {
         if (midiMessage instanceof SysexMessage) {
             try {
-                TdInfo tdInfo = getTdInfoByMessage(midiMessage);
+                TdInfo tdInfo = FactoryKits.getTdInfoByIdentityMessage(midiMessage);
                 fireConnectionEvent(tdInfo);
             }
             catch (VdrumException e) {
@@ -78,22 +75,6 @@ final class DeviceIdentityReceiver implements Receiver {
         ConnectionEvent connEvent = new ConnectionEvent(tdInfo);
         for (ConnectionListener connectionListener : connectionListeners) {
             connectionListener.connected(connEvent);
-        }
-    }
-
-    private TdInfo getTdInfoByMessage(MidiMessage midiMessage) throws VdrumException {
-        byte[] message = midiMessage.getMessage();
-        if ((message[5] & 0xFF) != 65) {
-            throw new NotRolandException(message[5]);
-        }
-        if ((message[6] & 0xFF) == 9) {
-            return new Td12Info();
-        } else if ((message[6] & 0xFF) == 63) {
-            return new Td6Info();
-        } else if ((message[6] & 0xFF) == 45) {
-            return new Td6Info();
-        } else {
-            throw new UnsupportedModuleException();
         }
     }
 

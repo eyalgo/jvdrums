@@ -51,11 +51,12 @@ public final class KitPanelInput extends KitsPanel {
     public KitPanelInput(MainFrame parentFrame, KitPanelOutput outputPanel, MidiHandler midiHandler) {
         super(parentFrame);
         inputKitsList = new InputKitsList(this, outputPanel);
+        inputKitsList.addListSelectionListener(parentFrame);
         outputPanel.initInputPanelInOutputPanel(this);
         midiHandler.setKitPanelInput(this);
         setListInPanel(inputKitsList);
         addToButtonBar(new BrowseAction(getParentFrame(), this));
-        addToButtonBar(new ClearListAction(inputKitsList));
+        addToButtonBar(new ClearListAction(parentFrame, inputKitsList));
         addToButtonBar(new MoveRightAction(inputKitsList, outputPanel));
         connectAction = new ConnectAction(parentFrame, parentFrame.getMidiHandler());
         connectAction.setEnabled(false);

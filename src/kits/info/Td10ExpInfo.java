@@ -33,7 +33,7 @@ package kits.info;
  *
  */
 public final class Td10ExpInfo extends TdInfo {
-    private static final String NAME = "TD-10 EXP";
+    private static final String NAME = "TD-10 (& EXP)";
     private static final int START_NAME_INDEX = 10;
     private static final int NAME_MAX_LENGTH = 8;
     private static final int NUMBER_OF_SUB_PARTS = 13;

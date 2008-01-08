@@ -93,12 +93,12 @@ public final class InputKitsList extends KitsList {
         addToButtonBar(new MoveRightAction(inputKitsList, outputPanel));
 */
         popup.add(new BrowseAction(inputKitsPanel.getParentFrame(), inputKitsPanel, false));
-        popup.add(new ClearListAction(this, false));
+        popup.add(new ClearListAction(inputKitsPanel.getParentFrame(), this, false));
     }
 
     @SuppressWarnings("serial")
     private class TdKitListRenderer extends DefaultListCellRenderer {
-        
+        @Override
         public Component getListCellRendererComponent(JList list, Object value, int index,
                 boolean isSelected, boolean hasFocus) {
             JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index,
@@ -106,20 +106,10 @@ public final class InputKitsList extends KitsList {
             if (value != null && value instanceof TdKit) {
                 TdKit kit = (TdKit) value;
                 label.setEnabled(kit.getModuleDisplayName().equals(tdInfo.getNameToDisplay()));
-                
-                label.setText(kit.getName());
+                label.setText(index + 1 + ") " + kit.getName());
             }
-            // if (index%2 == 0) {
-            // label.setBackground(Color.LIGHT_GRAY);
-            // } else {
-            // label.setBackground(Color.WHITE);
-            // }
             return (label);
         }
-        
-//        private void setTdInfo(TdInfo tdInfo) {
-//            this.tdInfo = tdInfo;
-//        }
     }
 
     @Override
@@ -180,5 +170,9 @@ public final class InputKitsList extends KitsList {
         this.tdInfo = tdInfo;
         revalidate();
         repaint();
+    }
+    
+    public int numberOfSelectedKits() {
+        return this.getSelectedKits().length;
     }
 }

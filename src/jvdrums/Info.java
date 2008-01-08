@@ -35,8 +35,7 @@ public class Info {
     }
 
     public void log() {
-        JVDrumsLogger.getLogger().info("JVDrums Started");
-        JVDrumsLogger.getLogger().info("JVDrums -" + version + "-");
+        JVDrumsLogger.getLogger().info("JVDrums " + version + " Started");
         JVDrumsLogger.getLogger().info(appendProperty("os.arch"));
         JVDrumsLogger.getLogger().info(appendProperty("os.name"));
         JVDrumsLogger.getLogger().info(appendProperty("os.version"));

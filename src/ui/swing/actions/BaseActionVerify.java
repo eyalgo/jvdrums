@@ -28,29 +28,50 @@
 
 package ui.swing.actions;
 
+import java.awt.event.ActionEvent;
+
+import javax.swing.JOptionPane;
+
 import ui.MainFrame;
-import ui.lists.KitsList;
+
+import bias.Configuration;
 
 /**
  * @author egolan
  */
-@SuppressWarnings("serial")
-public class ClearListAction extends BaseActionVerify {
-    private final KitsList kitList;
-    public ClearListAction(MainFrame mainFrame, final KitsList kitList) {
-        this(mainFrame, kitList, true);
-    }
+public abstract class BaseActionVerify extends BaseAction {
+    private static Configuration configuration = Configuration.getRoot().get(
+            BaseActionVerify.class);
+    final MainFrame mainFrame;
+    String confirmMessage = "";
+    String confirmTitle = "";
+    String areYouSureMessage = "";
 
-    public ClearListAction(MainFrame mainFrame, KitsList kitList, boolean withIcon) {
-        super(mainFrame, "clear");
-        this.kitList = kitList;
-        if (!withIcon) {
-            setSmallIcon(null);
-        }
+    BaseActionVerify(MainFrame mainFrame, String name) {
+        this.mainFrame = mainFrame;
+        configuration.read(this);
+        configuration.get(name).read(this);
+
     }
 
     @Override
-    public void verifyOk() {
-        kitList.clear();
+    public final void actionPerformed(ActionEvent e) {
+        int result = JOptionPane.showConfirmDialog(mainFrame, confirmMessage(),
+                confirmTitle(), JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            verifyOk();
+        }
+    }
+
+    abstract void verifyOk();
+
+    final String confirmMessage() {
+        final StringBuilder strBuilder = new StringBuilder(confirmMessage);
+        strBuilder.append(System.getProperty("line.separator")).append(areYouSureMessage);
+        return strBuilder.toString();
+    }
+
+    final String confirmTitle() {
+        return confirmTitle;
     }
 }

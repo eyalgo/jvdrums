@@ -41,6 +41,8 @@ import javax.sound.midi.SysexMessage;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import jvdrums.JVDrumsLogger;
+
 import kits.TdKit;
 import kits.info.TdInfo;
 import managers.TDManager;
@@ -101,6 +103,7 @@ final class KitsReceiver implements Receiver {
                 receivedBytes = null;
                 if (!messageSent) {
                     messageSent = true;
+                    mainFrame.setEnabled(false);
                     setMessage(receivingMessage, Color.GREEN);
                 }
             }
@@ -117,13 +120,10 @@ final class KitsReceiver implements Receiver {
                     receivedBytes = null;
                 }
                 catch (InvalidMidiDataException e) {
-                    e.printStackTrace();
+                    JVDrumsLogger.getLogger().error(e.getMessage());
                 }
                 catch (VdrumException e) {
-                    // TODO Auto-generated catch block
-                    // Sometimes message length is bad.
-                    // I need to inform somehow the user.
-                    e.printStackTrace();
+                    JVDrumsLogger.getLogger().error(e.getProblem());
                 }
             }
         }
@@ -158,6 +158,7 @@ final class KitsReceiver implements Receiver {
      */
     private void timerExpired() {
         timer.stop();
+        mainFrame.setEnabled(true);
         inputPanel.addKits(receivedKits);
         messageSent = false;
         setMessage(finishedReceivingMessage, Color.BLUE);
