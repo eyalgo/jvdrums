@@ -68,7 +68,6 @@ final class DeviceIdentityReceiver implements Receiver {
                 e.printStackTrace();
             }
         }
-
     }
 
     private void fireConnectionEvent(TdInfo tdInfo) {
@@ -87,5 +86,4 @@ final class DeviceIdentityReceiver implements Receiver {
             connectionListener.disconnected();
         }
     }
-
 }

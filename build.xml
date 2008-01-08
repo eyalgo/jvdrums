@@ -134,7 +134,7 @@
 		<copy todir="${dir.dist}/${dir.docs}">
 			<fileset dir="${dir.docs}" />
 		</copy>
-		<zip basedir="${dir.dist}" destfile="${dir.dist}/jvdrums-${jvdrums.version}.zip" />
+		<zip basedir="${dir.dist}" destfile="${dir.dist}/jvdrums-${jvdrums.version}-bin.zip" />
 	</target>
 
 	<target name="deploy" description="deploy the application on SourceForge" depends="dist">
