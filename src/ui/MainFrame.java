@@ -48,6 +48,8 @@ import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import jvdrums.JVDrumsLogger;
+
 import kits.info.Td6Info;
 import midi.MidiHandler;
 import ui.event.ConnectionEvent;
@@ -206,6 +208,7 @@ public final class MainFrame extends JFrame implements ConnectionListener, ListS
     @Override
     public void connected(ConnectionEvent connectionEvent) {
         putTextInStatusBar(connectionEvent.getTdInfo().getNameToDisplay(), Color.DARK_GRAY);
+        JVDrumsLogger.getLogger().info("Connected to " + connectionEvent.getTdInfo());
     }
 
     @Override
@@ -214,6 +217,6 @@ public final class MainFrame extends JFrame implements ConnectionListener, ListS
     @Override
     public void valueChanged(ListSelectionEvent e) {
         int numOfSelected = ((InputKitsList)e.getSource()).numberOfSelectedKits();
-        putTextInStatusBar("Selected kits: " + numOfSelected, Color.BLACK);
+        putTextInStatusBar(numOfSelected + " kits selected.", Color.BLACK);
     }
 }
