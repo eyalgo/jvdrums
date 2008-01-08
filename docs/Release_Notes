@@ -55,4 +55,7 @@ Release 1.1 alpha-1
 * Fixed bug (1866744) - when getting identity from TD-10. The correct info is set.
 * Recognize TD-10 with two types of messages (accroding to index 4 in the message)
 * Enabling / disabling main frame when receiving data from the device.
-
+* User Confirmation:
+	Before clearing a list
+	Before overwriting
+	Before sending to the module
