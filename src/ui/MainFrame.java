@@ -98,7 +98,7 @@ public final class MainFrame extends JFrame implements ConnectionListener, ListS
         addWindowListener(new ExitListener());
         setMinimumSize(new Dimension(800, 700));
         setName("mainframe");
-        WindowUtilities.setNativeLookAndFeel();
+        WindowUtilities.setLiquidLookAndFeel();
         JSplitPane jSplitPane1 = new JSplitPane();
         outputPanel = new KitPanelOutput(this, new Td6Info());
         inputPanel = new KitPanelInput(this, outputPanel, midiHandler);
