@@ -33,6 +33,7 @@ import javax.sound.midi.MidiMessage;
 import kits.info.Td10ExpInfo;
 import kits.info.Td12Info;
 import kits.info.Td6Info;
+import kits.info.Td8Info;
 import kits.info.TdInfo;
 import exceptions.BadMessageLengthException;
 import exceptions.NotRolandException;
@@ -61,6 +62,9 @@ public final class FactoryKits {
                     && (((kitBytes[4] & 0xFF) == 45) || ((kitBytes[4] & 0xFF) == 10))) {
                 return new TDModulesManager(new Td10ExpInfo());
             }
+            if (((kitBytes[3] & 0xFF) == 0) && ((kitBytes[4] & 0xFF) == 32)) {
+                return new TDModulesManager(new Td8Info());
+            }
             throw new UnsupportedModuleException();
         }
         catch (ArrayIndexOutOfBoundsException e) {
@@ -79,6 +83,8 @@ public final class FactoryKits {
             return new Td6Info();
         } else if ((message[6] & 0xFF) == 45 || (message[6] & 0xFF) == 10) {
             return new Td10ExpInfo();
+        } else if ((message[6] & 0xFF) == 32) {
+            return new Td8Info();
         } else {
             throw new UnsupportedModuleException();
         }

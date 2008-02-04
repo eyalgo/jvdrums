@@ -28,23 +28,23 @@
 
 package kits.info;
 
-import java.util.Vector;
-
 /**
- * @author egolan
+ * @author Eyal Golan
  *
  */
-public final class InfoManager {
-    private InfoManager() {
-        //No instance
+public final class Td8Info extends TdInfo {
+    private static final String NAME = "TD-8";
+    private static final int START_NAME_INDEX = 10;
+    private static final int NAME_MAX_LENGTH = 8;
+    private static final int NUMBER_OF_SUB_PARTS = 13;
+    private static final int MAX_NUMBER_OF_KITS = 64;
+    private static final int MSB_ADDRESS_INDEX = 6;
+    private static final int MSB_ADDRESS_VALUE = 65;
+    private static final int KIT_SIZE = 697;
+    public Td8Info() {
+        super(NAME, START_NAME_INDEX, NAME_MAX_LENGTH, NUMBER_OF_SUB_PARTS,
+                MAX_NUMBER_OF_KITS, MSB_ADDRESS_INDEX, MSB_ADDRESS_VALUE, KIT_SIZE,
+                MSB_ADDRESS_INDEX + 1, MSB_ADDRESS_INDEX + 2);
     }
-    
-    public static Vector<TdInfo> availableModulesInfo() {
-        Vector<TdInfo> result = new Vector<TdInfo>();
-        result.add(new Td6Info());
-        result.add(new Td8Info());
-        result.add(new Td10ExpInfo());
-        result.add(new Td12Info());
-        return result;
-    }
+
 }

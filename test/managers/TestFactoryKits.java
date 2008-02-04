@@ -36,6 +36,7 @@ import javax.sound.midi.InvalidMidiDataException;
 
 import kits.info.Td12Info;
 import kits.info.Td6Info;
+import kits.info.Td8Info;
 
 import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
@@ -80,5 +81,11 @@ public final class TestFactoryKits {
         byte[] kitBytes = getFileBytes("td6.syx");
         TDModulesManager kit = FactoryKits.getTdModuleManager(kitBytes);
         Assert.assertTrue(kit.getTdInfo() instanceof Td6Info);
+    }
+    
+    public void checkKitTd8() throws URISyntaxException, IOException, InvalidMidiDataException, VdrumException {
+        byte[] kitBytes = getFileBytes("td-8-64kits.syx");
+        TDModulesManager kit = FactoryKits.getTdModuleManager(kitBytes);
+        Assert.assertTrue(kit.getTdInfo() instanceof Td8Info);
     }
 }

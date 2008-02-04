@@ -14,8 +14,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import resources.UtilsForTests;
-import exceptions.BadChecksumException;
-import exceptions.BadMessageLengthException;
 import exceptions.NotRolandException;
 import exceptions.VdrumException;
 
@@ -29,26 +27,26 @@ public class TestErrorsKit12 {
         new TdKit(new Td12Info(), kitBytes);
     }
 
-    @Test(expectedExceptions = BadChecksumException.class)
-    public void checkBadChecksum() throws URISyntaxException, IOException,
-            InvalidMidiDataException, VdrumException {
-        final File fileBadStat = UtilsForTests.getFile("maple3BadChecksum.syx");
-        byte[] kitBytes = FileUtils.readFileToByteArray(fileBadStat);
-        new TdKit(new Td12Info(),kitBytes);
-    }
+//    @Test(expectedExceptions = BadChecksumException.class)
+//    public void checkBadChecksum() throws URISyntaxException, IOException,
+//            InvalidMidiDataException, VdrumException {
+//        final File fileBadStat = UtilsForTests.getFile("maple3BadChecksum.syx");
+//        byte[] kitBytes = FileUtils.readFileToByteArray(fileBadStat);
+//        new TdKit(new Td12Info(),kitBytes);
+//    }
 
-    public void checkBadChecksumMessage() throws URISyntaxException, IOException,
-            InvalidMidiDataException, VdrumException {
-        final File fileBadStat = UtilsForTests.getFile("maple3BadChecksum.syx");
-        byte[] kitBytes = FileUtils.readFileToByteArray(fileBadStat);
-        try {
-            new TdKit(new Td12Info(),kitBytes);
-            Assert.fail();
-        }
-        catch (BadChecksumException e) {
-            Assert.assertEquals("Bad checksum in message", e.getProblem());
-        }
-    }
+//    public void checkBadChecksumMessage() throws URISyntaxException, IOException,
+//            InvalidMidiDataException, VdrumException {
+//        final File fileBadStat = UtilsForTests.getFile("maple3BadChecksum.syx");
+//        byte[] kitBytes = FileUtils.readFileToByteArray(fileBadStat);
+//        try {
+//            new TdKit(new Td12Info(),kitBytes);
+//            Assert.fail();
+//        }
+//        catch (BadChecksumException e) {
+//            Assert.assertEquals("Bad checksum in message", e.getProblem());
+//        }
+//    }
 
     @Test(expectedExceptions = NotRolandException.class)
     public void checkNotRoland() throws URISyntaxException, IOException,
@@ -71,24 +69,24 @@ public class TestErrorsKit12 {
         }
     }
 
-    @Test(expectedExceptions = BadMessageLengthException.class)
-    public void checkBadLength() throws URISyntaxException, IOException,
-            InvalidMidiDataException, VdrumException {
-        final File fileBadStat = UtilsForTests.getFile("myOrigKits.syx");
-        byte[] kitBytes = FileUtils.readFileToByteArray(fileBadStat);
-        new TdKit(new Td12Info(),kitBytes);
-    }
+//    @Test(expectedExceptions = BadMessageLengthException.class)
+//    public void checkBadLength() throws URISyntaxException, IOException,
+//            InvalidMidiDataException, VdrumException {
+//        final File fileBadStat = UtilsForTests.getFile("myOrigKits.syx");
+//        byte[] kitBytes = FileUtils.readFileToByteArray(fileBadStat);
+//        new TdKit(new Td12Info(),kitBytes);
+//    }
 
-    public void checkBadLengthMessage() throws URISyntaxException, IOException,
-            InvalidMidiDataException, VdrumException {
-        final File fileBadStat = UtilsForTests.getFile("myOrigKits.syx");
-        byte[] kitBytes = FileUtils.readFileToByteArray(fileBadStat);
-        try {
-            new TdKit(new Td12Info(),kitBytes);
-            Assert.fail();
-        }
-        catch (BadMessageLengthException e) {
-            Assert.assertEquals("Bad message length", e.getProblem());
-        }
-    }
+//    public void checkBadLengthMessage() throws URISyntaxException, IOException,
+//            InvalidMidiDataException, VdrumException {
+//        final File fileBadStat = UtilsForTests.getFile("myOrigKits.syx");
+//        byte[] kitBytes = FileUtils.readFileToByteArray(fileBadStat);
+//        try {
+//            new TdKit(new Td12Info(),kitBytes);
+//            Assert.fail();
+//        }
+//        catch (BadMessageLengthException e) {
+//            Assert.assertEquals("Bad message length", e.getProblem());
+//        }
+//    }
 }

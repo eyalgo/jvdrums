@@ -59,3 +59,6 @@ Release 1.1 alpha-1
 	Before clearing a list
 	Before overwriting
 	Before sending to the module
+	
+Release 1.1 alpha-2
+* Added support for TD-8

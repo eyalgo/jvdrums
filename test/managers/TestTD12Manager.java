@@ -46,7 +46,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import resources.UtilsForTests;
-import exceptions.BadChecksumException;
 import exceptions.NotRolandException;
 import exceptions.VdrumException;
 
@@ -237,15 +236,15 @@ public final class TestTD12Manager {
         TDManager.bytesToKits(getBytesFromFile("maple3NotRoland.syx"));
     }
 
-    @Test(expectedExceptions = BadChecksumException.class , dependsOnGroups = { "exception12" })
-    public void checkMessageBadChecksum() throws URISyntaxException, IOException,
-            InvalidMidiDataException, VdrumException {
-        TDManager.sysexMessageToKits(getMessageFromFile("maple3BadChecksum.syx"));
-    }
+//    @Test(expectedExceptions = BadChecksumException.class , dependsOnGroups = { "exception12" })
+//    public void checkMessageBadChecksum() throws URISyntaxException, IOException,
+//            InvalidMidiDataException, VdrumException {
+//        TDManager.sysexMessageToKits(getMessageFromFile("maple3BadChecksum.syx"));
+//    }
 
-    @Test(expectedExceptions = BadChecksumException.class, dependsOnGroups = { "exception12" })
-    public void checkBytesBadChecksum() throws URISyntaxException, IOException,
-            InvalidMidiDataException, VdrumException {
-        TDManager.bytesToKits(getBytesFromFile("maple3BadChecksum.syx"));
-    }
+//    @Test(expectedExceptions = BadChecksumException.class, dependsOnGroups = { "exception12" })
+//    public void checkBytesBadChecksum() throws URISyntaxException, IOException,
+//            InvalidMidiDataException, VdrumException {
+//        TDManager.bytesToKits(getBytesFromFile("maple3BadChecksum.syx"));
+//    }
 }

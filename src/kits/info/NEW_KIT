@@ -1,0 +1,6 @@
+Use the owner manual / MIDI implementation to get correct parameters
+1. Add a Td#Info class that extends from TdInfo
+2. Add to InfoManager the new model
+3. Add to FactoryKits
+	getTdModuleManager
+	getTdInfoByIdentityMessage
