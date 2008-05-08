@@ -28,11 +28,11 @@
 
 package kits.info;
 
-
 /**
  * @author egolan
  */
 public final class Td12Info extends TdInfo {
+    private static final long serialVersionUID = 3738107893748140129L;
     private static final String NAME = "TD-12";
     private static final int START_NAME_INDEX = 12;
     private static final int NAME_MAX_LENGTH = 13;

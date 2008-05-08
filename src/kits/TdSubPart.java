@@ -28,10 +28,11 @@
 
 package kits;
 
+import java.io.Serializable;
+
 import javax.sound.midi.InvalidMidiDataException;
 
 import jvdrums.JVDrumsLogger;
-
 import kits.info.TdInfo;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -42,7 +43,8 @@ import exceptions.VdrumException;
 /**
  * @author egolan
  */
-public final class TdSubPart extends VdrumsSysexMessage {
+public final class TdSubPart extends VdrumsSysexMessage implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final static int ROLAND_ID = 65; // 0x41
     private static final int ROLAND_ID_INDEX = 1;
     private final TdInfo tdInfo;
@@ -124,7 +126,7 @@ public final class TdSubPart extends VdrumsSysexMessage {
     private int calculateChecksum(final byte[] data) {
         int sum = 0;
         for (int i = 0; i < data.length; i++) {
-            int currentInt = (int) data[i] & 0xFF;
+            int currentInt = data[i] & 0xFF;
             sum += currentInt;
         }
         final int reminder = sum % 128;

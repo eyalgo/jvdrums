@@ -28,6 +28,8 @@
 
 package kits.info;
 
+import java.io.Serializable;
+
 import javax.sound.midi.InvalidMidiDataException;
 
 import kits.TdKit;
@@ -37,7 +39,7 @@ import exceptions.VdrumException;
 /**
  * @author egolan
  */
-public abstract class TdInfo {
+public abstract class TdInfo implements Serializable {
     private final String name;
     private final int startNameIndex;
     private final int maxNameLength;
@@ -119,8 +121,7 @@ public abstract class TdInfo {
         return getNameToDisplay();
     }
 
-    public final TdKit getKit(byte[] kitBytes) throws InvalidMidiDataException,
-            VdrumException {
+    public final TdKit getKit(byte[] kitBytes) throws InvalidMidiDataException, VdrumException {
         return new TdKit(this, kitBytes);
     }
 

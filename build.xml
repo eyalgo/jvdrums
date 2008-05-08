@@ -141,7 +141,7 @@
 		<ftp server="zzupload.sourceforge.net" userid="anonymous" password="" remotedir="/incoming">
 			<fileset file="./dist/jvdrums-${jvdrums.version}.zip" />
 		</ftp>
-	</target>	
+	</target>
 	<!--
 	
 	<fileset dir="${dir.src}" includes="**/*.png"/>

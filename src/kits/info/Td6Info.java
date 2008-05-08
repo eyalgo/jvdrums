@@ -28,8 +28,8 @@
 
 package kits.info;
 
-
 public final class Td6Info extends TdInfo {
+    private static final long serialVersionUID = -9200951737500960724L;
     private static final String NAME = "TD-6";
     private static final int START_NAME_INDEX = 10;
     private static final int NAME_MAX_LENGTH = 8;

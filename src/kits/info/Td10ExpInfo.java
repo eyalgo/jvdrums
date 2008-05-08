@@ -30,9 +30,9 @@ package kits.info;
 
 /**
  * @author egolan
- *
  */
 public final class Td10ExpInfo extends TdInfo {
+    private static final long serialVersionUID = -907843400291653140L;
     private static final String NAME = "TD-10 (& EXP)";
     private static final int START_NAME_INDEX = 10;
     private static final int NAME_MAX_LENGTH = 8;
