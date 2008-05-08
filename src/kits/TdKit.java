@@ -1,5 +1,6 @@
 package kits;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,6 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.SysexMessage;
 
 import jvdrums.JVDrumsLogger;
-
 import kits.info.TdInfo;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -15,7 +15,8 @@ import org.apache.commons.lang.StringUtils;
 
 import exceptions.VdrumException;
 
-public final class TdKit {
+public final class TdKit implements Serializable {
+    private static final long serialVersionUID = 834278855699099067L;
     protected final TdInfo tdInfo;
     protected TdSubPart[] subParts;
     private final int id;
@@ -25,11 +26,12 @@ public final class TdKit {
         this(tdInfo, sysexMessage.getMessage());
     }
 
-    public TdKit(TdInfo tdInfo, byte[] rawData) throws VdrumException, InvalidMidiDataException {
+    public TdKit(TdInfo tdInfo, byte[] rawData) throws VdrumException,
+            InvalidMidiDataException {
         this.tdInfo = tdInfo;
         if (rawData.length != tdInfo.getKitSize()) {
             JVDrumsLogger.getLogger().error("Got bad message length " + rawData.length);
-//            throw new BadMessageLengthException(rawData.length);
+            // throw new BadMessageLengthException(rawData.length);
         }
         subParts = new TdSubPart[tdInfo.getNumberOfSubParts()];
 
