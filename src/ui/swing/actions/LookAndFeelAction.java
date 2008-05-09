@@ -34,7 +34,6 @@ import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 
 import jvdrums.UserPreferences;
-
 import ui.MainFrame;
 import ui.utils.WindowUtilities;
 
@@ -50,7 +49,7 @@ public final class LookAndFeelAction extends BaseAction {
         this.lookAndFeel = lookAndFeel;
         this.mainFrame = mainFrame;
         try {
-            Class lnfClass = Class.forName(lookAndFeel);
+            Class<?> lnfClass = Class.forName(lookAndFeel);
             LookAndFeel lookAndFeelClass = (LookAndFeel) lnfClass.newInstance();
             setName(lookAndFeelClass.getName());
             setShortDescription(lookAndFeelClass.getDescription());
